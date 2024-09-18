@@ -1,0 +1,18 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .nav__link {
+    @apply relative block w-fit font-semibold text-white after:absolute after:mt-1 after:block after:h-[3px] after:w-full after:origin-right after:scale-x-0 after:bg-pink-400 after:transition after:duration-300 after:content-[''] after:hover:scale-x-100;
+  }
+}
+
+:root {
+  font-family: "Plus Jakarta Sans", sans-serif, system-ui, Avenir, Helvetica,
+    Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
