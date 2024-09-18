@@ -7,23 +7,23 @@ export default function Hero() {
         <div className="grid grid-cols-1 items-center gap-2 md:grid-cols-2">
           {/* Text */}
           <div>
-            <h1 className="text-5xl font-semibold leading-tight text-helpMe-100 lg:text-6xl">
+            <h1 className="text-5xl font-semibold leading-tight text-helpMe-100 lg:text-6xl xl:text-7xl">
               Find Help. Give <br />
               Hope.
             </h1>
-            <p className="text-md py-5 font-light tracking-wide text-helpMe-400">
+            <p className="text-md py-5 font-light tracking-wide text-helpMe-400 xl:text-lg">
               Connect with compassionate volunteers and receive <br />
               the support you need.
             </p>
             <div className="flex items-center justify-center space-x-2 pt-5 md:justify-start md:space-x-4">
               <Link
-                className="transform rounded-lg bg-pink-400 px-8 py-3 font-semibold text-helpMe-100 shadow transition-all duration-300 ease-in-out hover:bg-pink-600 hover:text-helpMe-100"
+                className="transform rounded-lg bg-pink-400 px-8 py-3 font-semibold text-helpMe-100 shadow transition-all duration-300 ease-in-out hover:bg-pink-600 hover:text-helpMe-100 xl:px-10 xl:py-4 xl:text-lg"
                 to={"/register"}
               >
                 Join Our Community
               </Link>
               <Link
-                className="border-1 transform rounded-lg border border-helpMe-300 px-8 py-3 font-medium text-helpMe-300 shadow transition-all duration-300 ease-in-out hover:border-helpMe-600 hover:text-helpMe-600"
+                className="border-1 transform rounded-lg border border-helpMe-300 px-8 py-3 font-medium text-helpMe-300 shadow transition-all duration-300 ease-in-out hover:border-helpMe-600 hover:text-helpMe-600 xl:px-10 xl:py-4 xl:text-lg"
                 to={"/request"}
               >
                 Post a Request
