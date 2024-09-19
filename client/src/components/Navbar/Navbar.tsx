@@ -21,12 +21,12 @@ export default function Navbar({ openNavbar }: INavbar) {
 
   return (
     <div
-      className={`mx-auto w-full ${navbarBg ? "bg-helpMe-600" : "fixed"} fixed z-[10000] bg-helpMe-950 py-5`}
+      className={`mx-auto w-full ${navbarBg ? "bg-black bg-opacity-80 backdrop-blur-md" : "fixed"} fixed z-[10000] bg-helpMe-950 py-5`}
     >
       <div className="mx-auto flex items-center justify-center px-4 text-helpMe-50 sm:px-6 md:px-10">
         <div className="flex w-full items-center justify-between">
           {/* Logo */}
-          <h4 className="cursor-pointer text-lg font-semibold text-helpMe-200 lg:text-xl">
+          <h4 className="cursor-pointer text-lg font-semibold text-white lg:text-xl xl:text-3xl">
             HELP ME
           </h4>
 
@@ -38,7 +38,7 @@ export default function Navbar({ openNavbar }: INavbar) {
                 navLinks.map((navItem: INavLinks) => (
                   <li key={navItem.id}>
                     <Link
-                      className="nav__link lg:text-md text-sm font-medium capitalize text-helpMe-200"
+                      className="nav__link lg:text-md text-sm font-medium capitalize text-white xl:text-lg"
                       to={navItem.link}
                     >
                       {navItem.label}
@@ -52,7 +52,7 @@ export default function Navbar({ openNavbar }: INavbar) {
               {/* <p className="cursor-pointer">PROFILE ICON</p> */}
               <Link
                 to={"/request"}
-                className="transform cursor-pointer rounded-lg bg-pink-400 px-8 py-2 capitalize text-helpMe-50 transition-all duration-300 ease-in-out hover:bg-pink-600"
+                className="text-md transform cursor-pointer rounded-lg bg-pink-400 px-8 py-2 capitalize text-helpMe-50 transition-all duration-300 ease-in-out hover:bg-pink-600 lg:text-lg xl:px-10 xl:py-3.5"
               >
                 post a request
               </Link>

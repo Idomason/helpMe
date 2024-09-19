@@ -34,6 +34,11 @@ export const featureData = [
   },
   {
     id: 3,
+    title: "Escrow and Verification",
+    body: "For financial assistance, escrow is used to ensure safe transactions. Helpers and helpees undergo verification to reduce scams.",
+  },
+  {
+    id: 4,
     title: "collaboration and completion",
     body: "The platform facilitates communication and payment between helper and helpee. The helper receives rewards for completing the help, and the helpee provides feedback.",
   },

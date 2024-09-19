@@ -1,6 +1,7 @@
 import Hero from "./components/Hero/Hero";
 import Feature from "./components/Feature/Feature";
 import ResponsiveNav from "./components/Navbar/responsiveNav";
+import FeaturedHelps from "./components/FeaturedHelps/FeaturedHelps";
 
 function App() {
   return (
@@ -8,6 +9,7 @@ function App() {
       <ResponsiveNav />
       <Hero />
       <Feature />
+      <FeaturedHelps />
     </>
   );
 }
