@@ -9,7 +9,7 @@ export default function Feature() {
           HOW HELPME WORKS
         </h1>
 
-        <ul className="mx-auto mt-4 grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
+        <ul className="mx-auto mt-4 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
           {featureData &&
             featureData.length > 0 &&
             featureData.map((feature) => (

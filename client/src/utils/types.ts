@@ -24,3 +24,10 @@ export interface IFeature {
     body: string;
   };
 }
+
+// SliderCard PropType
+export interface ISliderCard {
+  image: string;
+  title: string;
+  link: string;
+}
