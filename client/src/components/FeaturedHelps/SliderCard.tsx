@@ -18,7 +18,7 @@ export default function SliderCard({ image, title, link }: ISliderCard) {
         <h4 className="w-full font-semibold">{title}</h4>
         <hr />
         <Link
-          className="flex items-center text-sm font-semibold uppercase text-helpMe-800 hover:font-semibold hover:text-helpMe-950"
+          className="flex items-center text-sm font-semibold uppercase text-helpMe-800 transition-colors duration-300 ease-in-out hover:font-semibold hover:text-helpMe-950"
           to={link}
         >
           Learn More
