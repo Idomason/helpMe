@@ -49,33 +49,51 @@ export default function Footer() {
               >
                 helpees
               </Link>
-            </div>
-            <div>
               <Link
                 className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
-                to={"/helpers"}
+                to={"/giveaways"}
               >
-                helpers
-              </Link>
-              <Link
-                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
-                to={"/helpees"}
-              >
-                helpees
+                giveaways
               </Link>
             </div>
             <div>
               <Link
                 className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
-                to={"/helpers"}
+                to={"/givers"}
               >
-                helpers
+                givers
               </Link>
               <Link
                 className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
-                to={"/helpees"}
+                to={"/company"}
               >
-                helpees
+                company
+              </Link>
+              <Link
+                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
+                to={"/security"}
+              >
+                security
+              </Link>
+            </div>
+            <div>
+              <Link
+                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
+                to={"/policy"}
+              >
+                policy
+              </Link>
+              <Link
+                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
+                to={"/safety"}
+              >
+                safety
+              </Link>
+              <Link
+                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
+                to={"/jobs"}
+              >
+                jobs
               </Link>
             </div>
           </div>
