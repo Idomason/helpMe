@@ -8,13 +8,13 @@ export default function Cta() {
         {/* CTA Buttons */}
         <div className="mx-auto flex items-center space-x-4 py-12">
           <Link
-            className="transform rounded-md bg-helpMe-950 px-5 py-2 text-helpMe-200 transition-all duration-200 ease-in hover:skew-x-6 hover:font-semibold hover:text-white xl:px-6 xl:py-2"
+            className="transform rounded-md bg-helpMe-950 px-5 py-2 text-helpMe-200 transition-all duration-200 ease-in hover:skew-x-6 hover:font-semibold hover:text-white xl:px-8 xl:py-3"
             to={"/request"}
           >
             Need help ?
           </Link>
           <Link
-            className="transform rounded-md bg-helpMe-950 px-5 py-2 text-helpMe-200 transition-all duration-200 ease-in hover:skew-x-6 hover:font-semibold hover:text-white xl:px-6 xl:py-2"
+            className="transform rounded-md bg-pink-400 px-5 py-2 text-helpMe-50 transition-all duration-200 ease-in hover:skew-x-6 hover:font-semibold hover:text-white xl:px-8 xl:py-3"
             to={"/renderHelp"}
           >
             Render help
