@@ -5,6 +5,7 @@ import FeaturedHelps from "./components/FeaturedHelps/FeaturedHelps";
 import CurrentHelpRequests from "./components/CurrentHelpRequests/CurrentHelpRequests";
 import CurrentGiveaways from "./components/CurrentGiveaways/CurrentGiveaways";
 import Cta from "./components/CTA/Cta";
+import Footer from "./components/Footer/Footer";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <CurrentHelpRequests />
       <CurrentGiveaways />
       <Cta />
+      <Footer />
     </>
   );
 }
