@@ -13,7 +13,7 @@ export default function Feature() {
           WORKS
         </h1>
 
-        <ul className="mx-auto mt-4 grid w-full grid-cols-1 place-items-center gap-6 md:grid-cols-2 xl:grid-cols-4 xl:gap-3">
+        <ul className="mx-auto mt-4 grid grid-cols-1 place-items-center gap-6 md:grid-cols-2 xl:grid-cols-4 xl:gap-3">
           {featureData &&
             featureData.length > 0 &&
             featureData.map((feature) => (
