@@ -37,7 +37,7 @@ export default function CurrentHelpRequests() {
           </div>
 
           {/* NOTE Sliding Category Cards */}
-          <div className="mx-auto my-2 py-4">
+          <div className="mx-auto">
             <CurrentHelpRequestCard />
           </div>
           <div className="flex w-full justify-end pb-10">

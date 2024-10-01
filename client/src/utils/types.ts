@@ -59,6 +59,7 @@ export interface IAccident {
     image: string;
     title: string;
     numberOfVotes: number;
+    amount: number;
   };
 }
 
@@ -70,6 +71,7 @@ export interface IDisaster {
     image: string;
     title: string;
     numberOfVotes: number;
+    amount: number;
   };
 }
 
@@ -81,6 +83,7 @@ export interface IAgriculture {
     image: string;
     title: string;
     numberOfVotes: number;
+    amount: number;
   };
 }
 
