@@ -12,20 +12,20 @@ export default function Footer() {
           </h1>
           <div className="flex space-x-4 py-6">
             <Link to={"/"}>
-              <Facebook className="cursor-pointer text-white transition-colors duration-300 hover:text-pink-400" />
+              <Facebook className="cursor-pointer text-white/75 transition-colors duration-300 hover:text-pink-400" />
             </Link>
             <Link to={"/"}>
-              <Twitter className="cursor-pointer text-white transition-colors duration-300 hover:text-pink-400" />
+              <Twitter className="cursor-pointer text-white/75 transition-colors duration-300 hover:text-pink-400" />
             </Link>
             <Link to={"/"}>
-              <Instagram className="cursor-pointer text-white transition-colors duration-300 hover:text-pink-400" />
+              <Instagram className="cursor-pointer text-white/75 transition-colors duration-300 hover:text-pink-400" />
             </Link>
             <Link to={"/"}>
-              <Youtube className="cursor-pointer text-white transition-colors duration-300 hover:text-pink-400" />
+              <Youtube className="cursor-pointer text-white/75 transition-colors duration-300 hover:text-pink-400" />
             </Link>
           </div>
           <Link
-            className="lg:text-md text-sm capitalize text-white"
+            className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
             to={"/philanthropists"}
           >
             philanthropists
@@ -38,13 +38,13 @@ export default function Footer() {
           <div className="flex justify-between justify-items-center sm:justify-between">
             <div>
               <Link
-                className="lg:text-md block text-sm capitalize text-white"
+                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
                 to={"/helpers"}
               >
                 helpers
               </Link>
               <Link
-                className="lg:text-md block text-sm capitalize text-white"
+                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
                 to={"/helpees"}
               >
                 helpees
@@ -52,13 +52,13 @@ export default function Footer() {
             </div>
             <div>
               <Link
-                className="lg:text-md block text-sm capitalize text-white"
+                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
                 to={"/helpers"}
               >
                 helpers
               </Link>
               <Link
-                className="lg:text-md block text-sm capitalize text-white"
+                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
                 to={"/helpees"}
               >
                 helpees
@@ -66,13 +66,13 @@ export default function Footer() {
             </div>
             <div>
               <Link
-                className="lg:text-md block text-sm capitalize text-white"
+                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
                 to={"/helpers"}
               >
                 helpers
               </Link>
               <Link
-                className="lg:text-md block text-sm capitalize text-white"
+                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
                 to={"/helpees"}
               >
                 helpees
@@ -84,26 +84,26 @@ export default function Footer() {
           <div className="grid grid-cols-3 items-center justify-between md:gap-10">
             <div className="">
               <Link
-                className="lg:text-md block py-1 text-sm capitalize text-white"
+                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
                 to={"/requests"}
               >
                 requests
               </Link>
               <Link
-                className="lg:text-md block py-1 text-sm capitalize text-white"
+                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
                 to={"/allRequests"}
               >
                 all requests
               </Link>
               <Link
-                className="lg:text-md block py-1 text-sm capitalize text-white"
+                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
                 to={"/contacts"}
               >
                 Contacts
               </Link>
             </div>
             <div className="col-span-2 place-items-start md:place-items-end">
-              <p className="lg:text-md py-2 text-sm text-white">
+              <p className="lg:text-md py-2 text-sm text-white/80">
                 Subscribe to our newsletter for updates
               </p>
               <div className="inline-flex">
