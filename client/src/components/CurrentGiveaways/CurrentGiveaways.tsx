@@ -10,7 +10,7 @@ export default function CurrentGiveaways() {
       <div className="mx-auto px-4 md:w-11/12">
         {/* Heading */}
         <ShortHeader heading="current giveaways" />
-        <div className="mx-auto bg-gradient-to-bl from-helpMe-200 to-helpMe-900 p-4 md:w-11/12">
+        <div className="mx-auto bg-gradient-to-bl from-helpMe-200 to-helpMe-900 p-4">
           {/* Sliding Details */}
           <div className="flex items-center justify-between">
             {/* Category */}
