@@ -32,7 +32,7 @@ export default function Hero() {
           </div>
 
           {/* Image */}
-          <div className="relative hidden justify-self-center rounded-lg bg-helpMe-200 p-4 lg:block lg:h-[400px] lg:w-[400px] xl:h-[500px] xl:w-[500px]">
+          <div className="relative hidden justify-self-center rounded-lg bg-helpMe-200 p-4 lg:block lg:h-[400px] lg:w-[400px]">
             <img
               className="absolute -left-6 top-6 rounded-lg bg-pink-300 p-4"
               src="/images/pic4.png"
