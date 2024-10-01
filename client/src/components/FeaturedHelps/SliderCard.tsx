@@ -1,6 +1,6 @@
-import { ArrowRightCircleIcon } from "@heroicons/react/24/solid";
-import { ISliderCard } from "../../utils/types";
 import { Link } from "react-router-dom";
+import { ISliderCard } from "../../utils/types";
+import { ArrowRightCircleIcon } from "@heroicons/react/24/solid";
 
 export default function SliderCard({ image, title, link }: ISliderCard) {
   return (
