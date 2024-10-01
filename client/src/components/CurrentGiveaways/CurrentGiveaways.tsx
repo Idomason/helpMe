@@ -1,6 +1,6 @@
-import { GiftIcon } from "@heroicons/react/24/solid";
 import ShortHeader from "../ShortHeader/ShortHeader";
 import RangeSlider from "../CurrentHelpRequests/RangeSlider";
+import { GiftIcon } from "lucide-react";
 
 export default function CurrentGiveaways() {
   return (
