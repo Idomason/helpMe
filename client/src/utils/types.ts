@@ -101,5 +101,6 @@ export interface IQuestions {
   question: {
     id: number;
     question: string;
+    answer: string;
   };
 }

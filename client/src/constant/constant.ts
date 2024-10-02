@@ -192,17 +192,25 @@ export const questionsData = [
   {
     id: 1,
     question: "How can I verify my identity on the platform?",
+    answer:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores necessitatibus, ut quis delectus obcaecati hic nemo dignissimos fuga recusandae asperiores?",
   },
   {
     id: 2,
     question: "What happens if a helper fails to fulfill their commitment?",
+    answer:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores necessitatibus, ut quis delectus obcaecati hic nemo dignissimos fuga recusandae asperiores?",
   },
   {
     id: 3,
     question: "How can I report a scam or fraudulent activity?",
+    answer:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores necessitatibus, ut quis delectus obcaecati hic nemo dignissimos fuga recusandae asperiores?",
   },
   {
     id: 4,
     question: "Can I request help anonymously?",
+    answer:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores necessitatibus, ut quis delectus obcaecati hic nemo dignissimos fuga recusandae asperiores?",
   },
 ];
