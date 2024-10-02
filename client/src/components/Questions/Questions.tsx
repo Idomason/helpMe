@@ -26,7 +26,7 @@ export default function Questions({ question }: IQuestions) {
         )}
       </div>
       <div
-        className={`mx-auto -mt-3 ${show ? "block" : "hidden"} w-4/5 bg-helpMe-950 px-4 py-4`}
+        className={`mx-auto -mt-3 ${show ? "block" : "hidden"} w-[85%] bg-helpMe-950 px-4 py-4`}
       >
         <div className="flex space-x-10">
           <p className="md:text-md text-sm leading-relaxed text-helpMe-200/85">
