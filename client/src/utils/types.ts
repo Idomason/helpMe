@@ -95,3 +95,11 @@ export interface ICurrentHelpDataProp
     IAgriculture {
   allCategories: string[];
 }
+
+// Questions Data Props
+export interface IQuestions {
+  question: {
+    id: number;
+    question: string;
+  };
+}

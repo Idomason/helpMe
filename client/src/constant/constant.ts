@@ -187,3 +187,22 @@ export const currentHelpData = {
     ],
   },
 };
+
+export const questionsData = [
+  {
+    id: 1,
+    question: "How can I verify my identity on the platform?",
+  },
+  {
+    id: 2,
+    question: "What happens if a helper fails to fulfill their commitment?",
+  },
+  {
+    id: 3,
+    question: "How can I report a scam or fraudulent activity?",
+  },
+  {
+    id: 4,
+    question: "Can I request help anonymously?",
+  },
+];

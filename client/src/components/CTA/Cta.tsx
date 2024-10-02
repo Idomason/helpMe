@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Questions from "../Questions/Questions";
+import { questionsData } from "../../constant/constant";
 
 export default function Cta() {
   return (
@@ -46,10 +47,9 @@ export default function Cta() {
             </div>
           </div>
           <div className="w-full rounded-r-md bg-helpMe-800 px-4 py-8 xl:w-[70%]">
-            <Questions />
-            <Questions />
-            <Questions />
-            <Questions />
+            {questionsData.map((question) => (
+              <Questions key={question.id} question={question} />
+            ))}
           </div>
         </div>
       </div>
