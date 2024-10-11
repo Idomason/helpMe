@@ -1,24 +1,15 @@
-import Hero from "./components/Hero/Hero";
-import Feature from "./components/Feature/Feature";
-import ResponsiveNav from "./components/Navbar/responsiveNav";
-import FeaturedHelps from "./components/FeaturedHelps/FeaturedHelps";
-import CurrentHelpRequests from "./components/CurrentHelpRequests/CurrentHelpRequests";
-import CurrentGiveaways from "./components/CurrentGiveaways/CurrentGiveaways";
-import Cta from "./components/CTA/Cta";
-import Footer from "./components/Footer/Footer";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Home from "./components/Home/Home";
+import RequestForm from "./components/RequestForm/RequestForm";
 
 function App() {
   return (
-    <>
-      <ResponsiveNav />
-      <Hero />
-      <Feature />
-      <FeaturedHelps />
-      <CurrentHelpRequests />
-      <CurrentGiveaways />
-      <Cta />
-      <Footer />
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/request" element={<RequestForm />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

@@ -1,15 +1,15 @@
 import { useState } from "react";
 import RangeSlider from "./RangeSlider";
 import { ShieldPlus } from "lucide-react";
-import CurrentHelpRequestCard from "../CurrentHelpRequestCard/CurrentHelpRequestCard";
-import { ArrowLongRightIcon } from "@heroicons/react/24/solid";
 import ShortHeader from "../ShortHeader/ShortHeader";
+import { ArrowLongRightIcon } from "@heroicons/react/24/solid";
+import CurrentHelpRequestCard from "../CurrentHelpRequestCard/CurrentHelpRequestCard";
 
 export default function CurrentHelpRequests() {
   const [sliderValue, setSliderValue] = useState(60);
 
   return (
-    <div className="py-24">
+    <div className="py-24 pb-0">
       <div className="mx-auto px-4 md:w-11/12">
         {/* Heading */}
         <ShortHeader heading="current help requests" />

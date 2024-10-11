@@ -1,11 +1,9 @@
-import { ChevronDoubleDownIcon, XCircleIcon } from "@heroicons/react/24/solid";
-import { IQuestions } from "../../utils/types";
 import { useState } from "react";
+import { IQuestions } from "../../utils/types";
+import { ChevronDoubleDownIcon, XCircleIcon } from "@heroicons/react/24/solid";
 
 export default function Questions({ question }: IQuestions) {
   const [show, setShow] = useState(false);
-
-  console.log(show);
 
   return (
     <>
