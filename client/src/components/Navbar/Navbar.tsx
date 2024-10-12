@@ -26,9 +26,12 @@ export default function Navbar({ openNavbar }: INavbar) {
       <div className="mx-auto flex items-center justify-center px-4 text-helpMe-50 sm:px-6 md:px-10">
         <div className="flex w-full items-center justify-between">
           {/* Logo */}
-          <h4 className="cursor-pointer text-lg font-semibold text-white lg:text-xl xl:text-3xl">
+          <Link
+            to={"/"}
+            className="cursor-pointer text-lg font-semibold text-white lg:text-xl xl:text-3xl"
+          >
             HELP ME
-          </h4>
+          </Link>
 
           <div className="flex items-center space-x-10">
             {/* Nav-Links */}

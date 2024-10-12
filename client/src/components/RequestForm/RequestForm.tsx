@@ -27,7 +27,7 @@ export default function RequestForm() {
   }
   return (
     <div className="py-24">
-      <div className="mx-auto px-4 md:w-11/12">
+      <div className="mx-auto px-4 pt-10 md:w-11/12">
         {/* Heading */}
         <ShortHeader heading="Make Your Request" />
         <form onSubmit={handleRequest} className="mx-auto bg-helpMe-200 p-4">
