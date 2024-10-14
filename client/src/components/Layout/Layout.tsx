@@ -1,11 +1,12 @@
 import Footer from "../Footer/Footer";
+import { Outlet } from "react-router-dom";
 import ResponsiveNav from "../Navbar/responsiveNav";
 
-export default function Layout({ children }) {
+export default function Layout() {
   return (
     <>
       <ResponsiveNav />
-      {children}
+      <Outlet />
       <Footer />
     </>
   );
