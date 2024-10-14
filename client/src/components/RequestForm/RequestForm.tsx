@@ -9,7 +9,7 @@ const initialData = {
   state: "",
   country: "",
   specificDetails: {
-    amount: "",
+    amount: 0,
     deadline: "",
   },
 };
