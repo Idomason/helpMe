@@ -1,3 +1,5 @@
+import { ChangeEvent, FormEvent } from "react";
+
 // Nav-link Types
 export interface INavLinks {
   id: number;
@@ -103,4 +105,51 @@ export interface IQuestions {
     question: string;
     answer: string;
   };
+}
+
+// FormData props
+export interface IFormData {
+  name: string;
+  email: string;
+  password: string;
+  termsConditions: boolean;
+  [key: string]: string | boolean;
+}
+
+// CustomForm Props
+
+export type ICustomForm = {
+  formControls: IElement[];
+  formData: IFormData;
+  onFormData: (
+    event: ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => void;
+  onHandleSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  buttonText: string;
+  className: string;
+};
+
+// Input Element Props
+export interface IElement {
+  name: string;
+  type: string;
+  id: string;
+  label?: string;
+  link?: string;
+  value?: string;
+  checked?: boolean;
+  onChange?: (
+    event: ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => void;
+  onClick?: (
+    event: ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => void;
+  placeholder?: string;
+  componentType?: string;
 }

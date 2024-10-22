@@ -24,3 +24,13 @@
   line-height: 1.5;
   font-weight: 400;
 }
+
+.bgImage {
+  background-image: url("/images/pic1.png");
+  background-size: cover;
+  background-position: center;
+}
+
+/* Media Query */
+@media screen and (max-width: 1200px) and (min-width: 1025px) {
+}

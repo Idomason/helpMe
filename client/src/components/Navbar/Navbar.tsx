@@ -31,6 +31,7 @@ export default function Navbar({ openNavbar }: INavbar) {
             className="cursor-pointer text-lg font-semibold text-white lg:text-xl xl:text-3xl"
           >
             HELP ME
+            {/* <img className="h-7" src="/images/logo.png" alt="Logo" /> */}
           </Link>
 
           <div className="flex items-center space-x-10">

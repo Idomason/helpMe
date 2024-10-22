@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import ShortHeader from "../ShortHeader/ShortHeader";
 
 const initialData = {
@@ -16,6 +16,7 @@ const initialData = {
 
 export default function RequestForm() {
   const [requestData, setRequestData] = useState(initialData);
+  const nameRef = useRef();
 
   //   for update: event: React.ChangeEvent for submit: event: React.FormEvent for click: event: React.MouseEvent
   function handleRequest(event: FormEvent<HTMLFormElement>) {
@@ -25,6 +26,10 @@ export default function RequestForm() {
     // Clear form
     setRequestData(initialData);
   }
+
+  useEffect(() => {
+    nameRef.current.focus();
+  }, []);
   return (
     <div className="py-24">
       <div className="mx-auto px-4 pt-10 md:w-11/12">
@@ -43,6 +48,7 @@ export default function RequestForm() {
               type="text"
               name="user"
               id="user"
+              ref={nameRef}
               value={requestData.name}
               onChange={(event) =>
                 setRequestData({ ...requestData, name: event.target.value })

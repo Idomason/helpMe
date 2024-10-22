@@ -214,3 +214,58 @@ export const questionsData = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores necessitatibus, ut quis delectus obcaecati hic nemo dignissimos fuga recusandae asperiores?",
   },
 ];
+
+export const registerFormElements = [
+  {
+    name: "name",
+    type: "text",
+    id: "name",
+    placeholder: "Enter your name",
+    componentType: "input",
+  },
+
+  {
+    name: "email",
+    type: "email",
+    id: "email",
+    placeholder: "your_email@mail.com",
+    componentType: "input",
+  },
+
+  {
+    name: "password",
+    type: "password",
+    id: "password",
+    placeholder: "Enter your password",
+    componentType: "input",
+  },
+
+  {
+    name: "termsConditions",
+    type: "checkbox",
+    id: "termsConditions",
+    label: "I agree to the",
+    link: "Terms & Conditions",
+    componentType: "checkbox",
+  },
+];
+
+export const loginFormElements = [
+  {
+    name: "email",
+    type: "email",
+    id: "email",
+    label: "Email",
+    placeholder: "Enter your email",
+    componentType: "input",
+  },
+
+  {
+    name: "password",
+    type: "password",
+    id: "password",
+    label: "Password",
+    placeholder: "Enter your password",
+    componentType: "input",
+  },
+];
