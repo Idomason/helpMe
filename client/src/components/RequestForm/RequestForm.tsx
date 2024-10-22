@@ -16,7 +16,7 @@ const initialData = {
 
 export default function RequestForm() {
   const [requestData, setRequestData] = useState(initialData);
-  const nameRef = useRef();
+  const nameRef = useRef<HTMLInputElement | null>(null);
 
   //   for update: event: React.ChangeEvent for submit: event: React.FormEvent for click: event: React.MouseEvent
   function handleRequest(event: FormEvent<HTMLFormElement>) {
@@ -28,7 +28,7 @@ export default function RequestForm() {
   }
 
   useEffect(() => {
-    nameRef.current.focus();
+    nameRef.current?.focus();
   }, []);
   return (
     <div className="py-24">
