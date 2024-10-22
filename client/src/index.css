@@ -33,4 +33,16 @@
 
 /* Media Query */
 @media screen and (max-width: 1200px) and (min-width: 1025px) {
+  .reduceWidth {
+    width: 17rem;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .reduceBtnText {
+    font-size: 12px;
+    font-weight: bold;
+  }
 }

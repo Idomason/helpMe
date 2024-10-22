@@ -76,10 +76,10 @@ export default function CustomForm({
     return content;
   }
   return (
-    <form onSubmit={onHandleSubmit}>
+    <form className="reduceWidth" onSubmit={onHandleSubmit}>
       {formControls.map((singleElement) => renderFormElement(singleElement))}
 
-      <div className="flex w-80 items-center justify-center py-6">
+      <div className="reduceWidth flex w-80 items-center justify-center py-6">
         <button
           className={`${className} ${
             !formData.termsConditions ||

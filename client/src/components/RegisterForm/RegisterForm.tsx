@@ -68,10 +68,10 @@ export default function RegisterForm() {
           <div className="flex items-center justify-center">
             <div className="z-20 mx-auto max-h-fit rounded bg-[#242323] p-4 py-10 text-white shadow-2xl drop-shadow-2xl lg:w-full xl:px-6">
               <div className="flex items-center justify-center space-x-7">
-                <button className="rounded-sm bg-blue-400 px-6 py-1.5 text-white transition-all duration-300 ease-in hover:bg-opacity-70 hover:text-white sm:px-6 sm:py-2 lg:py-2.5">
+                <button className="reduceBtnText rounded-sm bg-blue-400 px-6 py-1.5 text-white transition-all duration-300 ease-in hover:bg-opacity-70 hover:text-white sm:px-6 sm:py-2 lg:py-2.5">
                   Request Help
                 </button>
-                <button className="rounded-sm bg-white/80 px-6 py-1.5 text-gray-700 transition-all duration-300 ease-in hover:bg-white/35 hover:text-white sm:px-6 sm:py-2 lg:py-2.5">
+                <button className="reduceBtnText rounded-sm bg-white/80 px-6 py-1.5 text-gray-700 transition-all duration-300 ease-in hover:bg-white/35 hover:text-white sm:px-6 sm:py-2 lg:py-2.5">
                   Render Help
                 </button>
               </div>
