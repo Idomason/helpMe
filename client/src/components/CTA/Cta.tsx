@@ -25,13 +25,13 @@ export default function Cta() {
         {/* Frequently Asked Questions (FAQs) */}
         <div className="flex flex-wrap py-6">
           <div className="w-full rounded-l-md bg-helpMe-950 p-8 xl:max-h-fit xl:flex-1">
-            <div className="flex h-[250px] flex-col justify-between">
+            <div className="flex h-[250px] flex-col justify-between lg:h-[230px]">
               <div className="relative mx-auto mt-3">
                 <h2 className="font-semibold capitalize text-white md:text-lg xl:text-xl">
                   Frequently Asked Questions
                 </h2>
 
-                <p className="py-6 leading-relaxed text-helpMe-200 sm:w-4/5 lg:mt-3 lg:py-2.5">
+                <p className="py-6 leading-relaxed text-helpMe-200 sm:w-4/5 lg:mt-3 lg:w-full lg:py-2.5">
                   Check if your question have already been answered before
                   contacting the support team{" "}
                 </p>
