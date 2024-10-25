@@ -25,8 +25,8 @@ export default function Cta() {
         {/* Frequently Asked Questions (FAQs) */}
         <div className="flex flex-wrap py-6">
           <div className="w-full rounded-l-md bg-helpMe-950 p-8 xl:max-h-fit xl:flex-1">
-            <div className="flex h-[250px] flex-col justify-between lg:h-[230px]">
-              <div className="relative mx-auto mt-3">
+            <div className="flex min-h-fit flex-col justify-between">
+              <div className="mx-auto mt-3">
                 <h2 className="font-semibold capitalize text-white md:text-lg xl:text-xl">
                   Frequently Asked Questions
                 </h2>
@@ -35,9 +35,9 @@ export default function Cta() {
                   Check if your question have already been answered before
                   contacting the support team{" "}
                 </p>
-                <div className="my-10 lg:absolute">
+                <div className="my-10">
                   <Link
-                    className="rounded-sm bg-pink-400 px-6 py-2.5 text-lg font-semibold capitalize tracking-wider text-helpMe-50 hover:bg-pink-600 sm:px-8 sm:py-2.5 xl:font-bold"
+                    className="rounded-sm bg-pink-400 px-6 py-2.5 text-lg font-semibold capitalize tracking-wider text-helpMe-50 hover:bg-pink-600 sm:px-8 sm:py-2.5 lg:-bottom-56 xl:font-bold"
                     to={"/request"}
                   >
                     Get started
