@@ -25,7 +25,7 @@ export default function Cta() {
         {/* Frequently Asked Questions (FAQs) */}
         <div className="flex flex-wrap py-6">
           <div className="w-full rounded-l-md bg-helpMe-950 p-8 xl:max-h-fit xl:flex-1">
-            <div className="flex h-[250px] flex-col justify-between lg:h-[230px] xl:h-[250px]">
+            <div className="flex h-[250px] flex-col justify-between">
               <div className="relative mx-auto mt-3">
                 <h2 className="font-semibold capitalize text-white md:text-lg xl:text-xl">
                   Frequently Asked Questions
