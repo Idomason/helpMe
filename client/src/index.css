@@ -8,14 +8,6 @@
   .nav__link {
     @apply relative block w-fit font-semibold text-white after:absolute after:mt-1 after:block after:h-[3px] after:w-full after:origin-right after:scale-x-0 after:bg-pink-400 after:transition after:duration-300 after:content-[''] after:hover:scale-x-100;
   }
-
-  .item {
-    @apply mx-0;
-  }
-
-  .container {
-    @apply mx-auto;
-  }
 }
 
 :root {
@@ -44,5 +36,11 @@
   .reduceBtnText {
     font-size: 12px;
     font-weight: bold;
+  }
+}
+
+@media screen and (min-width: 800px) {
+  .hideLinks {
+    display: hidden;
   }
 }

@@ -36,7 +36,7 @@ export default function Navbar({ openNavbar }: INavbar) {
 
           <div className="flex items-center space-x-10">
             {/* Nav-Links */}
-            <ul className="hidden items-center space-x-6 md:flex">
+            <ul className="hideLinks hidden items-center space-x-4 md:flex">
               {navLinks &&
                 navLinks.length > 0 &&
                 navLinks.map((navItem: INavLinks) => (
@@ -56,7 +56,7 @@ export default function Navbar({ openNavbar }: INavbar) {
               {/* <p className="cursor-pointer">PROFILE ICON</p> */}
               <Link
                 to={"/request"}
-                className="text-md transform cursor-pointer rounded-lg bg-pink-400 px-8 py-2 capitalize text-helpMe-50 transition-all duration-300 ease-in-out hover:bg-pink-600 lg:text-lg xl:px-10 xl:py-3.5"
+                className="text-md transform cursor-pointer rounded-lg bg-pink-400 px-4 py-2 capitalize text-helpMe-50 transition-all duration-300 ease-in-out hover:bg-pink-600 sm:px-6 md:px-8 lg:text-lg xl:px-10 xl:py-3.5"
               >
                 post a request
               </Link>

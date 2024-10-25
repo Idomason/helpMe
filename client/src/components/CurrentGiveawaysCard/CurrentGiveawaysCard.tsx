@@ -4,13 +4,19 @@ import GiveawaysCard from "./GiveawaysCard";
 import { currentHelpData } from "../../constant/constant";
 
 const responsive = {
+  superLargeDesktop: {
+    // the naming can be any, depends on you.
+    breakpoint: { max: 4000, min: 3000 },
+    items: 4,
+    slidesToSlide: 3,
+  },
   desktop: {
-    breakpoint: { max: 1280, min: 1024 },
-    items: 2,
-    slidesToSlide: 1, // optional, default to 1.
+    breakpoint: { max: 3000, min: 1024 },
+    items: 3,
+    slidesToSlide: 2, // optional, default to 1.
   },
   tablet: {
-    breakpoint: { max: 1024, min: 768 },
+    breakpoint: { max: 1024, min: 464 },
     items: 2,
     slidesToSlide: 1, // optional, default to 1.
   },
@@ -34,11 +40,12 @@ export default function CurrentGiveawaysCard() {
       ssr={true}
       showDots={true}
       infinite
-      itemClass="item"
-      containerClass="container"
     >
       {currentHelpData.category.disaster.map((disaster) => (
-        <div className="mx-auto w-full" key={disaster.id}>
+        <div
+          className="mx-auto flex w-11/12 flex-wrap items-center justify-center"
+          key={disaster.id}
+        >
           <GiveawaysCard disaster={disaster} />
         </div>
       ))}

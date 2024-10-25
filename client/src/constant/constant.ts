@@ -44,6 +44,41 @@ export const featureData = [
   },
 ];
 
+export const sliderCardData = [
+  {
+    id: 1,
+    image: "/images/pic2.png",
+    title: "TechExperts in Agro Revelutionary Seminars in Africaand beyound",
+    link: "/learn-more",
+  },
+  {
+    id: 2,
+    image: "/images/pic1.png",
+    title: "African leadership training academy kick starts today. Join us",
+    link: "/learn-more",
+  },
+  {
+    id: 3,
+    image: "/images/pic2.png",
+    title:
+      "Botswana capital city is rising into a mega city that no one expects",
+    link: "/learn-more",
+  },
+  {
+    id: 4,
+    image: "/images/pic3.png",
+    title:
+      "Luanda is spoken in a few East African countries with Uganda taking the lead",
+    link: "/learn-more",
+  },
+  {
+    id: 5,
+    image: "/images/pic1.png",
+    title: "TechExperts in Agro Revelutionary Seminars in Africaand beyound",
+    link: "/learn-more",
+  },
+];
+
 export const currentHelpData = {
   allCategories: ["medical", "accident", "disaster", "agriculture"],
   category: {
@@ -59,7 +94,7 @@ export const currentHelpData = {
       {
         id: 2,
         category: "medical",
-        image: "/images/pic1.png",
+        image: "/images/pic2.png",
         title: "Ebola outbreak in Liberia, Urgent help",
         numberOfVotes: 276,
         amount: 800000,
@@ -73,11 +108,19 @@ export const currentHelpData = {
         amount: 1000000,
       },
       {
-        id: 1,
+        id: 4,
         category: "medical",
-        image: "/images/pic1.png",
+        image: "/images/pic2.png",
         title: "How can I prevent HIV AIDS in Africa?",
         numberOfVotes: 27,
+        amount: 100000,
+      },
+      {
+        id: 5,
+        category: "medical",
+        image: "/images/pic3.png",
+        title: "What is Africa to you and what would you  change?",
+        numberOfVotes: 200,
         amount: 100000,
       },
     ],
@@ -129,7 +172,7 @@ export const currentHelpData = {
         id: 2,
         category: "disaster",
         image: "/images/pic3.png",
-        title: "2 Million inhabitants displaced in Umuoka community",
+        title: "2 Million displaced in Umuoka community",
         numberOfVotes: 40,
         amount: 20000000,
       },
@@ -145,7 +188,7 @@ export const currentHelpData = {
         id: 1,
         category: "disaster",
         image: "/images/pic3.png",
-        title: "Landslide in Wuhan China",
+        title: "Landslide in Wuhan China, volunteers needed",
         numberOfVotes: 99,
         amount: 20000000,
       },

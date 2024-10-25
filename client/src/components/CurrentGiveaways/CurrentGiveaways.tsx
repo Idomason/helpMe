@@ -7,7 +7,7 @@ import { ArrowLongRightIcon } from "@heroicons/react/24/solid";
 export default function CurrentGiveaways() {
   return (
     <div className="py-24">
-      <div className="mx-auto px-4 md:w-11/12">
+      <div className="mx-auto md:w-11/12">
         {/* Heading */}
         <ShortHeader heading="current giveaways" />
         <div className="mx-auto bg-gradient-to-bl from-helpMe-200 to-helpMe-900 p-4">

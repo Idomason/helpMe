@@ -21,7 +21,7 @@ export default function GiveawaysCard({ disaster }: IDisaster) {
         <HandThumbUpIcon className="size-5" />
         <span>{numberOfVotes} Votes</span>
       </span>
-      <div className="overflow-hidden rounded-lg bg-helpMe-200 pb-4 shadow">
+      <div className="w-72 overflow-hidden rounded-lg bg-helpMe-200 pb-4 shadow">
         <div className="relative">
           <div className="absolute z-10 h-full w-full bg-black/75"></div>
           <img className="h-48 w-full object-cover" src={image} alt={title} />

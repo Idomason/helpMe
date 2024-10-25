@@ -129,6 +129,13 @@ export default function RegisterForm() {
               </div>
             </div>
           </div>
+          {/* NOTE */}
+          {/* <div className="z-20 col-span-2 mx-auto flex items-center justify-center px-8">
+            <p className="bg-helpMe-950 px-6 py-8 text-center font-semibold text-white lg:text-2xl">
+              Request once submitted gets attended to by the appropriate
+              qualified professionals who are ready to willingly render help
+            </p>
+          </div> */}
         </div>
       </div>
     </>

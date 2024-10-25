@@ -8,8 +8,8 @@ export default function Hero() {
           {/* Text */}
           <div className="flex flex-col justify-self-center">
             <h1 className="text-center text-5xl font-semibold leading-tight text-white lg:text-start lg:text-6xl lg:leading-[1.10] xl:text-7xl xl:leading-[1.15]">
-              Find Help. Give <br />
-              Hope.
+              Find <span className="text-pink-400">Help</span>. Give <br />
+              <span className="text-pink-400">Hope</span>.
             </h1>
             <p className="text-md self-center py-5 font-light tracking-wide text-helpMe-200 lg:self-start xl:text-lg">
               Connect with compassionate volunteers and receive <br />
@@ -17,10 +17,10 @@ export default function Hero() {
             </p>
             <div className="flex items-center justify-center space-x-2 self-center pt-5 md:justify-start md:space-x-4 lg:self-start">
               <Link
-                className="transform rounded-lg bg-pink-400 px-8 py-3 font-semibold text-helpMe-100 shadow transition-all duration-300 ease-in-out hover:bg-pink-600 hover:text-helpMe-100 xl:px-10 xl:py-4 xl:text-lg"
+                className="transform rounded-lg bg-pink-400 px-4 py-3 font-semibold text-helpMe-100 shadow transition-all duration-300 ease-in-out hover:bg-pink-600 hover:text-helpMe-100 sm:px-8 xl:px-10 xl:py-4 xl:text-lg"
                 to={"/register"}
               >
-                Join Our Community
+                {`Join Our Community`}
               </Link>
               <Link
                 className="border-1 transform rounded-lg border border-helpMe-300 px-8 py-3 font-medium text-helpMe-300 shadow transition-all duration-300 ease-in-out hover:border-helpMe-600 hover:text-helpMe-600 xl:px-10 xl:py-4 xl:text-lg"
