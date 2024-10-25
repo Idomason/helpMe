@@ -24,7 +24,7 @@
 }
 
 /* Media Query */
-@media screen and (max-width: 1200px) and (min-width: 1025px) {
+@media screen and (max-width: 1200px) and (min-width: 1020px) {
   .reduceWidth {
     width: 17rem;
     display: flex;
