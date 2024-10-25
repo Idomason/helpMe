@@ -36,7 +36,7 @@ export default function Navbar({ openNavbar }: INavbar) {
 
           <div className="flex items-center space-x-10">
             {/* Nav-Links */}
-            <ul className="hideLinks hidden items-center space-x-4 md:flex">
+            <ul className="showLinks hidden items-center space-x-4">
               {navLinks &&
                 navLinks.length > 0 &&
                 navLinks.map((navItem: INavLinks) => (
@@ -63,7 +63,7 @@ export default function Navbar({ openNavbar }: INavbar) {
 
               <Menu
                 onClick={openNavbar}
-                className="cursor-pointer text-helpMe-200 md:hidden"
+                className="showMenuBtn hidden cursor-pointer text-helpMe-200"
               />
             </div>
           </div>

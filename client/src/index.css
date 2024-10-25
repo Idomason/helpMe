@@ -40,7 +40,13 @@
 }
 
 @media screen and (min-width: 800px) {
-  .hideLinks {
-    display: hidden;
+  .showLinks {
+    display: flex;
+  }
+}
+
+@media screen and (max-width: 799px) {
+  .showMenuBtn {
+    display: block;
   }
 }
