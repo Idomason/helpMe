@@ -51,3 +51,20 @@
     display: block;
   }
 }
+
+/* Hero */
+@media screen and (min-width: 900px) and (max-width: 1023px) {
+  .heroWidth {
+    max-width: 80%;
+  }
+
+  .heroWidth h1 {
+    font-size: 3rem;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .heroWidth {
+    max-width: 85%;
+  }
+}
