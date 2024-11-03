@@ -35,7 +35,7 @@ export default function Hero() {
           {/* Image */}
           <div className="relative hidden justify-self-end rounded-lg bg-helpMe-200 p-4 md:block md:h-[300px] md:w-[300px] lg:h-[400px] lg:w-[400px]">
             <img
-              className="absolute rounded-lg bg-pink-300 p-4 md:-left-3 md:top-3 lg:-left-6 lg:top-6"
+              className="absolute h-auto max-w-full rounded-lg bg-pink-300 p-4 md:-left-3 md:top-3 lg:-left-6 lg:top-6"
               src="/images/pic4.png"
               width={800}
               height={600}

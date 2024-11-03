@@ -29,7 +29,6 @@ const responsive = {
 
 export default function Slider() {
   return (
-    // <div className="flex flex-wrap items-center justify-center gap-10">
     <Carousel
       additionalTransfrom={0}
       arrows={true}
@@ -43,6 +42,7 @@ export default function Slider() {
         ? sliderCardData.map((cardData) => (
             <div
               className="mx-auto flex w-11/12 flex-wrap items-center justify-center"
+              // className="cardHeightEqual auto-cols-auto items-center justify-center"
               key={cardData.id}
             >
               <SliderCard
@@ -55,6 +55,5 @@ export default function Slider() {
           ))
         : null}
     </Carousel>
-    // </div>
   );
 }

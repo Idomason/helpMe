@@ -4,6 +4,8 @@ import Layout from "./components/Layout/Layout";
 import { Route, Routes } from "react-router-dom";
 import NotFound from "./pages/NotFound/NotFound";
 import Register from "./pages/Register/Register";
+import Helper from "./pages/dashboard/Helper";
+import NotificationIcon from "./components/NotificationIcon/NotificationIcon";
 
 function App() {
   return (
@@ -12,8 +14,10 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/request" element={<Request />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/dashboard" element={<Helper />} />
       </Route>
       <Route path="/register" element={<Register />} />
+      <Route path="/notify" element={<NotificationIcon color={""} />} />
     </Routes>
   );
 }

@@ -24,7 +24,7 @@
 }
 
 /* Media Query */
-@media screen and (max-width: 1200px) and (min-width: 1020px) {
+@media (max-width: 1200px) and (min-width: 1020px) {
   .reduceWidth {
     width: 17rem;
     display: flex;
@@ -40,20 +40,20 @@
 }
 
 /* Navbar */
-@media screen and (min-width: 800px) {
+@media (min-width: 800px) {
   .showLinks {
     display: flex;
   }
 }
 
-@media screen and (max-width: 799px) {
+@media (max-width: 799px) {
   .showMenuBtn {
     display: block;
   }
 }
 
 /* Hero */
-@media screen and (min-width: 900px) and (max-width: 1023px) {
+@media (min-width: 900px) and (max-width: 1023px) {
   .heroWidth {
     max-width: 80%;
   }
@@ -63,7 +63,7 @@
   }
 }
 
-@media screen and (min-width: 1024px) {
+@media (min-width: 1024px) {
   .heroWidth {
     max-width: 85%;
   }
