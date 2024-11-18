@@ -75,6 +75,20 @@ export default function CustomForm({
 
     return content;
   }
+
+  function checkIf() {
+    if (buttonText === "Register") {
+      if (
+        !formData.termsConditions ||
+        !formData.name ||
+        !formData.email ||
+        !formData.password
+      )
+        return true;
+    }
+  }
+  const checkFlag = checkIf();
+
   return (
     <form className="reduceWidth" onSubmit={onHandleSubmit}>
       {formControls.map((singleElement) => renderFormElement(singleElement))}
@@ -82,10 +96,9 @@ export default function CustomForm({
       <div className="reduceWidth flex w-80 items-center justify-center py-6">
         <button
           className={`${className} ${
-            !formData.termsConditions ||
-            !formData.name ||
-            !formData.email ||
-            !formData.password
+            checkFlag ? "cursor-not-allowed opacity-50" : ""
+          } ${
+            !formData.email || !formData.password
               ? "cursor-not-allowed opacity-50"
               : ""
           }`}

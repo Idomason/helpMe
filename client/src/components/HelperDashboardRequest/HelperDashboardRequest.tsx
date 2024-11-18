@@ -1,4 +1,5 @@
 import {
+  ArrowLeftCircleIcon,
   ArrowLeftStartOnRectangleIcon,
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
@@ -6,6 +7,7 @@ import {
   ArrowsUpDownIcon,
   ChartBarIcon,
   FireIcon,
+  FolderIcon,
   FunnelIcon,
   GiftIcon,
   MagnifyingGlassIcon,
@@ -13,23 +15,39 @@ import {
   Squares2X2Icon,
   UserCircleIcon,
 } from "@heroicons/react/24/solid";
-import { ListCheckIcon, SearchIcon } from "lucide-react";
+import { ListCheckIcon, SearchIcon, WalletIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import RequestItem from "../RequestItem/RequestItem";
 import { requestData } from "../../constant/constant";
 import NotificationIcon from "../NotificationIcon/NotificationIcon";
+import { useContext } from "react";
+import { SidebarContext } from "../../context/SidebarContext";
 
 const sidebarData = [
-  { name: "home", link: "/home", icon: <Squares2X2Icon className="size-5" /> },
+  {
+    name: "home",
+    link: "/dashboard",
+    icon: <Squares2X2Icon className="size-5" />,
+  },
   {
     name: "request",
-    link: "/request",
+    link: "dashboard-request",
     icon: <QuestionMarkCircleIcon className="size-5" />,
   },
   {
     name: "giveaways",
-    link: "/giveaways",
+    link: "/dashboard-giveaways",
     icon: <GiftIcon className="size-5" />,
+  },
+  {
+    name: "payments",
+    link: "/dashboard-finance",
+    icon: <WalletIcon className="size-5" />,
+  },
+  {
+    name: "portfolio",
+    link: "/dashboard-portfolio",
+    icon: <FolderIcon className="size-5" />,
   },
 ];
 
@@ -45,12 +63,16 @@ const sidebarSecondaryData = [
   },
 ];
 
-export default function HelperDashboard() {
+export default function HelperDashboardRequest() {
+  const { openSideBar, sidebarToggler } = useContext(SidebarContext);
+
   return (
-    <div className="bg-helpMe-200 py-14">
-      <div className="mx-auto px-4 sm:px-6 md:px-8 lg:w-11/12">
-        <div className="mt-20 flex h-screen w-full justify-center">
-          <aside className="hidden min-h-screen w-72 space-y-6 self-start rounded-l-md bg-[#fefffe] p-2 shadow md:flex md:flex-col md:justify-between">
+    <div className="min-h-screen">
+      <div className="pt-20">
+        <div className="flex h-screen w-full justify-center">
+          <aside
+            className={` ${openSideBar ? "block" : "hidden"} flex h-screen w-72 flex-col justify-between space-y-6 self-start rounded-l-md bg-[#fefffe] p-2 shadow`}
+          >
             {/* Profile  */}
             <header className="flex items-center justify-between">
               <div className="rounded-md p-2 shadow-md ring-gray-500">
@@ -71,11 +93,10 @@ export default function HelperDashboard() {
                   </div>
                 </div>
               </div>
-              <span>
-                <ArrowRightCircleIcon className="size-6" />
+              <span onClick={() => sidebarToggler()}>
+                <ArrowRightCircleIcon className="size-6 cursor-pointer rounded-full shadow-lg ring-2 ring-gray-500/25" />
               </span>
             </header>
-
             {/* Search */}
             <div className="flex items-center rounded-md px-2 shadow ring-1 ring-gray-300">
               <SearchIcon className="size-6 shrink-0 text-[#b4b0b0]" />
@@ -87,7 +108,6 @@ export default function HelperDashboard() {
                 placeholder="Search"
               />
             </div>
-
             {/* Dashboard links */}
             <ul>
               {sidebarData.length > 0 &&
@@ -106,7 +126,6 @@ export default function HelperDashboard() {
                   </li>
                 ))}
             </ul>
-
             {/* Secondary Dashboard links */}
             <ul>
               {sidebarSecondaryData.length > 0 &&
@@ -119,12 +138,15 @@ export default function HelperDashboard() {
                     {data.name}
                   </li>
                 ))}
-              <li className="mt-2 flex cursor-pointer items-center space-x-1 rounded-md bg-red-500 px-4 py-2 font-semibold text-white transition-all duration-300 ease-in-out hover:bg-red-700 hover:font-semibold">
-                <ArrowLeftStartOnRectangleIcon className="size-5" />
-                <button className="md:text-lg">Log Out</button>
-              </li>
             </ul>
+
+            {/* Log out */}
+            <p className="mt-2 flex cursor-pointer items-center space-x-1 rounded-md bg-red-500 px-4 py-2 font-semibold text-white transition-all duration-300 ease-in-out hover:bg-red-700 hover:font-semibold">
+              <ArrowLeftStartOnRectangleIcon className="size-5" />
+              <button className="md:text-lg">Log Out</button>
+            </p>
           </aside>
+
           <div className="h-full w-full flex-1 overflow-y-auto overflow-x-hidden rounded-md bg-white shadow md:rounded-l-none md:rounded-r-md">
             {/* Dashboard Search bar */}
             <div className="flex w-full flex-1 items-center bg-white px-4 py-2 sm:py-3 md:py-4">
@@ -140,18 +162,24 @@ export default function HelperDashboard() {
 
             {/* Dashboard */}
             <div className="h-fit bg-[#F7F9FA] p-4">
+              <span
+                onClick={() => sidebarToggler()}
+                className={`${openSideBar ? "hidden" : "block"} inline-block py-2`}
+              >
+                <ArrowLeftCircleIcon className="size-6 cursor-pointer rounded-full shadow-lg ring-2 ring-gray-500/25" />
+              </span>
               <div className="py-2">
                 <h2 className="font-bold md:text-lg md:font-semibold">
-                  Help Requests
+                  Help Rendered
                 </h2>
                 <p className="mt-1 text-sm text-gray-400">
-                  View all active help requests you have
+                  View all helps you have rendered
                 </p>
               </div>
 
               {/* Dashboard Stats */}
               <div className="grid w-full grid-cols-1 flex-wrap place-content-center gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
-                {/* All Help Requests card */}
+                {/* All Help Rendered card */}
                 <div className="relative my-5 flex items-center justify-center space-x-4 rounded-md border border-gray-500/20 px-6 py-3 shadow-md shadow-slate-600/20">
                   <NotificationIcon
                     className="absolute -top-[70px] right-0 translate-x-6"
@@ -162,7 +190,7 @@ export default function HelperDashboard() {
                   </div>
                   <div className="text-center">
                     <p className="font-semibold text-[#b1b5b3]">
-                      All help requests
+                      All help rendered
                     </p>
                     <span className="text-2xl font-bold text-[#285de9]">
                       329{" "}
@@ -207,7 +235,7 @@ export default function HelperDashboard() {
 
               <div className="flex flex-col items-center justify-center">
                 {/* Dashboard filters */}
-                <div className="sticky top-0 flex w-full flex-wrap items-center justify-between gap-x-4 rounded-t-md bg-white px-6 py-3 md:px-8 md:py-4">
+                <div className="sticky top-0 flex w-full flex-wrap items-center justify-between gap-x-4 rounded-t-md border-b border-b-gray-500/35 bg-white px-6 py-3 shadow-lg md:px-8 md:py-4">
                   <div className="flex flex-1 items-center rounded-md px-2 shadow ring-1 ring-gray-300">
                     <SearchIcon className="size-6 shrink-0 text-[#b4b0b0]" />
                     <input
@@ -273,7 +301,7 @@ export default function HelperDashboard() {
                 </div>
                 {/* Headings */}
                 <div className="w-full px-6 py-3 md:px-8 md:py-4">
-                  <div className="md:text-md mx-auto hidden items-center justify-between py-2 text-xs font-bold uppercase text-[#666666] sm:text-sm md:flex">
+                  <div className="md:text-md mx-auto hidden items-center justify-around py-2 text-xs font-bold uppercase text-[#666666] sm:text-sm lg:flex">
                     <h4 className="flex items-center space-x-2">
                       <span>request name</span>
                       <ArrowsUpDownIcon className="size-4 md:size-5" />{" "}

@@ -109,11 +109,11 @@ export interface IQuestions {
 
 // FormData props
 export interface IFormData {
-  name: string;
+  name?: string;
   email: string;
   password: string;
-  termsConditions: boolean;
-  [key: string]: string | boolean;
+  termsConditions?: boolean;
+  [key: string]: string | undefined | boolean;
 }
 
 // CustomForm Props
@@ -152,4 +152,43 @@ export interface IElement {
   ) => void;
   placeholder?: string;
   componentType?: string;
+}
+
+export interface IRequest {
+  request: {
+    id: number;
+    item: {
+      heading: string;
+      detail: string;
+    };
+    status: string;
+    category: string;
+    timeline: string;
+  };
+}
+
+export interface IGiveaway {
+  giveaway: {
+    id: number;
+    item: {
+      heading: string;
+      detail: string;
+    };
+    status: string;
+    category: string;
+    timeline: string;
+  };
+}
+
+export interface IPayment {
+  payment: {
+    id: number;
+    item: {
+      heading: string;
+      detail: string;
+    };
+    status: string;
+    category: string;
+    timeline: string;
+  };
 }

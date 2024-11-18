@@ -298,7 +298,6 @@ export const loginFormElements = [
     name: "email",
     type: "email",
     id: "email",
-    label: "Email",
     placeholder: "Enter your email",
     componentType: "input",
   },
@@ -307,7 +306,6 @@ export const loginFormElements = [
     name: "password",
     type: "password",
     id: "password",
-    label: "Password",
     placeholder: "Enter your password",
     componentType: "input",
   },
@@ -317,7 +315,7 @@ export const requestData = [
   {
     id: 1,
     item: {
-      heading: "Financial Assistance of ...",
+      heading: "Financial Assistance of fire emergency victims",
       detail: "Today, August 20, 2024 (10:30 PM)",
     },
     status: "active",
@@ -327,7 +325,7 @@ export const requestData = [
   {
     id: 2,
     item: {
-      heading: "knee replacement Surgery ...",
+      heading: "knee replacement surgery for veterans",
       detail: "Today, August 20, 2024 (10:30 PM)",
     },
     status: "approved",
@@ -337,7 +335,7 @@ export const requestData = [
   {
     id: 3,
     item: {
-      heading: "Financial Assistance of ...",
+      heading: "Financial Assistance for flood emergency victims",
       detail: "Today, August 20, 2024 (10:30 PM)",
     },
     status: "active",
@@ -347,7 +345,7 @@ export const requestData = [
   {
     id: 4,
     item: {
-      heading: "Flood management Relief Fund ...",
+      heading: "Flood management relief fund for affected communities",
       detail: "Today, August 20, 2024 (10:30 PM)",
     },
     status: "pending",
@@ -357,7 +355,7 @@ export const requestData = [
   {
     id: 5,
     item: {
-      heading: "Financial Assistance of ...",
+      heading: "Financial Assistance building collapse victims",
       detail: "Today, August 20, 2024 (10:30 PM)",
     },
     status: "pending",
@@ -367,7 +365,7 @@ export const requestData = [
   {
     id: 6,
     item: {
-      heading: "Financial Assistance of ...",
+      heading: "Financial Assistance of fire emergency victims",
       detail: "Today, August 20, 2024 (10:30 PM)",
     },
     status: "approved",
@@ -377,7 +375,153 @@ export const requestData = [
   {
     id: 7,
     item: {
-      heading: "Financial Assistance of ...",
+      heading: "Financial Assistance of fire emergency victims",
+      detail: "Today, August 20, 2024 (10:30 PM)",
+    },
+    status: "pending",
+    category: "finance",
+    timeline: "aug 20, 24 to sep 10, 24",
+  },
+];
+
+export const giveawayData = [
+  {
+    id: 1,
+    item: {
+      heading: "200k giveaway funds for the victims of flood",
+      detail: "Today, August 20, 2024 (10:30 PM)",
+    },
+    status: "active",
+    category: "finance",
+    timeline: "aug 20, 24 to sep 10, 24",
+  },
+  {
+    id: 2,
+    item: {
+      heading: "500k giveaway theh jabdaa aasa widows support",
+      detail: "Today, August 20, 2024 (10:30 PM)",
+    },
+    status: "expired",
+    category: "finance",
+    timeline: "aug 20, 24 to sep 10, 24",
+  },
+  {
+    id: 3,
+    item: {
+      heading: "Financial Assistance of the government support funds",
+      detail: "Today, August 20, 2024 (10:30 PM)",
+    },
+    status: "active",
+    category: "finance",
+    timeline: "aug 20, 24 to sep 10, 24",
+  },
+  {
+    id: 4,
+    item: {
+      heading: "Flood management relief fund to the victims fo flood",
+      detail: "Today, August 20, 2024 (10:30 PM)",
+    },
+    status: "cancelled",
+    category: "disaster",
+    timeline: "aug 20, 24 to sep 10, 24",
+  },
+  {
+    id: 5,
+    item: {
+      heading: "Financial Assistance of government to the flooded communities",
+      detail: "Today, August 20, 2024 (10:30 PM)",
+    },
+    status: "cancelled",
+    category: "finance",
+    timeline: "aug 20, 24 to sep 10, 24",
+  },
+  {
+    id: 6,
+    item: {
+      heading: "Financial Assistance of government to the flooded villages",
+      detail: "Today, August 20, 2024 (10:30 PM)",
+    },
+    status: "expired",
+    category: "finance",
+    timeline: "aug 20, 24 to sep 10, 24",
+  },
+  {
+    id: 7,
+    item: {
+      heading: "Financial Assistance of fire emergency victims",
+      detail: "Today, August 20, 2024 (10:30 PM)",
+    },
+    status: "cancelled",
+    category: "finance",
+    timeline: "aug 20, 24 to sep 10, 24",
+  },
+];
+
+export const paymentData = [
+  {
+    id: 1,
+    item: {
+      heading: "200k giveaway funds for the victims of flood",
+      detail: "Today, August 20, 2024 (10:30 PM)",
+    },
+    status: "paid",
+    category: "finance",
+    timeline: "aug 20, 24 to sep 10, 24",
+  },
+  {
+    id: 2,
+    item: {
+      heading: "500k giveaway theh jabdaa aasa widows support",
+      detail: "Today, August 20, 2024 (10:30 PM)",
+    },
+    status: "unpaid",
+    category: "finance",
+    timeline: "aug 20, 24 to sep 10, 24",
+  },
+  {
+    id: 3,
+    item: {
+      heading: "Financial Assistance of the government support funds",
+      detail: "Today, August 20, 2024 (10:30 PM)",
+    },
+    status: "paid",
+    category: "finance",
+    timeline: "aug 20, 24 to sep 10, 24",
+  },
+  {
+    id: 4,
+    item: {
+      heading: "Flood management relief fund to the victims fo flood",
+      detail: "Today, August 20, 2024 (10:30 PM)",
+    },
+    status: "pending",
+    category: "disaster",
+    timeline: "aug 20, 24 to sep 10, 24",
+  },
+  {
+    id: 5,
+    item: {
+      heading: "Financial Assistance of government to the flooded communities",
+      detail: "Today, August 20, 2024 (10:30 PM)",
+    },
+    status: "pending",
+    category: "finance",
+    timeline: "aug 20, 24 to sep 10, 24",
+  },
+  {
+    id: 6,
+    item: {
+      heading: "Financial Assistance of government to the flooded villages",
+      detail: "Today, August 20, 2024 (10:30 PM)",
+    },
+    status: "unpaid",
+    category: "finance",
+    timeline: "aug 20, 24 to sep 10, 24",
+  },
+  {
+    id: 7,
+    item: {
+      heading: "Financial Assistance of fire emergency victims",
       detail: "Today, August 20, 2024 (10:30 PM)",
     },
     status: "pending",

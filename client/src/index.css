@@ -74,17 +74,19 @@
 /* Width */
 ::-webkit-scrollbar {
   width: 5px;
+  cursor: pointer;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  /* background: #f1f1f1; */
+  background: #f1f1f1;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 5px;
+  transition: width 0.3s ease;
 }
 
 /* Handle on hover */

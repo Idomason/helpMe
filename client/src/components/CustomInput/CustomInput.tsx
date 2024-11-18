@@ -20,6 +20,7 @@ export default function CustomInput({
         value={value}
         onChange={onChange}
         placeholder={placeholder || "Enter value here"}
+        minLength={type === "password" ? 6 : 0}
         required
       />
     </div>

@@ -1,18 +1,15 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import CustomForm from "../CustomForm/CustomForm";
-import { registerFormElements } from "../../constant/constant";
+import { loginFormElements } from "../../constant/constant";
 import { Link } from "react-router-dom";
 
 const initialFormData = {
-  name: "",
   email: "",
   password: "",
-  termsConditions: false,
 };
 
-export default function RegisterForm() {
+export default function LoginForm() {
   const [formData, setFormData] = useState(initialFormData);
-  const [requestHelp, setRequestHelp] = useState(true);
   const btnClass =
     "inline-block w-full rounded bg-[#5d87f0] px-6 py-2 transition-all duration-300 ease-in hover:bg-opacity-70";
 
@@ -56,8 +53,7 @@ export default function RegisterForm() {
     // A basic example would be using the validateForm
     // function, as shown above.
 
-    const data = { ...formData, requestHelp };
-    console.log(data);
+    console.log(formData);
     // Do API and Database operations
 
     setFormData(initialFormData);
@@ -69,35 +65,18 @@ export default function RegisterForm() {
         <div className="mx-auto grid min-h-screen w-11/12 justify-center py-2 lg:grid-cols-3 lg:py-1">
           <div className="flex items-center justify-center">
             <div className="z-20 mx-auto max-h-fit rounded bg-[#242323] p-4 py-10 text-white shadow-2xl drop-shadow-2xl lg:w-full xl:px-6">
-              <small className="block pb-3 text-center">
-                What do you want to do?
-              </small>
-              <div className="flex items-center justify-center space-x-7">
-                <button
-                  onClick={() => setRequestHelp((prev) => !prev)}
-                  className={`${requestHelp ? "reduceBtnText rounded-sm bg-blue-400 px-6 py-1.5 text-white transition-all duration-300 ease-in hover:bg-opacity-70 hover:text-white sm:px-6 sm:py-2 lg:py-2.5" : "reduceBtnText rounded-sm bg-transparent px-6 py-1.5 text-gray-300 ring-1 ring-white/50 transition-all duration-300 ease-in hover:bg-white/35 hover:text-white sm:px-6 sm:py-2 lg:py-2.5"} `}
-                >
-                  Request Help
-                </button>
-                <button
-                  onClick={() => setRequestHelp((prev) => !prev)}
-                  className={`${!requestHelp ? "reduceBtnText rounded-sm bg-blue-400 px-6 py-1.5 text-white transition-all duration-300 ease-in hover:bg-opacity-70 hover:text-white sm:px-6 sm:py-2 lg:py-2.5" : "reduceBtnText rounded-sm bg-transparent px-6 py-1.5 text-gray-300 ring-1 ring-white/50 transition-all duration-300 ease-in hover:bg-white/35 hover:text-white sm:px-6 sm:py-2 lg:py-2.5"} `}
-                >
-                  Render Help
-                </button>
-              </div>
               <div className="flex w-72 items-center justify-center py-3 lg:w-full">
                 <p className="text-[14px] text-[#b6b6b6]/75 lg:px-2 xl:px-4">
-                  Request once submitted gets attended to by the appropriate
-                  qualified professionals who are ready to willingly render help
+                  Login to see the latest happenings in your dashboard and
+                  helpMe app in general
                 </p>
               </div>
               <div className="flex items-center justify-center">
                 <CustomForm
                   formData={formData}
                   onFormData={onFormChange}
-                  formControls={registerFormElements}
-                  buttonText={"Register"}
+                  formControls={loginFormElements}
+                  buttonText={"Login"}
                   className={btnClass}
                   onHandleSubmit={handleSubmit}
                 />
@@ -105,7 +84,7 @@ export default function RegisterForm() {
               <div className="flex items-center lg:px-3">
                 <hr className="mx-auto my-2 w-1/3 border-t-2 border-[#434141]" />{" "}
                 <span className="mx-1 text-xs text-[#b6b6b6]/70">
-                  Or Register With
+                  Or Login With
                 </span>
                 <hr className="mx-auto my-2 w-1/3 border-t-2 border-[#434141]" />
               </div>
@@ -129,12 +108,12 @@ export default function RegisterForm() {
               </div>
               <div className="flex items-center justify-center pt-2 text-sm">
                 <p className="text-[#b6b6b6]/75">
-                  Already have an account?{" "}
+                  Don't have an account yet?{" "}
                   <Link
-                    className="text-blue-600 transition-all duration-200 ease-in hover:text-blue-700"
-                    to="/login"
+                    className="pl-1 text-blue-600 transition-all duration-200 ease-in hover:text-blue-700"
+                    to="/register"
                   >
-                    Log in
+                    Register
                   </Link>
                 </p>
               </div>
@@ -154,9 +133,9 @@ export default function RegisterForm() {
               <li>
                 <Link
                   className="text-white transition-colors duration-200 ease-in-out hover:font-semibold hover:text-helpMe-200"
-                  to={"/login"}
+                  to={"/register"}
                 >
-                  Login
+                  Register
                 </Link>
               </li>
             </ul>
