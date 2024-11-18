@@ -70,7 +70,7 @@ export default function RegisterForm() {
           <div className="flex items-center justify-center">
             <div className="z-20 mx-auto max-h-fit rounded bg-[#242323] p-4 py-10 text-white shadow-2xl drop-shadow-2xl lg:w-full xl:px-6">
               <small className="block pb-3 text-center">
-                What do you want to do?
+                What would you like to do?
               </small>
               <div className="flex items-center justify-center space-x-7">
                 <button
