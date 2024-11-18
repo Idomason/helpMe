@@ -1,4 +1,10 @@
-export default function NotificationIcon({ color, className }) {
+export default function NotificationIcon({
+  color,
+  className,
+}: {
+  color: string;
+  className: string;
+}) {
   return (
     <div
       className={`${className} flex items-center justify-center bg-transparent px-4 py-14`}
