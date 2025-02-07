@@ -9,7 +9,6 @@ import { generateTokenAndSetCookie } from '../lib/generateToken.js';
 
 // Protect MIDDLEWARE
 export const protect = catchAsync(async (req, res, next) => {
-  console.log('First here...');
   // 1.) Getting token and check if it's there
   let token;
   if (
