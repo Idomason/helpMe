@@ -117,7 +117,6 @@ export interface IFormData {
 }
 
 // CustomForm Props
-
 export type ICustomForm = {
   formControls: IElement[];
   formData: IFormData;
@@ -192,3 +191,21 @@ export interface IPayment {
     timeline: string;
   };
 }
+
+// Sidebar data prop
+type sidebar = {
+  name: string;
+  link?: string;
+  level?: number;
+  icon: React.ReactElement;
+};
+export type ISidebarDataProp = sidebar[];
+
+// export interface ISidebarDataSecondaryProp {
+//   sidebarSecondaryData: {
+//     name: string;
+//     level: number;
+//     link?: string;
+//     icon?: JSX.Element;
+//   }[];
+// }

@@ -2,6 +2,8 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import CustomForm from "../CustomForm/CustomForm";
 import { loginFormElements } from "../../constant/constant";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const initialFormData = {
   email: "",
@@ -9,6 +11,7 @@ const initialFormData = {
 };
 
 export default function LoginForm() {
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState(initialFormData);
   const btnClass =
     "inline-block w-full rounded bg-[#5d87f0] px-6 py-2 transition-all duration-300 ease-in hover:bg-opacity-70";
@@ -30,11 +33,40 @@ export default function LoginForm() {
     });
   }
 
-  function handleSubmit(
+  const { mutate } = useMutation({
+    mutationFn: async ({ email, password }) => {
+      try {
+        const response = await fetch("/api/v1/users/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to login");
+        }
+      } catch (error: any) {
+        console.log(error);
+        throw new Error(error.message);
+      }
+    },
+    onError: (error: any) => toast.error(error.message),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["authUser"],
+      });
+      toast.success("Login successful");
+    },
+  });
+
+  async function handleSubmit(
     event: FormEvent<HTMLFormElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) {
     event.preventDefault();
-    // Perform validation or API submission here
     // if (validateForm(formData)) {
     //   submitForm(formData); // Call the API or submit handler
     // } else {
@@ -53,11 +85,11 @@ export default function LoginForm() {
     // A basic example would be using the validateForm
     // function, as shown above.
 
-    console.log(formData);
-    // Do API and Database operations
+    mutate(formData);
 
     setFormData(initialFormData);
   }
+
   return (
     <>
       <div className="absolute left-0 top-0 min-h-screen w-full bg-gradient-to-tr from-helpMe-950 to-black/75"></div>

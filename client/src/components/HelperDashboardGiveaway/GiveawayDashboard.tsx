@@ -5,10 +5,13 @@ import {
   ArrowLongRightIcon,
   ArrowRightCircleIcon,
   ArrowsUpDownIcon,
+  BellIcon,
   ChartBarIcon,
+  ChatBubbleOvalLeftEllipsisIcon,
   FolderIcon,
   FunnelIcon,
   GiftIcon,
+  HomeIcon,
   MagnifyingGlassIcon,
   QuestionMarkCircleIcon,
   Squares2X2Icon,
@@ -16,35 +19,38 @@ import {
 } from "@heroicons/react/24/solid";
 import { SearchIcon, WalletIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { giveawayData } from "../../constant/constant";
-import GiveawayItem from "../GiveawayItem/GiveawayItem";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { SidebarContext } from "../../context/SidebarContext";
+import Profile from "../profile/Profile";
+import GiveawayItem from "../GiveawayItem/GiveawayItem";
+import { giveawayData } from "../../constant/constant";
+import useWindowSize from "../../hooks/useWindowSize";
+import DashboardSidebar from "../DashBoardSidebar/DashboardSidebar";
 
 const sidebarData = [
   {
     name: "home",
-    link: "/dashboard",
+    link: "/dashboard-helpee",
     icon: <Squares2X2Icon className="size-5" />,
   },
   {
     name: "request",
-    link: "/dashboard-request",
+    link: "/dashboard-helpee-request",
     icon: <QuestionMarkCircleIcon className="size-5" />,
   },
   {
     name: "giveaways",
-    link: "/dashboard-giveaways",
+    link: "/dashboard-helpee-giveaways",
     icon: <GiftIcon className="size-5" />,
   },
   {
     name: "payments",
-    link: "/dashboard-finance",
+    link: "/dashboard-helpee-finance",
     icon: <WalletIcon className="size-5" />,
   },
   {
     name: "portfolio",
-    link: "/dashboard-portfolio",
+    link: "/dashboard-helpee-portfolio",
     icon: <FolderIcon className="size-5" />,
   },
 ];
@@ -61,124 +67,76 @@ const sidebarSecondaryData = [
   },
 ];
 
+// FIXME
+const status = "text-[#05a365] bg-[#06ec92]/10";
+
 export default function HelperDashboardGiveaway() {
+  const [mouseEnter, setMouseEnter] = useState(false);
+
   const { openSideBar, sidebarToggler } = useContext(SidebarContext);
+  const { openProfile, onOpenProfile } = useContext(SidebarContext);
+
+  const sideData = [...sidebarData, ...sidebarSecondaryData];
+  const { windowWidth } = useWindowSize();
 
   return (
     <div className="min-h-screen">
-      <div className="pt-20">
+      <div className="">
         <div className="flex h-screen w-full justify-center">
-          <aside
-            className={`${openSideBar ? "block" : "hidden"} flex min-h-screen w-72 flex-col justify-between space-y-6 self-start rounded-l-md bg-[#fefffe] p-2 shadow`}
-          >
-            {/* Profile  */}
-            <header className="flex items-center justify-between">
-              <div className="rounded-md p-2 shadow-md ring-gray-500">
-                <div className="relative flex items-center space-x-3">
-                  <img
-                    className="h-12 w-12 object-cover"
-                    src="/images/profile-img.png"
-                    alt="HelpersProfile Image"
-                  />
-                  <div>
-                    <h4 className="text-sm font-semibold">Idoma Anche</h4>
-                    <p className="text-xs text-gray-500">
-                      idomaanche@gmail.com
-                    </p>
-                  </div>
-                  <div className="absolute left-6 top-6 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-black text-xs font-semibold text-white">
-                    IA
+          <DashboardSidebar
+            openSideBar={openSideBar}
+            setMouseEnter={setMouseEnter}
+            sideData={sideData}
+            sidebarToggler={sidebarToggler}
+            mouseEnter={mouseEnter}
+          />
+          <div className="relative ml-16 h-full w-full flex-1 overflow-auto rounded-md bg-white shadow">
+            <div className="sticky top-0 z-[9] flex items-center justify-between border-b border-gray-300 bg-white px-4 py-1">
+              {/* Profile */}
+              {openProfile && <Profile />}
+
+              <header className="flex items-center justify-between">
+                <div
+                  onClick={() => onOpenProfile()}
+                  className="cursor-pointer rounded-full p-1 shadow ring-gray-500"
+                >
+                  <div className="relative flex items-center space-x-3">
+                    <img
+                      className="h-9 w-9 rounded-full object-cover"
+                      src="/images/profile-img.png"
+                      alt="HelpersProfile Image"
+                    />
+                    <div className="absolute left-4 top-4 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-black text-xs font-semibold text-white">
+                      IA
+                    </div>
                   </div>
                 </div>
+              </header>
+
+              {/* Dashboard Search bar */}
+              <div className="flex items-center">
+                <MagnifyingGlassIcon className="mr-2 size-5 md:size-6 lg:size-7" />
+                {!windowWidth && (
+                  <input
+                    className="focus:bg-green-h00 w-48 px-2 py-2 outline-none focus:border-b focus:border-helpMe-500 md:w-80"
+                    type="search"
+                    name="search"
+                    id="search"
+                    placeholder="Search something..."
+                  />
+                )}
               </div>
-              <span
-                onClick={() => sidebarToggler()}
-                className={`${openSideBar ? "block" : "hidden"} inline-block py-2`}
-              >
-                <ArrowRightCircleIcon className="size-6 cursor-pointer rounded-full shadow-lg ring-2 ring-gray-500/25" />
-              </span>
-            </header>
 
-            {/* Search */}
-            <div className="flex items-center rounded-md px-2 shadow ring-1 ring-gray-300">
-              <SearchIcon className="size-6 shrink-0 text-[#b4b0b0]" />
-              <input
-                className="p-2 outline-none"
-                type="search"
-                name=""
-                id=""
-                placeholder="Search"
-              />
-            </div>
-
-            {/* Dashboard links */}
-            <ul>
-              {sidebarData.length > 0 &&
-                sidebarData.map((data) => (
-                  <li
-                    className="rounded-md px-2 transition-all duration-300 ease-in-out hover:bg-[#F0F2F4] hover:font-semibold hover:text-[#1e1e1e]"
-                    key={data.name}
-                  >
-                    <Link
-                      className="flex items-center gap-1.5 px-2 py-2 capitalize text-[#b1b5b3] transition-all duration-300 ease-in-out hover:bg-[#F0F2F4] hover:font-semibold hover:text-[#1e1e1e] md:text-lg"
-                      to={data.link}
-                    >
-                      {data.icon}
-                      {data.name}
-                    </Link>
-                  </li>
-                ))}
-            </ul>
-
-            {/* Secondary Dashboard links */}
-            <ul>
-              {sidebarSecondaryData.length > 0 &&
-                sidebarSecondaryData.map((data) => (
-                  <li
-                    className="flex cursor-pointer items-center gap-1.5 rounded-md px-4 py-2 capitalize text-[#b1b5b3] transition-all duration-300 ease-in-out hover:bg-[#F0F2F4] hover:font-semibold hover:text-[#1e1e1e] md:text-lg"
-                    key={data.name}
-                  >
-                    {data.icon}
-                    {data.name}
-                  </li>
-                ))}
-              <li className="mt-2 flex cursor-pointer items-center space-x-1 rounded-md bg-red-500 px-4 py-2 font-semibold text-white transition-all duration-300 ease-in-out hover:bg-red-700 hover:font-semibold">
-                <ArrowLeftStartOnRectangleIcon className="size-5" />
-                <button className="md:text-lg">Log Out</button>
-              </li>
-            </ul>
-          </aside>
-          <div className="h-full w-full flex-1 overflow-y-auto overflow-x-hidden rounded-md bg-white shadow md:rounded-l-none md:rounded-r-md">
-            {/* Dashboard Search bar */}
-            <div className="flex w-full flex-1 items-center bg-white px-4 py-2 sm:py-3 md:py-4">
-              <MagnifyingGlassIcon className="mr-2 size-5 md:size-6 lg:size-10" />
-              <input
-                className="focus:bg-green-h00 w-full px-2 py-2 outline-none focus:border-b focus:border-helpMe-500"
-                type="search"
-                name="search"
-                id="search"
-                placeholder="Search something..."
-              />
+              {/* Notification Icons */}
+              <div className="flex items-center space-x-2">
+                <ChatBubbleOvalLeftEllipsisIcon className="mr-auto size-6 text-[#868686] md:size-8" />
+                <BellIcon className="mr-auto size-6 text-[#868686] md:size-8" />
+              </div>
             </div>
 
             {/* Dashboard */}
             <div className="h-fit bg-[#F7F9FA] p-4">
-              <span
-                onClick={() => sidebarToggler()}
-                className={`${openSideBar ? "hidden" : "block"} inline-block py-2`}
-              >
-                <ArrowLeftCircleIcon className="size-6 cursor-pointer rounded-full shadow-lg ring-2 ring-gray-500/25" />
-              </span>
-              <div className="py-2">
-                <h2 className="font-bold md:text-lg md:font-semibold">
-                  Giveaways
-                </h2>
-                <p className="mt-1 text-sm text-gray-400">
-                  All active giveaways
-                </p>
-              </div>
-
-              <div className="flex flex-col items-center justify-center">
+              <div className="flex flex-col items-center justify-center p-8">
                 {/* Dashboard filters */}
                 <div className="sticky top-0 flex w-full flex-wrap items-center justify-between gap-x-4 rounded-t-md border-b border-b-gray-500/35 bg-white px-6 py-3 shadow-lg md:px-8 md:py-4">
                   <div className="flex flex-1 items-center rounded-md px-2 shadow ring-1 ring-gray-300">

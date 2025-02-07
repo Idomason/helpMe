@@ -260,6 +260,13 @@ export const questionsData = [
 
 export const registerFormElements = [
   {
+    name: "role",
+    id: "role",
+    label: "What would you like to do?",
+    type: "select",
+    componentType: "select",
+  },
+  {
     name: "name",
     type: "text",
     id: "name",
@@ -280,6 +287,14 @@ export const registerFormElements = [
     type: "password",
     id: "password",
     placeholder: "Enter your password",
+    componentType: "input",
+  },
+
+  {
+    name: "passwordConfirm",
+    type: "password",
+    id: "password",
+    placeholder: "Confirm your password",
     componentType: "input",
   },
 

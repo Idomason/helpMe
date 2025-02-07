@@ -2,6 +2,9 @@ import CustomCheckbox from "../CustomCheckbox/CustomCheckbox";
 import CustomInput from "../CustomInput/CustomInput";
 import { ICustomForm, IElement } from "../../utils/types";
 import { ChangeEvent } from "react";
+import clsx from "clsx";
+import CustomSelect from "../CustomSelect/CustomSelect";
+// import { useForm } from "react-hook-form";
 
 const formTypes = {
   INPUT: "input",
@@ -18,6 +21,7 @@ export default function CustomForm({
   buttonText,
   className,
 }: ICustomForm) {
+  // const { register, handleSubmit } = useForm();
   function handleCustomInput(
     event: ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -29,17 +33,23 @@ export default function CustomForm({
   function renderFormElement(element: IElement) {
     let content = null;
 
+    const commonProps = {
+      name: element.name,
+      type: element.type,
+      id: element.id,
+      label: element.label,
+      placeholder: element.placeholder,
+      value: element.value,
+      onChange: handleCustomInput,
+    };
+
     switch (element.componentType) {
       case formTypes.INPUT:
         content = (
           <CustomInput
-            name={element.name}
-            type={element.type}
-            id={element.id}
-            label={element.label}
-            value={formData[element.name] as string}
-            onChange={handleCustomInput}
-            placeholder={element.placeholder}
+            key={commonProps.id || commonProps.name}
+            {...commonProps}
+            // {...register(commonProps.name)}
           />
         );
 
@@ -47,13 +57,21 @@ export default function CustomForm({
       case formTypes.CHECKBOX:
         content = (
           <CustomCheckbox
-            name={element.name}
-            type={element.type}
-            id={element.id}
-            label={element.label}
+            key={commonProps.id || commonProps.name}
+            {...commonProps}
             link={element.link}
-            checked={formData[element.name] as boolean}
-            onChange={handleCustomInput}
+            checked={formData[commonProps.name] as boolean}
+            // {...register(commonProps.name)}
+          />
+        );
+        break;
+      case formTypes.SELECT:
+        content = (
+          <CustomSelect
+            key={element.name}
+            element={element}
+            formData={formData}
+            onFormData={onFormData}
           />
         );
         break;
@@ -61,13 +79,9 @@ export default function CustomForm({
       default:
         content = (
           <CustomInput
-            name={element.name}
-            type={element.type}
-            id={element.id}
-            label={element.label}
-            value={formData[element.name] as string}
-            onChange={handleCustomInput}
-            placeholder={element.placeholder}
+            key={commonProps.id || commonProps.name}
+            {...commonProps}
+            // {...register(commonProps.name)}
           />
         );
         break;
@@ -76,18 +90,15 @@ export default function CustomForm({
     return content;
   }
 
-  function checkIf() {
-    if (buttonText === "Register") {
-      if (
-        !formData.termsConditions ||
+  // Determine whether button should be disabled
+  const isBtnDisabled =
+    buttonText === "Register"
+      ? !formData.email ||
         !formData.name ||
-        !formData.email ||
-        !formData.password
-      )
-        return true;
-    }
-  }
-  const checkFlag = checkIf();
+        !formData.password ||
+        !formData.termsConditions ||
+        !formData.role
+      : !formData.email || !formData.password;
 
   return (
     <form className="reduceWidth" onSubmit={onHandleSubmit}>
@@ -95,13 +106,11 @@ export default function CustomForm({
 
       <div className="reduceWidth flex w-80 items-center justify-center py-6">
         <button
-          className={`${className} ${
-            checkFlag ? "cursor-not-allowed opacity-50" : ""
-          } ${
-            !formData.email || !formData.password
-              ? "cursor-not-allowed opacity-50"
-              : ""
-          }`}
+          className={clsx(
+            className,
+            isBtnDisabled && "cursor-not-allowed opacity-50",
+          )}
+          disabled={isBtnDisabled}
         >
           {buttonText || "Submit"}
         </button>

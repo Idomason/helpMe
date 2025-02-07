@@ -1,5 +1,5 @@
 import Layout from "./components/Layout/Layout";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import NotFound from "./pages/NotFound/NotFound";
 import Register from "./pages/Register/Register";
 import Request from "./pages/dashboard/helperDashboard/Request";
@@ -11,33 +11,126 @@ import HelpeeRequest from "./pages/dashboard/helpeeDashboard/HelpeeRequest";
 import Login from "./pages/Login/Login";
 import Home from "./components/Home/Home";
 import RequestForm from "./components/RequestForm/RequestForm";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { BrowserRouter } from "react-router-dom";
+import SidebarContextProvider from "./context/SidebarContext.tsx";
+import { useQuery } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
+import AuthContextProvider from "./context/AuthContext.tsx";
 
 function App() {
+  let authUser;
+  const { data, isLoading } = useQuery({
+    queryKey: ["authUser"],
+    queryFn: async () => {
+      try {
+        const response = await fetch("/api/v1/users/me");
+        const data = await response.json();
+        return data;
+      } catch (error: any) {
+        console.log(error);
+        throw new Error(error.message);
+      }
+    },
+    retry: false,
+  });
+
+  if (isLoading) return <h1>Loading Data, please wait ...</h1>;
+  if (data.status === "fail") {
+    authUser = null;
+  } else {
+    authUser = data;
+  }
+
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/request" element={<RequestForm />} />
-          <Route path="*" element={<NotFound />} />
+      <BrowserRouter>
+        <AuthContextProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+          <SidebarContextProvider>
+            <Routes>
+              <Route
+                path="/"
+                element={authUser ? <Layout /> : <Navigate to={"/login"} />}
+              >
+                <Route
+                  path="/"
+                  element={authUser ? <Home /> : <Navigate to={"/login"} />}
+                />
+                <Route
+                  path="/request"
+                  element={
+                    authUser ? <RequestForm /> : <Navigate to={"/login"} />
+                  }
+                />
+                <Route path="*" element={<NotFound />} />
+              </Route>
+              {/* Helpee Dashboard Routes */}
+              <Route path="/dashboard-helpee" element={""} />
+              <Route
+                path="/dashboard-helpee-request"
+                element={
+                  authUser ? <HelpeeRequest /> : <Navigate to={"/login"} />
+                }
+              />
 
-          {/* Helpee Dashboard Routes */}
-          <Route path="/dashboard-helpee" element={""} />
-          <Route path="/dashboard-helpee-request" element={<HelpeeRequest />} />
+              {/* Helper Dashboard Routes */}
+              <Route
+                path="/dashboard-helper"
+                element={authUser ? <HelperHome /> : <Navigate to={"/login"} />}
+              />
+              <Route
+                path="/dashboard-helper-request"
+                element={authUser ? <Request /> : <Navigate to={"/login"} />}
+              />
+              <Route
+                path="/dashboard-helper-giveaways"
+                element={authUser ? <Giveaways /> : <Navigate to={"/login"} />}
+              />
+              <Route
+                path="/dashboard-helper-finance"
+                element={
+                  authUser ? <HelperFinance /> : <Navigate to={"/login"} />
+                }
+              />
+              <Route
+                path="/dashboard-helper-portfolio"
+                element={
+                  authUser ? <HelperPortfolio /> : <Navigate to={"/login"} />
+                }
+              />
+              {/*  */}
+              <Route
+                path="/register"
+                element={!authUser ? <Register /> : <Navigate to="/" />}
+              />
+              <Route
+                path="/login"
+                element={!authUser ? <Login /> : <Navigate to={"/"} />}
+              />
+            </Routes>
 
-          {/* Helper Dashboard Routes */}
-          <Route path="/dashboard-helper" element={<HelperHome />} />
-          <Route path="/dashboard-helper-request" element={<Request />} />
-          <Route path="/dashboard-helper-giveaways" element={<Giveaways />} />
-          <Route path="/dashboard-helper-finance" element={<HelperFinance />} />
-          <Route
-            path="/dashboard-helper-portfolio"
-            element={<HelperPortfolio />}
-          />
-        </Route>
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
+            <Toaster
+              position="bottom-right"
+              gutter={12}
+              containerStyle={{ margin: "8px" }}
+              toastOptions={{
+                success: {
+                  duration: 3000,
+                },
+                error: {
+                  duration: 5000,
+                },
+                style: {
+                  fontSize: "16px",
+                  maxWidth: "500px",
+                  padding: "16px 24px",
+                },
+              }}
+            />
+          </SidebarContextProvider>
+        </AuthContextProvider>
+      </BrowserRouter>
     </>
   );
 }
