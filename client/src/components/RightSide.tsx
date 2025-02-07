@@ -1,37 +1,28 @@
 import {
-  ArrowLeftCircleIcon,
-  ArrowLeftStartOnRectangleIcon,
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
-  ArrowRightCircleIcon,
   ArrowsUpDownIcon,
-  ChartBarIcon,
   FireIcon,
-  FolderIcon,
   FunnelIcon,
-  GiftIcon,
   MagnifyingGlassIcon,
   QuestionMarkCircleIcon,
-  Squares2X2Icon,
-  UserCircleIcon,
-  HomeIcon,
   ChatBubbleOvalLeftEllipsisIcon,
   BellIcon,
 } from "@heroicons/react/24/solid";
-import { ListCheckIcon, SearchIcon, WalletIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ListCheckIcon, SearchIcon } from "lucide-react";
+
 import RequestItem from "./RequestItem/RequestItem";
 import { requestData } from "../constant/constant";
 import NotificationIcon from "./NotificationIcon/NotificationIcon";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { SidebarContext } from "../context/SidebarContext";
-import useWindowResize from "../hooks/useWindowResize";
+import useWindowResize from "../hooks/useWindowSize";
 import Profile from "./profile/Profile";
 
-export default function RightSide({ sideData }) {
+export default function RightSide() {
   const { windowWidth, windowHeight } = useWindowResize();
   const { openProfile, onOpenProfile } = useContext(SidebarContext);
-  console.log(windowHeight);
+
   return (
     <>
       <div className="relative ml-16 h-full w-full flex-1 overflow-auto rounded-md bg-white shadow">
