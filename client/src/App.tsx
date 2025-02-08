@@ -16,6 +16,7 @@ import { BrowserRouter } from "react-router-dom";
 import SidebarContextProvider from "./context/SidebarContext.tsx";
 import { useQuery } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
+import Spinner from "./components/Spinner/Spinner.tsx";
 
 function App() {
   let authUser;
@@ -34,7 +35,14 @@ function App() {
     retry: false,
   });
 
-  if (isLoading) return <h1>Loading Data, please wait ...</h1>;
+  if (isLoading)
+    return (
+      <div className="min-h-screen bg-helpMe-950">
+        <div>
+          <Spinner />;
+        </div>
+      </div>
+    );
   if (data.status === "fail") {
     authUser = null;
   } else {
