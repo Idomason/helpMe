@@ -1,10 +1,9 @@
 import CustomCheckbox from "../CustomCheckbox/CustomCheckbox";
 import CustomInput from "../CustomInput/CustomInput";
 import { ICustomForm, IElement } from "../../utils/types";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import clsx from "clsx";
 import CustomSelect from "../CustomSelect/CustomSelect";
-// import { useForm } from "react-hook-form";
 
 const formTypes = {
   INPUT: "input",
@@ -21,7 +20,8 @@ export default function CustomForm({
   buttonText,
   className,
 }: ICustomForm) {
-  // const { register, handleSubmit } = useForm();
+  const [isDisabledBtn, setIsDisabledBtn] = useState(true);
+
   function handleCustomInput(
     event: ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -49,7 +49,6 @@ export default function CustomForm({
           <CustomInput
             key={commonProps.id || commonProps.name}
             {...commonProps}
-            // {...register(commonProps.name)}
           />
         );
 
@@ -61,7 +60,6 @@ export default function CustomForm({
             {...commonProps}
             link={element.link}
             checked={formData[commonProps.name] as boolean}
-            // {...register(commonProps.name)}
           />
         );
         break;
@@ -81,7 +79,6 @@ export default function CustomForm({
           <CustomInput
             key={commonProps.id || commonProps.name}
             {...commonProps}
-            // {...register(commonProps.name)}
           />
         );
         break;
@@ -91,14 +88,18 @@ export default function CustomForm({
   }
 
   // Determine whether button should be disabled
-  const isBtnDisabled =
-    buttonText === "Register"
-      ? !formData.email ||
-        !formData.name ||
-        !formData.password ||
-        !formData.termsConditions ||
-        !formData.role
-      : !formData.email || !formData.password;
+  useEffect(() => {
+    const isValid =
+      buttonText === "Register"
+        ? !formData.email &&
+          !formData.name &&
+          !formData.password &&
+          !formData.termsConditions &&
+          !formData.role
+        : !formData.email && !formData.password;
+
+    setIsDisabledBtn(isValid);
+  }, [buttonText, formData]);
 
   return (
     <form className="reduceWidth" onSubmit={onHandleSubmit}>
@@ -108,9 +109,9 @@ export default function CustomForm({
         <button
           className={clsx(
             className,
-            isBtnDisabled && "cursor-not-allowed opacity-50",
+            isDisabledBtn && "cursor-not-allowed opacity-50",
           )}
-          disabled={isBtnDisabled}
+          disabled={isDisabledBtn}
         >
           {buttonText || "Submit"}
         </button>

@@ -3,9 +3,15 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { navLinks } from "../../constant/constant";
 import { INavbar, INavLinks } from "../../utils/types";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Navbar({ openNavbar }: INavbar) {
   const [navbarBg, setNavbarBg] = useState(false);
+
+  const { data: authUser } = useQuery({ queryKey: ["authUser"] });
+
+  // TODO
+  // Create a user profile link on the Navbar
 
   useEffect(() => {
     const handler = () => {

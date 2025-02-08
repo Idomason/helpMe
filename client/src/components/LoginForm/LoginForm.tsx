@@ -67,23 +67,6 @@ export default function LoginForm() {
     event: FormEvent<HTMLFormElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) {
     event.preventDefault();
-    // if (validateForm(formData)) {
-    //   submitForm(formData); // Call the API or submit handler
-    // } else {
-    //   console.error("Validation failed");
-    // }
-
-    // // Example validation function
-    // function validateForm(data: typeof initialFormData) {
-    //   // Basic validation (e.g., checking required fields)
-    //   return data.name && data.email && data.password && data.termsConditions;
-    // }
-
-    // Consider implementing client-side validation before
-    // submitting. This could be useful for checking required
-    // fields, email format, and password strength.
-    // A basic example would be using the validateForm
-    // function, as shown above.
 
     mutate(formData);
 
