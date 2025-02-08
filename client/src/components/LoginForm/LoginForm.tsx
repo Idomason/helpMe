@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+type ILoginProps = { email: string; password: string };
+
 const initialFormData = {
   email: "",
   password: "",
@@ -34,7 +36,7 @@ export default function LoginForm() {
   }
 
   const { mutate } = useMutation({
-    mutationFn: async ({ email, password }) => {
+    mutationFn: async ({ email, password }: ILoginProps) => {
       try {
         const response = await fetch("/api/v1/users/login", {
           method: "POST",
