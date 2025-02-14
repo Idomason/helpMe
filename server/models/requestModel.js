@@ -5,28 +5,32 @@ const { model, models, Schema } = mongoose;
 const requestSchema = new Schema(
   {
     user: {
-      type: mongoose.Schema.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
+      required: true,
+    },
+    fullName: {
+      type: String,
       required: true,
     },
     type: {
       type: String,
-      required: true,
+      required: [true, 'Request type is required'],
       enum: ['finance', 'disaster', 'accident', 'health', 'agriculture'],
     },
-    text: {
+    description: {
       type: String,
       required: true,
     },
     img: {
       type: String,
     },
-    votes: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
+    votes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     comments: [
       {
         text: { type: String, required: true },
         user: {
-          type: mongoose.Schema.ObjectId,
+          type: mongoose.Schema.Types.ObjectId,
           ref: 'User',
           required: true,
         },

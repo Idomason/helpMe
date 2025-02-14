@@ -8,7 +8,26 @@ export const getAllRequests = catchAsync(async (req, res, next) => {
 
 // Create a request
 export const createRequest = catchAsync(async (req, res, next) => {
-  const request = await Request.create(req.body);
+  const {
+    category,
+    image,
+    name,
+    requestDescription,
+    specificDetails,
+    city,
+    state,
+    country,
+  } = req.body;
+
+  try {
+    const request = await Request.create(req.body);
+  } catch (error) {
+        console.log(`Error in request controller: ${error.message}`);
+    return res
+      .status(500)
+      .json({ success: false, message: 'Internal server error' });
+  }
+  }
 });
 
 // Get a request

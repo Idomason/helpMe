@@ -1,5 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import ShortHeader from "../ShortHeader/ShortHeader";
+import toast from "react-hot-toast";
+import { Upload } from "lucide-react";
 
 const initialData = {
   name: "",
@@ -12,11 +14,14 @@ const initialData = {
     amount: 0,
     deadline: "",
   },
+  image: "",
 };
 
 export default function RequestForm() {
   const [requestData, setRequestData] = useState(initialData);
   const nameRef = useRef<HTMLInputElement | null>(null);
+  const requestImgRef = useRef(null);
+  const [fileName, setFileName] = useState("");
 
   //   for update: event: React.ChangeEvent for submit: event: React.FormEvent for click: event: React.MouseEvent
   function handleRequest(event: FormEvent<HTMLFormElement>) {
@@ -25,6 +30,18 @@ export default function RequestForm() {
 
     // Clear form
     setRequestData(initialData);
+    setFileName("");
+  }
+
+  function handleImage(event: any) {
+    const file = event.target.files[0];
+
+    if (file && file.type.startsWith("image/")) {
+      setFileName(file.name);
+      setRequestData({ ...requestData, image: file });
+    } else {
+      toast.error("Please select a valid image file");
+    }
   }
 
   useEffect(() => {
@@ -35,10 +52,10 @@ export default function RequestForm() {
       <div className="mx-auto px-4 pt-10 md:w-11/12">
         {/* Heading */}
         <ShortHeader heading="Make Your Request" />
-        <form onSubmit={handleRequest} className="mx-auto bg-helpMe-200 p-4">
+        <form onSubmit={handleRequest} className="mx-auto bg-helpMe-950 p-4">
           <div className="flex flex-col">
             <label
-              className="py-2 font-medium text-helpMe-950 xl:text-lg"
+              className="py-2 font-medium text-white/85 xl:text-lg"
               htmlFor="user"
             >
               Full Name
@@ -56,10 +73,10 @@ export default function RequestForm() {
               required
             />
           </div>
-          <h3 className="pb-8 pt-20 font-bold text-helpMe-950 xl:text-lg">
+          <h3 className="pb-8 pt-20 font-bold text-white xl:text-lg">
             Basic Information
           </h3>
-          <p className="font-medium text-helpMe-950 xl:text-lg">
+          <p className="font-medium text-white/85 xl:text-lg">
             What kind of help do you need?
           </p>
 
@@ -93,7 +110,7 @@ export default function RequestForm() {
 
           <div className="flex flex-col py-4">
             <label
-              className="inline-block py-1.5 font-medium text-helpMe-950 xl:text-lg"
+              className="inline-block py-1.5 font-medium text-white xl:text-lg"
               htmlFor="requestBody"
             >
               Briefly describe your situation
@@ -118,7 +135,7 @@ export default function RequestForm() {
             {/* City */}
             <div className="flex flex-col py-4">
               <label
-                className="inline-block py-1.5 font-medium text-helpMe-950 xl:text-lg"
+                className="inline-block py-1.5 font-medium text-white/85 xl:text-lg"
                 htmlFor="city"
               >
                 City
@@ -155,7 +172,7 @@ export default function RequestForm() {
             {/* State */}
             <div className="flex flex-col py-4">
               <label
-                className="inline-block py-1.5 font-medium text-helpMe-950 xl:text-lg"
+                className="inline-block py-1.5 font-medium text-white/85 xl:text-lg"
                 htmlFor="state"
               >
                 State
@@ -192,7 +209,7 @@ export default function RequestForm() {
             {/* Country */}
             <div className="flex flex-col py-4">
               <label
-                className="inline-block py-1.5 font-medium text-helpMe-950 xl:text-lg"
+                className="inline-block py-1.5 font-medium text-white/85 xl:text-lg"
                 htmlFor="country"
               >
                 Country
@@ -229,13 +246,13 @@ export default function RequestForm() {
               </select>
             </div>
           </div>
-          <h3 className="pb-8 pt-20 font-bold text-helpMe-950 xl:text-lg">
+          <h3 className="pb-8 pt-20 font-bold text-white xl:text-lg">
             Specific Details
           </h3>
-          <div className="grid md:grid-cols-2">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3">
             <div className="flex flex-col">
               <label
-                className="py-2 font-medium text-helpMe-950 xl:text-lg"
+                className="py-2 font-medium text-white/85 xl:text-lg"
                 htmlFor="amount"
               >
                 How much money do you need?
@@ -260,7 +277,7 @@ export default function RequestForm() {
             </div>
             <div className="flex flex-col">
               <label
-                className="py-2 font-medium text-helpMe-950 xl:text-lg"
+                className="py-2 font-medium text-white/85 xl:text-lg"
                 htmlFor="deadline"
               >
                 When do you need it by?
@@ -282,11 +299,35 @@ export default function RequestForm() {
                 id="deadline"
               />
             </div>
+
+            <div className="flex flex-col">
+              <label
+                className="mt-10 flex w-max cursor-pointer space-x-2 rounded bg-slate-500 px-2.5 py-2 font-medium text-white/85 xl:text-lg"
+                htmlFor="requestImage"
+                // onClick={() => requestImgRef.current.click()}
+              >
+                <Upload />
+                <span>
+                  {fileName ? `Selected File: ${fileName}` : "Upload Image"}
+                </span>
+              </label>
+              <input
+                ref={requestImgRef}
+                hidden
+                type="file"
+                // name="requestImage"
+                id="requestImage"
+                accept="image/jpeg, image/png"
+                className="w-72 rounded-sm bg-white px-4 py-1.5 shadow outline-none transition-all duration-200 ease-in-out focus:border-b-2 focus:border-helpMe-900 xl:p-2"
+                onChange={(event) => handleImage(event)}
+                alt="Request Image"
+              />
+            </div>
           </div>
 
           <div className="mt-10 flex items-center justify-center space-x-8 py-10 sm:flex sm:justify-around">
             <button
-              className="rounded-sm bg-helpMe-500 px-12 py-2.5 tracking-wider text-white transition-all duration-200 ease-in hover:bg-helpMe-950 hover:font-bold"
+              className="rounded-sm bg-helpMe-500 px-12 py-2.5 tracking-wider text-white transition-all duration-200 ease-in hover:bg-helpMe-900 hover:font-bold"
               type="submit"
             >
               Submit
