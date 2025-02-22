@@ -225,7 +225,7 @@ export default function HelpeeDashboardRequest() {
                 <h2
                   className={`${status} hidden rounded px-4 py-1 font-light sm:block`}
                 >
-                  Welcome back{" "}
+                  <span>Welcome &ensp;</span>
                   <span className="font-semibold">
                     {capitalizeFirstLetter(user?.name)}!
                   </span>

@@ -6,6 +6,15 @@ import toast from "react-hot-toast";
 import validator from "validator";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+type formDataProp = {
+  name: string;
+  email: string;
+  password: string;
+  passwordConfirm: string;
+  termsConditions: boolean;
+  role: string;
+};
+
 const initialFormData = {
   name: "",
   email: "",
@@ -39,26 +48,12 @@ export default function RegisterForm() {
   }
 
   const { mutate } = useMutation({
-    mutationFn: async ({
-      name,
-      email,
-      password,
-      passwordConfirm,
-      termsConditions,
-      role,
-    }) => {
+    mutationFn: async (formData: formDataProp) => {
       try {
         const response = await fetch("/api/v1/users/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name,
-            email,
-            password,
-            passwordConfirm,
-            termsConditions,
-            role,
-          }),
+          body: JSON.stringify(formData),
         });
 
         const data = await response.json();

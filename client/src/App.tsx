@@ -49,6 +49,21 @@ function App() {
     retry: false,
   });
 
+  const { data: requestData } = useQuery({
+    queryKey: ["requests"],
+    queryFn: async () => {
+      try {
+        const response = await fetch("/api/v1/requests");
+        if (!response.ok) throw new Error("An error occured please try again");
+        const data = await response.json();
+        return data;
+      } catch (error: any) {
+        console.log(error);
+        throw new Error(error.message);
+      }
+    },
+  });
+
   if (isLoading)
     return (
       <div className="min-h-screen bg-helpMe-950">

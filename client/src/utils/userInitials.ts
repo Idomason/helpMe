@@ -1,9 +1,4 @@
-export const userInitials = (username: string) => {
-  let firstLetters = [];
 
-  const names = username?.split(" ");
-  for (const user of names) firstLetters.push(user.charAt(0).toUpperCase());
-  const initials = firstLetters.toString().replaceAll(",", "");
-
-  return initials;
-};
+export const userInitials = function(username: string) {
+  return username.split(' ').map(name => name[0]).join('').toUpperCase();
+}

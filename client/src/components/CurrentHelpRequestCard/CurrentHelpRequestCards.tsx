@@ -2,6 +2,8 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import CurrentHelpCard from "./CurrentHelpCard";
 import { currentHelpData } from "../../constant/constant";
+import { useQuery } from "@tanstack/react-query";
+import { LoaderCircle } from "lucide-react";
 
 const responsive = {
   superLargeDesktop: {
@@ -28,6 +30,14 @@ const responsive = {
 };
 
 export default function CurrentHelpRequestCards() {
+  const { data: requestData, isLoading } = useQuery({ queryKey: ["requests"] });
+
+  if (isLoading)
+    return (
+      <div className="flex h-full w-full items-center justify-center py-4">
+        <LoaderCircle className="animate-spin" />
+      </div>
+    );
   return (
     <Carousel
       additionalTransfrom={0}
@@ -42,12 +52,12 @@ export default function CurrentHelpRequestCards() {
       showDots={true}
       infinite
     >
-      {currentHelpData.category.medical.map((medical) => (
+      {requestData.data.requests.map((request) => (
         <div
           className="mx-auto flex w-11/12 flex-wrap items-center justify-center"
-          key={medical.id}
+          key={request._id}
         >
-          <CurrentHelpCard medical={medical} />
+          <CurrentHelpCard request={request} />
         </div>
       ))}
     </Carousel>

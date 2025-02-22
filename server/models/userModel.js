@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import validator from 'validator';
 import crypto from 'crypto';
+import Request from './requestModel.js';
 
 const { model, models, Schema } = mongoose;
 
@@ -35,13 +36,6 @@ const userSchema = new Schema(
     passwordConfirm: {
       type: String,
       required: [true, 'Please confirm your password'],
-      validate: {
-        // This only works on CREATE and SAVE
-        validator: function (el) {
-          return el === this.password;
-        },
-        message: 'Passwords are not the same!',
-      },
       select: false,
     },
     role: {
@@ -106,6 +100,14 @@ userSchema.virtual('durationWeek').get(function () {
 //   }
 // }
 
+// validate: {
+//   // This only works on CREATE and SAVE
+//   validator: function (el) {
+//     return el === this.password;
+//   },
+//   message: 'Passwords are not the same!',
+// },
+
 // DOCUMENT MIDDLEWARES: Runs before .save() and .create() not for update
 userSchema.pre('save', function (next) {
   // this.slug = slugify(this.name, {lower: true});
@@ -120,7 +122,7 @@ userSchema.post('save', function (doc, next) {
 });
 
 // QUERY MIDDLEWARE
-userSchema.pre('/^find/', function (next) {
+userSchema.pre(/^find/, function (next) {
   // userSchema.pre('find', function (next) {
   this.find({ secretTour: { $ne: true } });
   this.start = Date.now();
@@ -151,6 +153,17 @@ userSchema.pre('aggregate', function (next) {
 // ======================= REAL ============================
 
 // DOCUMENT MIDDLEWARES
+
+// Check if email already exist
+userSchema.pre('validate', async function () {
+  const emailExists = await User.findOne({ email: this.email });
+
+  if (emailExists) {
+    this.invalidate('email', 'Email already in use');
+  }
+});
+
+// Set the time at every instance the password is changed or a new user doc is created
 userSchema.pre('save', function (next) {
   if (!this.isModified('password') || this.isNew) return next();
 
@@ -159,25 +172,58 @@ userSchema.pre('save', function (next) {
   next();
 });
 
+// Check if password & confirm password is correct before hashing
+userSchema.pre('validate', function (next) {
+  if (this.password !== this.passwordConfirm) {
+    this.invalidate('passwordConfirm', 'Passwords do not match');
+  }
+
+  next();
+});
+
 // Hash password
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function () {
   // Only run function if password was modified
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password')) return;
 
   // Hash the modified or new password
   this.password = await bcrypt.hash(this.password, 12);
 
   // Delete password confirm field
   this.passwordConfirm = undefined;
-
-  next();
 });
+
+// Post-save hook to send a welcome email
+// userSchema.post('save', async function (doc) {
+//   try {
+//     await sendWelcomeEmail(doc.email);
+//     console.log(`Welcome email sent to ${doc.email}`);
+//   } catch (error) {
+//     console.error(`Failed to send welcome email to ${doc.email}:`, error);
+//   }
+// });
 
 // QUERY MIDDLEWARES
 userSchema.pre(/^find/, function (next) {
   this.find({ active: { $ne: false } });
 
   next();
+});
+
+// Populate the helpRequests field upon query
+userSchema.pre('findOne', async function () {
+  this.populate({ path: 'helpRequests', select: '-password -_id' });
+});
+
+// Remove all posts associated with a user before deleting the user
+userSchema.pre('remove', async function () {
+  await Request.deleteMany({ user: this._id });
+});
+
+// Log a message after the user is deleted
+userSchema.post('remove', function (doc) {
+  console.log(`User ${doc.name} has been removed.`);
+  toast.success(`User ${doc.name} has been removed.`);
 });
 
 // DOCUMENT METHODS

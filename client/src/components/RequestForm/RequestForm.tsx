@@ -1,9 +1,27 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
-import ShortHeader from "../ShortHeader/ShortHeader";
 import toast from "react-hot-toast";
-import { Upload } from "lucide-react";
+import { LoaderPinwheel, Upload } from "lucide-react";
+import ShortHeader from "../ShortHeader/ShortHeader";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRequestImage } from "../../hooks/useRequestImage";
 
-const initialData = {
+type SpecificDetailsProp = {
+  amount: number;
+  deadline: string;
+};
+
+type RequestPropData = {
+  name: string;
+  category: string;
+  requestDescription: string;
+  city: string;
+  state: string;
+  country: string;
+  specificDetails: SpecificDetailsProp;
+  image: File | { url: string; publicId: string } | null;
+};
+
+const initialData: RequestPropData = {
   name: "",
   category: "",
   requestDescription: "",
@@ -14,33 +32,93 @@ const initialData = {
     amount: 0,
     deadline: "",
   },
-  image: "",
+  image: null,
 };
 
 export default function RequestForm() {
   const [requestData, setRequestData] = useState(initialData);
+  const [fileName, setFileName] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const nameRef = useRef<HTMLInputElement | null>(null);
   const requestImgRef = useRef(null);
-  const [fileName, setFileName] = useState("");
+  const queryClient = useQueryClient();
+
+  // Cloudinary image upload hook
+  const { handleImageUpload } = useRequestImage();
+
+  // Save request to db
+  const { mutate: createRequest, isLoading } = useMutation({
+    mutationFn: async (newData: RequestPropData) => {
+      try {
+        const response = await fetch("/api/v1/requests", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newData),
+        });
+
+        if (!response.ok)
+          throw new Error(
+            `Server returned ${response.status}: ${response.statusText}`,
+          );
+        const data = await response.json();
+        if (!data) {
+          return toast.error(data.error.message || "Failed to create request");
+        }
+        return data;
+      } catch (error: any) {
+        console.error("Error creating request:", error);
+        throw new Error(error.message || "Failed to create request");
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      toast.success("Request created successfully");
+    },
+    onError: (error: any) => {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "An unknown error occurred";
+      toast.error(errorMessage);
+    },
+  });
 
   //   for update: event: React.ChangeEvent for submit: event: React.FormEvent for click: event: React.MouseEvent
-  function handleRequest(event: FormEvent<HTMLFormElement>) {
+  async function handleRequest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    console.log(requestData);
 
-    // Clear form
-    setRequestData(initialData);
-    setFileName("");
+    setIsSubmitting(true);
+
+    if (requestData.image) {
+      try {
+        const uploadedImage = await handleImageUpload(requestData.image);
+
+        // Create a new object and add the image url
+        const requestDataToSave = { ...requestData, image: uploadedImage };
+
+        // Save to db once the image is uploaded
+        createRequest(requestDataToSave);
+
+        // Clear form
+        setRequestData(initialData);
+        setIsSubmitting(false);
+        setFileName("");
+      } catch (error: any) {
+        toast.error(error.message || "Image upload failed");
+        return;
+      }
+    }
   }
 
   function handleImage(event: any) {
-    const file = event.target.files[0];
+    let file = event.target.files[0];
 
     if (file && file.type.startsWith("image/")) {
       setFileName(file.name);
       setRequestData({ ...requestData, image: file });
+      file = null;
     } else {
-      toast.error("Please select a valid image file");
+      return toast.error("Please select a valid image file");
     }
   }
 
@@ -315,7 +393,7 @@ export default function RequestForm() {
                 ref={requestImgRef}
                 hidden
                 type="file"
-                // name="requestImage"
+                name="file"
                 id="requestImage"
                 accept="image/jpeg, image/png"
                 className="w-72 rounded-sm bg-white px-4 py-1.5 shadow outline-none transition-all duration-200 ease-in-out focus:border-b-2 focus:border-helpMe-900 xl:p-2"
@@ -330,7 +408,11 @@ export default function RequestForm() {
               className="rounded-sm bg-helpMe-500 px-12 py-2.5 tracking-wider text-white transition-all duration-200 ease-in hover:bg-helpMe-900 hover:font-bold"
               type="submit"
             >
-              Submit
+              {isLoading || isSubmitting ? (
+                <LoaderPinwheel className="animate-spin" />
+              ) : (
+                "Submit"
+              )}
             </button>
             <button
               className="rounded-sm bg-rose-500 px-12 py-2.5 tracking-wider text-white transition-all duration-200 ease-in hover:bg-pink-950 hover:font-bold"

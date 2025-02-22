@@ -11,6 +11,7 @@ import cors from 'cors';
 
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import requestRoutes from './routes/requestRoutes.js';
 import AppError from './utils/appError.js';
 import { globalErrorHandler } from './controllers/errorController.js';
 
@@ -53,7 +54,7 @@ app.use(xss());
 app.use(hpp({ whitelist: ['duration', 'difficulty'] }));
 
 //Body Parser, Parse request data to req.body
-app.use(express.json({ limit: '10kb' }));
+app.use(express.json({ limit: '50mb' }));
 
 // Serving static files
 // app.use(express.static(`${__dirname}/public`));
@@ -67,6 +68,7 @@ app.use(cookieParser());
 // API ROUTES
 // app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/requests', requestRoutes);
 // app.use("/api/v1/notifications", notificationRoutes);
 // app.use("/api/v1/messages", messageRoutes);
 

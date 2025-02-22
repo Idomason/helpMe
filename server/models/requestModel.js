@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import User from './userModel';
+import User from './userModel.js';
 const { model, models, Schema } = mongoose;
 
 const requestSchema = new Schema(
@@ -9,21 +9,45 @@ const requestSchema = new Schema(
       ref: 'User',
       required: true,
     },
-    fullName: {
+    name: {
       type: String,
       required: true,
     },
-    type: {
+    category: {
       type: String,
-      required: [true, 'Request type is required'],
-      enum: ['finance', 'disaster', 'accident', 'health', 'agriculture'],
+      required: [true, 'Request category is required'],
+      enum: [
+        'finance',
+        'disaster',
+        'accident',
+        'agriculture',
+        'medical',
+        'academics',
+      ],
     },
-    description: {
+    requestDescription: {
       type: String,
       required: true,
     },
-    img: {
+    city: {
       type: String,
+      required: true,
+    },
+    state: {
+      type: String,
+      required: true,
+    },
+    country: {
+      type: String,
+      required: true,
+    },
+    specificDetails: {
+      amount: { type: Number, required: true },
+      deadline: { type: String, required: true },
+    },
+    image: {
+      url: String,
+      publicId: String,
     },
     votes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     comments: [
@@ -34,28 +58,42 @@ const requestSchema = new Schema(
           ref: 'User',
           required: true,
         },
+        createdAt: { type: Date, default: Date.now },
       },
     ],
-    userRequest: Array,
   },
   { timestamps: true },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );
 
 requestSchema.virtual('totalVotes').get(function () {
-  return this.votes / 7;
+  return this.votes.length / 7;
 });
 
-// model function that embeds user data who made the request
-// in the userRequest array on this model
+// Save creator's ID to the userRequests array upon creating the request document
 // (this only works for creating new doc & not for updating them)
-requestSchema.pre('save', async function (next) {
-  const userRequestPromises = this.userRequest.map(
-    async (id) => await User.findById(id),
-  );
-  this.userRequest = await Promise.all(userRequestPromises);
+// requestSchema.pre('save', function (next) {
+//   if (this.isNew) {
+//     this.userRequests.push(this.user);
+//   }
+//   next();
+// });
 
-  next();
+// populate userRequests with user data when fetching the request
+// requestSchema.pre('findOne', function () {
+//   this.populate({
+//     path: 'userRequests',
+//     select: '-password -_id',
+//   });
+// });
+
+// Update the corresponding user helpRequests field with the request ID
+requestSchema.pre('save', async function () {
+  if (this.isNew) {
+    await User.findByIdAndUpdate(this.user, {
+      $push: { helpRequests: this._id },
+    });
+  }
 });
 
 const Request = models.Request || model('Request', requestSchema);
