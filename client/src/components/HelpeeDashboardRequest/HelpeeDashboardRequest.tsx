@@ -79,17 +79,14 @@ const status = "text-[#05a365] bg-[#06ec92]/10";
 export default function HelpeeDashboardRequest() {
   const queryClient = useQueryClient();
   const [mouseEnter, setMouseEnter] = useState(false);
-
   const { openSideBar, sidebarToggler } = useContext(SidebarContext);
   const { openProfile, onOpenProfile } = useContext(SidebarContext);
-
   const sideData = [...sidebarData, ...sidebarSecondaryData];
   const { windowWidth } = useWindowSize();
 
   const logout = async () => {
     const response = await fetch("/api/v1/users/logout", { method: "POST" });
-
-    if (!response.ok) throw new Error("Failed to log user out");
+    if (!response.ok) throw new Error("Failed to log user out, try again");
     const data = await response.json();
     return data;
   };
@@ -142,7 +139,7 @@ export default function HelpeeDashboardRequest() {
                 >
                   <Link
                     className="flex items-center space-x-3 font-bold text-white"
-                    to=""
+                    to="/"
                   >
                     <HomeIcon className="size-6" />
                     {(mouseEnter || openSideBar) && <span>Help Me</span>}

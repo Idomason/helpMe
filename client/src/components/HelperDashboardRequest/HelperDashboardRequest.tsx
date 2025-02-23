@@ -18,16 +18,30 @@ import {
   ChatBubbleOvalLeftEllipsisIcon,
   BellIcon,
 } from "@heroicons/react/24/solid";
-import { ListCheckIcon, SearchIcon, WalletIcon } from "lucide-react";
+import {
+  ListCheckIcon,
+  LoaderCircle,
+  SearchIcon,
+  WalletIcon,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import RequestItem from "../RequestItem/RequestItem";
 import { requestData } from "../../constant/constant";
 import NotificationIcon from "../NotificationIcon/NotificationIcon";
 import { useContext, useState } from "react";
 import { SidebarContext } from "../../context/SidebarContext";
-import useWindowResize from "../../hooks/useWindowResize";
 import Profile from "../profile/Profile";
 import useWindowSize from "../../hooks/useWindowSize";
+import {
+  useMutation,
+  UseMutationResult,
+  useQuery,
+  useQueryClient,
+  UseQueryResult,
+} from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { userInitials } from "../../utils/userInitials";
+import { capitalizeFirstLetter } from "../../utils/capitalizeFirstLetter";
 
 const sidebarData = [
   {
@@ -69,14 +83,46 @@ const sidebarSecondaryData = [
   },
 ];
 
+const status = "text-[#05a365] bg-[#06ec92]/10";
+
 export default function HelperDashboardRequest() {
   const [mouseEnter, setMouseEnter] = useState(false);
-
   const { openSideBar, sidebarToggler } = useContext(SidebarContext);
   const { openProfile, onOpenProfile } = useContext(SidebarContext);
-
   const sideData = [...sidebarData, ...sidebarSecondaryData];
   const { windowWidth, windowHeight } = useWindowSize();
+  const queryClient = useQueryClient();
+
+  const logout = async () => {
+    const response = await fetch("/api/v1/users/logout", { method: "POST" });
+    if (!response.ok) throw new Error("Failed to log user out, try again");
+    const data = await response.json();
+    return data;
+  };
+
+  const { mutate: authUserLogout }: UseMutationResult<void> = useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      toast.success("Logout successful");
+    },
+    onError: (error) =>
+      toast.error(error.message || "Failed to log out! Please try again"),
+  });
+
+  const {
+    data: user,
+    isLoading,
+    error,
+  }: UseQueryResult<any> = useQuery({ queryKey: ["authUser"] });
+
+  if (isLoading)
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center bg-black/75 backdrop-blur">
+        <LoaderCircle className="animate-spin" />
+      </div>
+    );
+  if (error) return <h1>An error occurred! Please try again</h1>;
 
   return (
     <div className="min-h-screen">
@@ -108,7 +154,7 @@ export default function HelperDashboardRequest() {
                 >
                   <Link
                     className="flex items-center space-x-3 font-bold text-white"
-                    to=""
+                    to="/"
                   >
                     <HomeIcon className="size-6" />
                     {(mouseEnter || openSideBar) && <span>Help Me</span>}
@@ -132,6 +178,7 @@ export default function HelperDashboardRequest() {
                   ))}
                 <li
                   className={`mt-2 flex w-fit cursor-pointer ${(mouseEnter || openSideBar) && "pl-12"} items-center space-x-2 rounded-r-md bg-red-500 px-2 py-2 pl-4 font-semibold text-white transition-all duration-300 ease-in-out hover:bg-red-700 hover:font-semibold`}
+                  onClick={() => authUserLogout()}
                 >
                   <ArrowLeftStartOnRectangleIcon className="size-5" />
                   {(mouseEnter || openSideBar) && (
@@ -145,7 +192,9 @@ export default function HelperDashboardRequest() {
           <div className="relative ml-16 h-full w-full flex-1 overflow-auto rounded-md bg-white shadow">
             <div className="sticky top-0 z-[9] flex items-center justify-between border-b border-gray-300 bg-white px-4 py-1">
               {/* Profile */}
-              {openProfile && <Profile />}
+              {openProfile && (
+                <Profile user={user} status={status} logout={authUserLogout} />
+              )}
 
               <header className="flex items-center justify-between">
                 <div
@@ -155,11 +204,11 @@ export default function HelperDashboardRequest() {
                   <div className="relative flex items-center space-x-3">
                     <img
                       className="h-9 w-9 rounded-full object-cover"
-                      src="/images/profile-img.png"
+                      src={user?.profileImg}
                       alt="HelpersProfile Image"
                     />
                     <div className="absolute left-4 top-4 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-black text-xs font-semibold text-white">
-                      IA
+                      {userInitials(user?.name)}
                     </div>
                   </div>
                 </div>
@@ -181,6 +230,14 @@ export default function HelperDashboardRequest() {
 
               {/* Notification Icons */}
               <div className="flex items-center space-x-2">
+                <h2
+                  className={`${status} hidden rounded px-4 py-1 font-light sm:block`}
+                >
+                  <span>Welcome &ensp;</span>
+                  <span className="font-semibold">
+                    {capitalizeFirstLetter(user?.name)}!
+                  </span>
+                </h2>
                 <ChatBubbleOvalLeftEllipsisIcon className="mr-auto size-6 text-[#868686] md:size-8" />
                 <BellIcon className="mr-auto size-6 text-[#868686] md:size-8" />
               </div>
