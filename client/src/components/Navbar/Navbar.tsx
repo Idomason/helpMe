@@ -31,7 +31,11 @@ export default function Navbar({ openNavbar }: INavbar) {
       className={`mx-auto w-full ${navbarBg ? "bg-black bg-opacity-80 backdrop-blur-md" : "fixed"} fixed z-[10000] bg-helpMe-950 py-5`}
     >
       {toggleProfile && (
-        <NavProfile user={authUser} status={"text-[#05a365] bg-[#06ec92]/10"} />
+        <NavProfile
+          user={authUser}
+          status={"text-[#05a365] bg-[#06ec92]/10"}
+          profileToggler={setToggleProfile}
+        />
       )}
       <div className="mx-auto flex items-center justify-center px-4 text-helpMe-50 sm:px-6 md:px-10">
         <div className="flex w-full items-center justify-between">
@@ -64,17 +68,22 @@ export default function Navbar({ openNavbar }: INavbar) {
             {/* Profile */}
             <div className="flex items-center space-x-4">
               {authUser && authUser?.profileImg && (
-                <div
-                  className="h-10 w-10 transform cursor-pointer rounded-full bg-pink-400 p-0.5 transition-all duration-300 ease-in-out hover:bg-pink-600"
-                  onClick={() => setToggleProfile((prev) => !prev)}
-                >
-                  {/* <Link to={"/request"}></Link> */}
-                  <img
-                    className="rounded-full"
-                    // src="/images/profile-img.png"
-                    src={authUser?.profileImg}
-                    alt="Profile Image"
-                  />
+                <div className="rounded-full bg-pink-400 p-0.5 transition-all duration-300 ease-in-out hover:bg-pink-600">
+                  <div
+                    className="h-10 w-10 transform cursor-pointer overflow-hidden rounded-full"
+                    onClick={() => setToggleProfile((prev) => !prev)}
+                  >
+                    {/* <Link to={"/request"}></Link> */}
+                    <img
+                      className="h-full w-full object-cover"
+                      // src="/images/profile-img.png"
+                      src={
+                        authUser?.profileImg ||
+                        "https://www.gravatar.com/avatar/?d=mp"
+                      }
+                      alt="Profile Image"
+                    />
+                  </div>
                 </div>
               )}
 

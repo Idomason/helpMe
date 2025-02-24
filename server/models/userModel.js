@@ -156,6 +156,8 @@ userSchema.pre('aggregate', function (next) {
 
 // Check if email already exist
 userSchema.pre('validate', async function () {
+  if (!this.isNew) return;
+
   const emailExists = await User.findOne({ email: this.email });
 
   if (emailExists) {

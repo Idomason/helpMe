@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-export default function NavProfile({ user, status }) {
+export default function NavProfile({ user, status, profileToggler }) {
   const queryClient = useQueryClient();
 
   const logout = async () => {
@@ -42,8 +42,13 @@ export default function NavProfile({ user, status }) {
           <li className="w-full cursor-pointer border-t px-4 py-2 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white">
             Settings
           </li>
-          <li className="w-full cursor-pointer border-t px-4 py-2 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white">
-            Account
+          <li
+            className="w-full cursor-pointer border-t px-4 py-2 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white"
+            onClick={() => profileToggler((prev) => !prev)}
+          >
+            <Link className="w-full" to="/account">
+              Account
+            </Link>
           </li>
           <li className="mb-4 w-full cursor-pointer border-b border-t px-4 py-2 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white">
             Role{" "}

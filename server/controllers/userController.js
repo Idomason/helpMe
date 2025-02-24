@@ -6,7 +6,7 @@ import { catchAsync } from '../utils/catchAsync.js';
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
 
-  Object.keys(obj).forEach((el) => {
+  Object.keys(obj).forEach(el => {
     if (allowedFields.includes(el)) newObj[el] = obj[el];
   });
 
@@ -162,14 +162,14 @@ export const updateMe = catchAsync(async (req, res, next) => {
   const { name, email } = req.body;
 
   // 1.) Error if user POSTs password or passwordConfirm
-  if (password || passwordConfirm) {
-    return next(
-      new AppError('Please use updateMyPassword to update password', 400),
-    );
-  }
+  // if (password || passwordConfirm) {
+  //   return next(
+  //     new AppError('Please use updateMyPassword to update password', 400),
+  //   );
+  // }
 
   // 2.) Filter out unwanted field names that are not allowed to be updated
-  const filteredBody = filterObj(req.body, 'name', 'email');
+  const filteredBody = filterObj(req.body, 'name', 'email', 'profileImg');
 
   // 3.) Update user document
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {

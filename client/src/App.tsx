@@ -17,6 +17,7 @@ import SidebarContextProvider from "./context/SidebarContext.tsx";
 import { useQuery } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import Spinner from "./components/Spinner/Spinner.tsx";
+import Account from "./pages/Account/Account.tsx";
 
 const toastOptions = {
   success: {
@@ -97,6 +98,10 @@ function App() {
                 element={
                   authUser ? <RequestForm /> : <Navigate to={"/login"} />
                 }
+              />
+              <Route
+                path="/account"
+                element={authUser ? <Account /> : <Navigate to={"/login"} />}
               />
               <Route path="*" element={<NotFound />} />
             </Route>

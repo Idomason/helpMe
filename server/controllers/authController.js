@@ -5,7 +5,6 @@ import User from '../models/userModel.js';
 import sendEmail from '../utils/email.js';
 import AppError from '../utils/appError.js';
 import { catchAsync } from '../utils/catchAsync.js';
-import { generateTokenAndSetCookie } from '../lib/generateToken.js';
 
 // Protect MIDDLEWARE
 export const protect = catchAsync(async (req, res, next) => {
@@ -53,7 +52,7 @@ export const protect = catchAsync(async (req, res, next) => {
   next();
 });
 
-const generateToken = (id) => {
+const generateToken = id => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_TOKEN_EXPIRES_IN,
   });
@@ -241,7 +240,7 @@ export const resetPassword = catchAsync(async (req, res, next) => {
 
   // 3.) Update changePasswordAt property for the current user
   // 4.) Log the user in, send JWT to the client
-  const generateToken = (id) => {
+  const generateToken = id => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
       expiresIn: '15d',
     });
@@ -267,7 +266,7 @@ export const updatePassword = catchAsync(async (req, res, next) => {
   // 3.) If so, update password
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
-  user.save();
+  await user.save();
 
   // 4.) Login with new password, send JWT
   createSendToken(user, 200, res);
