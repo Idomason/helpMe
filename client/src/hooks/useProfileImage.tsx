@@ -9,14 +9,15 @@ export const useProfileImage = () => {
   const uploadPreset = import.meta.env.VITE_PROFILE_UPLOAD_PRESET;
 
   const handleImageUpload = async function (filePath: any): Promise<any> {
-    // Prepare cloudinary data for upload
-    const formData = new FormData();
-    formData.append("file", filePath);
-    formData.append("upload_preset", uploadPreset);
-    formData.append("api_key", import.meta.env.VITE_CLOUDINARY_API_KEY);
-
     try {
       setIsSubmitting(true);
+
+      // Prepare cloudinary data for upload
+      const formData = new FormData();
+      formData.append("file", filePath);
+      formData.append("upload_preset", uploadPreset);
+      formData.append("api_key", import.meta.env.VITE_CLOUDINARY_API_KEY);
+
       // Perform the POST request to Cloudinary's upload API
       const response = await fetch(cloudinaryUrl, {
         method: "POST",

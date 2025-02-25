@@ -73,14 +73,9 @@ export default function Navbar({ openNavbar }: INavbar) {
                     className="h-10 w-10 transform cursor-pointer overflow-hidden rounded-full"
                     onClick={() => setToggleProfile((prev) => !prev)}
                   >
-                    {/* <Link to={"/request"}></Link> */}
                     <img
                       className="h-full w-full object-cover"
-                      // src="/images/profile-img.png"
-                      src={
-                        authUser?.profileImg ||
-                        "https://www.gravatar.com/avatar/?d=mp"
-                      }
+                      src={authUser?.profileImg?.url || "/images/profile.jpg"}
                       alt="Profile Image"
                     />
                   </div>

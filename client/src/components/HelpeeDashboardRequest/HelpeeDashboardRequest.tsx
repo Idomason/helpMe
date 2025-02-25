@@ -70,6 +70,7 @@ const sidebarSecondaryData: ISidebarDataProp = [
   {
     name: "profile",
     icon: <UserCircleIcon className="size-5" />,
+    link: "/account",
   },
 ];
 
@@ -194,7 +195,7 @@ export default function HelpeeDashboardRequest() {
                   <div className="relative flex items-center space-x-3">
                     <img
                       className="h-9 w-9 rounded-full object-cover"
-                      src={user?.profileImg}
+                      src={user?.profileImg?.url}
                       alt="User Image"
                     />
                     <div className="absolute left-4 top-4 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-black text-xs font-semibold text-white">

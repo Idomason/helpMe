@@ -1,8 +1,9 @@
 import app from './app.js';
+import { cloudinaryConfig } from './config/cloudinary.js';
 import { connectDB } from './config/db.js';
 
 // Handle uncaughtException
-process.on('uncaughtException', (err) => {
+process.on('uncaughtException', err => {
   console.log('Uncaught Exception: Shutting down...');
   console.error(err.name, err.message);
 
@@ -17,8 +18,11 @@ const server = app.listen(port, () => {
   connectDB();
 });
 
+// Connect to cloudinary
+cloudinaryConfig();
+
 // Handle every unhandled rejections
-process.on('unhandledRejection', (err) => {
+process.on('unhandledRejection', err => {
   console.log(err.name, err.message);
   console.log('Unhandled rejection: Shutting down...');
 

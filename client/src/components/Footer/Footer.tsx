@@ -1,4 +1,10 @@
-import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import {
+  Facebook,
+  Instagram,
+  SendHorizontal,
+  Twitter,
+  Youtube,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
@@ -133,7 +139,7 @@ export default function Footer() {
                   placeholder="your_email@mail.com"
                 />
                 <button className="lg:text-md rounded-r-sm bg-pink-400 from-pink-600 to-rose-900 px-2 py-1.5 text-sm text-white transition-colors duration-300 ease-in-out hover:bg-gradient-to-br sm:px-5 sm:py-2">
-                  Subscribe
+                  <SendHorizontal />
                 </button>
               </div>
             </div>

@@ -2,6 +2,7 @@ import express from 'express';
 import { protect } from '../middlewares/protectedRoute.js';
 import * as authController from '../controllers/authController.js';
 import * as userController from '../controllers/userController.js';
+import { deleteFromCloudinary } from '../middlewares/deleteFromCloudinary.js';
 // import { aliasTopHelpers } from '../middlewares/aliasTopHelpers.js';
 
 function test() {
@@ -32,7 +33,12 @@ router.patch(
   authController.updatePassword,
 );
 
-router.patch('/updateMe', authController.protect, userController.updateMe);
+router.patch(
+  '/updateMe',
+  authController.protect,
+  deleteFromCloudinary,
+  userController.updateMe,
+);
 router.delete('/deleteMe', authController.protect, userController.deleteMe);
 
 router

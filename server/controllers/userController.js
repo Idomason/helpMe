@@ -161,22 +161,30 @@ export const getMonthlyPlan = catchAsync(async (req, res, next) => {
 export const updateMe = catchAsync(async (req, res, next) => {
   const { name, email } = req.body;
 
-  // 1.) Error if user POSTs password or passwordConfirm
-  // if (password || passwordConfirm) {
-  //   return next(
-  //     new AppError('Please use updateMyPassword to update password', 400),
-  //   );
-  // }
+  try {
+    // 1.) Error if user POSTs password or passwordConfirm
+    // if (password || passwordConfirm) {
+    //   return next(
+    //     new AppError('Please use updateMyPassword to update password', 400),
+    //   );
+    // }
 
-  // 2.) Filter out unwanted field names that are not allowed to be updated
-  const filteredBody = filterObj(req.body, 'name', 'email', 'profileImg');
+    // 2.) Filter out unwanted field names that are not allowed to be updated
+    const filteredBody = filterObj(req.body, 'name', 'email', 'profileImg');
 
-  // 3.) Update user document
-  const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
-    new: true,
-    runValidators: true,
-  });
-  res.status(200).json({ status: 'success', data: { user: updatedUser } });
+    // 3.) Update user document
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      filteredBody,
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+    res.status(200).json({ status: 'success', data: { user: updatedUser } });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 export const deleteMe = catchAsync(async (req, res, next) => {

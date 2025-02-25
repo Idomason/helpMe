@@ -48,8 +48,13 @@ const userSchema = new Schema(
       default: 'helpee',
     },
     profileImg: {
-      type: String,
-      default: 'https://www.gravatar.com/avatar/?d=mp',
+      url: {
+        type: String,
+        default: 'https://www.gravatar.com/avatar/?d=mp',
+      },
+      publicId: {
+        type: String,
+      },
     },
     termsConditions: {
       type: Boolean,
