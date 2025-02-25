@@ -36,20 +36,22 @@ export default function NavProfile({ user, status, profileToggler }) {
           <li className="w-full cursor-pointer border-t px-4 py-1.5 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white">
             {user.email}
           </li>
-          <li className="w-full cursor-pointer border-t px-4 py-2 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white">
-            <Link to={`/dashboard-${user.role}-request`}>Dashboard</Link>
-          </li>
+          <Link to={`/dashboard-${user.role}-request`}>
+            <li className="w-full cursor-pointer border-t px-4 py-2 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white">
+              Dashboard
+            </li>
+          </Link>
           <li className="w-full cursor-pointer border-t px-4 py-2 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white">
             Settings
           </li>
-          <li
-            className="w-full cursor-pointer border-t px-4 py-2 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white"
-            onClick={() => profileToggler((prev) => !prev)}
-          >
-            <Link className="w-full" to="/account">
+          <Link className="w-full" to="/account">
+            <li
+              className="w-full cursor-pointer border-t px-4 py-2 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white"
+              onClick={() => profileToggler((prev) => !prev)}
+            >
               Account
-            </Link>
-          </li>
+            </li>
+          </Link>
           <li className="mb-4 w-full cursor-pointer border-b border-t px-4 py-2 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white">
             Role{" "}
             <span className={`${status} ml-2 rounded py-1 ring-1`}>

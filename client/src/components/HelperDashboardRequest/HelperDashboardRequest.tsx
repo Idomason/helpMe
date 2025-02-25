@@ -106,6 +106,7 @@ export default function HelperDashboardRequest() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
       toast.success("Logout successful");
+      onOpenProfile(false);
     },
     onError: (error) =>
       toast.error(error.message || "Failed to log out! Please try again"),
