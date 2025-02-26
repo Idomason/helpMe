@@ -7,7 +7,7 @@ const router = express.Router();
 // primary routes
 router
   .route('/')
-  .get(authController.protect, requestController.getAllRequests)
+  .get(requestController.getAllRequests)
   .post(authController.protect, requestController.createRequest);
 
 router

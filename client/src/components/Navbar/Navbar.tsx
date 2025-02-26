@@ -9,7 +9,11 @@ import NavProfile from "../profile/NavProfile";
 export default function Navbar({ openNavbar }: INavbar) {
   const [navbarBg, setNavbarBg] = useState(false);
   const [toggleProfile, setToggleProfile] = useState(false);
-  const { data: authUser } = useQuery<IUser>({ queryKey: ["authUser"] });
+  const { data: authUser } = useQuery<IUser>({
+    queryKey: ["authUser"],
+  });
+
+  console.log(authUser);
 
   // TODO
   // Create a user profile link on the Navbar
@@ -67,7 +71,8 @@ export default function Navbar({ openNavbar }: INavbar) {
 
             {/* Profile */}
             <div className="flex items-center space-x-4">
-              {authUser && authUser?.profileImg && (
+              {authUser && (
+                // If authenticated, show the profile image
                 <div className="rounded-full bg-pink-400 p-0.5 transition-all duration-300 ease-in-out hover:bg-pink-600">
                   <div
                     className="h-10 w-10 transform cursor-pointer overflow-hidden rounded-full"
@@ -80,6 +85,13 @@ export default function Navbar({ openNavbar }: INavbar) {
                     />
                   </div>
                 </div>
+              )}
+
+              {!authUser && (
+                // If not authenticated, show CTA button
+                <button className="rounded bg-pink-400 px-6 py-3 font-medium tracking-wide text-white shadow transition-all duration-300 ease-in hover:bg-pink-600 hover:font-semibold md:px-8">
+                  <Link to={"/register"}>Sign up today</Link>
+                </button>
               )}
 
               <Menu

@@ -1,6 +1,10 @@
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import { IUser } from "../../utils/types";
 
 export default function Hero() {
+  const { data: authUser } = useQuery<IUser>({ queryKey: ["authUser"] });
+
   return (
     <div className="h-screen w-full bg-helpMe-950 px-4 py-40 sm:px-6">
       <div className="heroWidth mx-auto flex h-full flex-col justify-center px-4 sm:px-6 md:w-11/12">
@@ -19,15 +23,19 @@ export default function Hero() {
             <div className="flex items-center justify-center space-x-2 self-center pt-5 md:space-x-4 md:self-start">
               <Link
                 className="sm:text-md transform rounded-lg bg-pink-400 px-2.5 py-3 text-sm font-semibold text-helpMe-100 shadow transition-all duration-300 ease-in-out hover:bg-pink-600 hover:text-helpMe-100 sm:px-2.5 lg:px-8 xl:px-10 xl:py-4 xl:text-lg"
-                to={"/register"}
+                to={
+                  !authUser
+                    ? "/register"
+                    : `/dashboard-${authUser?.role}-helper`
+                }
               >
-                Join Our Community
+                {!authUser ? "Join Our Community" : "Visit Dashboard"}
               </Link>
               <Link
                 className="border-1 sm:text-md transform rounded-lg border border-helpMe-300 px-2.5 py-3 text-sm font-medium text-helpMe-300 shadow transition-all duration-300 ease-in-out hover:border-helpMe-600 hover:text-helpMe-600 sm:px-2.5 lg:px-8 xl:px-10 xl:py-4 xl:text-lg"
-                to={"/request"}
+                to={authUser ? "/request" : "/login"}
               >
-                Post a Request
+                {authUser ? "Post a Request" : "Login"}
               </Link>
             </div>
           </div>

@@ -133,7 +133,9 @@ export const login = catchAsync(async (req, res, next) => {
 // Logout
 export const logout = catchAsync(async (req, res, next) => {
   res.cookie('jwt', '', { maxAge: 0 });
-  return res.status(200).json({ success: true, message: 'Logout successful' });
+  return res
+    .status(200)
+    .json({ success: true, data: null, message: 'Logout successful' });
 });
 
 // Get Authenticated user

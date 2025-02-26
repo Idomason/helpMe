@@ -65,7 +65,13 @@ export default function NavProfile({
               {capitalizeFirstLetter(user?.role || "")}
             </span>
           </li>
-          <li className="px-4" onClick={() => authUserLogout()}>
+          <li
+            className="px-4"
+            onClick={() => {
+              authUserLogout();
+              profileToggler(false);
+            }}
+          >
             <button className="w-full cursor-pointer rounded-md bg-red-500 py-2 text-center text-white shadow hover:bg-black/75 hover:text-white">
               Log Out
             </button>

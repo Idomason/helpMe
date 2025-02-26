@@ -34,22 +34,6 @@ const toastOptions = {
 };
 
 function App() {
-  let authUser;
-  const { data, isLoading } = useQuery({
-    queryKey: ["authUser"],
-    queryFn: async () => {
-      try {
-        const response = await fetch("/api/v1/users/me");
-        const data = await response.json();
-        return data;
-      } catch (error: any) {
-        console.log(error);
-        throw new Error(error.message);
-      }
-    },
-    retry: false,
-  });
-
   const { data: requestData } = useQuery({
     queryKey: ["requests"],
     queryFn: async () => {
@@ -65,6 +49,24 @@ function App() {
     },
   });
 
+  const { data: authUser, isLoading } = useQuery({
+    queryKey: ["authUser"],
+    queryFn: async () => {
+      try {
+        const response = await fetch("/api/v1/users/me");
+
+        if (!response.ok) return null;
+        const data = await response.json();
+
+        return data;
+      } catch (error: any) {
+        console.log(error);
+        throw new Error(error.message);
+      }
+    },
+    retry: false,
+  });
+
   if (isLoading)
     return (
       <div className="min-h-screen bg-helpMe-950">
@@ -73,13 +75,6 @@ function App() {
         </div>
       </div>
     );
-  if (data.status === "fail") {
-    authUser = null;
-  } else {
-    authUser = data;
-  }
-
-  console.log(authUser);
 
   return (
     <>
@@ -87,14 +82,8 @@ function App() {
         <ReactQueryDevtools initialIsOpen={false} />
         <SidebarContextProvider>
           <Routes>
-            <Route
-              path="/"
-              element={authUser ? <Layout /> : <Navigate to={"/login"} />}
-            >
-              <Route
-                path="/"
-                element={authUser ? <Home /> : <Navigate to={"/login"} />}
-              />
+            <Route path="/" element={<Layout />}>
+              <Route path="/" element={<Home />} />
               <Route
                 path="/request"
                 element={
@@ -144,7 +133,7 @@ function App() {
             {/*  */}
             <Route
               path="/register"
-              element={!authUser ? <Register /> : <Navigate to="/" />}
+              element={!authUser ? <Register /> : <Navigate to={"/"} />}
             />
             <Route
               path="/login"
