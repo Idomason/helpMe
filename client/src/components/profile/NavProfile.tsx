@@ -1,23 +1,30 @@
 import { Link } from "react-router-dom";
 import { capitalizeFirstLetter } from "../../utils/capitalizeFirstLetter";
-import {
-  useMutation,
-  UseMutationResult,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { IUser } from "../../utils/types";
 
-export default function NavProfile({ user, status, profileToggler }) {
+type NavProfileProp = {
+  user?: IUser;
+  status: string;
+  profileToggler: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export default function NavProfile({
+  user,
+  status,
+  profileToggler,
+}: NavProfileProp) {
   const queryClient = useQueryClient();
 
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     const response = await fetch("/api/v1/users/logout", { method: "POST" });
     if (!response.ok) throw new Error("Failed to log user out, try again");
     const data = await response.json();
     return data;
   };
 
-  const { mutate: authUserLogout }: UseMutationResult<void> = useMutation({
+  const { mutate: authUserLogout } = useMutation({
     mutationFn: logout,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
@@ -31,12 +38,12 @@ export default function NavProfile({ user, status, profileToggler }) {
       <div className="absolute top-0 flex min-h-fit w-full items-center justify-end px-4">
         <ul className="flex h-full w-72 flex-col rounded-md bg-helpMe-300 py-4 shadow-lg">
           <li className="w-full cursor-pointer border-t px-4 py-1.5 font-semibold hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white">
-            {capitalizeFirstLetter(user.name)}
+            {capitalizeFirstLetter(user?.name || "")}
           </li>
           <li className="w-full cursor-pointer border-t px-4 py-1.5 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white">
-            {user.email}
+            {user?.email}
           </li>
-          <Link to={`/dashboard-${user.role}-request`}>
+          <Link to={`/dashboard-${user?.role}-request`}>
             <li className="w-full cursor-pointer border-t px-4 py-2 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white">
               Dashboard
             </li>
@@ -55,7 +62,7 @@ export default function NavProfile({ user, status, profileToggler }) {
           <li className="mb-4 w-full cursor-pointer border-b border-t px-4 py-2 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white">
             Role{" "}
             <span className={`${status} ml-2 rounded py-1 ring-1`}>
-              {capitalizeFirstLetter(user.role)}
+              {capitalizeFirstLetter(user?.role || "")}
             </span>
           </li>
           <li className="px-4" onClick={() => authUserLogout()}>

@@ -79,6 +79,8 @@ function App() {
     authUser = data;
   }
 
+  console.log(authUser);
+
   return (
     <>
       <BrowserRouter>

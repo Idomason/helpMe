@@ -4,9 +4,14 @@ import ShortHeader from "../ShortHeader/ShortHeader";
 import { useProfileImage } from "../../hooks/useProfileImage";
 import { Eye, EyeOff, ImageUp, LoaderCircle } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { IUser } from "../../utils/types";
 
-export default function ProfileSettings({ user }) {
-  const profileImgRef = useRef(null);
+type UserDataProp = {
+  user?: IUser;
+};
+
+export default function ProfileSettings({ user }: UserDataProp) {
+  const profileImgRef = useRef<HTMLInputElement | null>(null);
   const [editName, setEditName] = useState(true);
   const [editEmail, setEditEmail] = useState(true);
   const [imageFile, setImageFile] = useState(null);
@@ -20,7 +25,7 @@ export default function ProfileSettings({ user }) {
     profileImg: user?.profileImg,
   });
 
-  const changeProfileInfo = async function (profileData) {
+  const changeProfileInfo = async function (profileData: any) {
     try {
       const response = await fetch("/api/v1/users/updateMe", {
         method: "PATCH",
@@ -60,7 +65,8 @@ export default function ProfileSettings({ user }) {
       toast.success("Name updated successfully");
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
     },
-    onError: (error) => toast.error(error.message || "Profile update failed"),
+    onError: (error: any) =>
+      toast.error(error.message || "Profile update failed"),
   });
 
   const { mutate: changeProfileEmail, isLoading: isChangingEmail } =
@@ -73,17 +79,12 @@ export default function ProfileSettings({ user }) {
       onError: (error) => toast.error(error.message || "Profile update failed"),
     });
 
-  const handleProfileSubmit = async function (event) {
+  const handleProfileSubmit = async function (event: Event | undefined) {
     try {
-      event.preventDefault();
+      event?.preventDefault();
 
       if (imageFile && flag === "image") {
-        const previousPublicId = user?.profileImg?.publicId;
-
-        const { url, publicId } = await handleImageUpload(
-          imageFile,
-          previousPublicId,
-        );
+        const { url, publicId } = await handleImageUpload(imageFile);
         const profileData = {
           ...userData,
           profileImg: { url, publicId },
@@ -108,7 +109,7 @@ export default function ProfileSettings({ user }) {
   };
 
   const handleFileChange = function () {
-    let file = profileImgRef.current.files[0];
+    let file = profileImgRef.current?.files?.[0];
 
     setImageFile(file);
     setFlag("image");
@@ -126,7 +127,9 @@ export default function ProfileSettings({ user }) {
     file = null;
   };
 
-  const handleChange = function (event) {
+  const handleChange = function (event: {
+    target: { name: string; value: string };
+  }) {
     const { name, value } = event.target;
     setFlag(name);
     setUserData({ ...userData, [name]: value });

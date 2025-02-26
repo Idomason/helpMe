@@ -10,10 +10,6 @@ type PasswordDataprop = {
   passwordConfirm: string;
 };
 
-// handlePasswordSubmit = { handlePasswordSubmit };
-// handlePassword = { handlePassword };
-// updateMyPassword = { updateMyPassword };
-
 export default function PasswordSettings() {
   const queryClient = useQueryClient();
   const [updateMyPassword, setUpdateMyPassword] = useState({
@@ -56,12 +52,16 @@ export default function PasswordSettings() {
     onError: (error) => toast.error(error.message || "Profile update failed"),
   });
 
-  const handlePassword = function (event) {
+  const handlePassword = function (event: {
+    target: { name: string; value: string };
+  }) {
     const { name, value } = event.target;
     setUpdateMyPassword({ ...updateMyPassword, [name]: value });
   };
 
-  const handlePasswordSubmit = function (event) {
+  const handlePasswordSubmit = function (event: {
+    preventDefault: () => void;
+  }) {
     try {
       event.preventDefault();
 

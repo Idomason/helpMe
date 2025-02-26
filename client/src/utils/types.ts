@@ -201,11 +201,23 @@ type sidebar = {
 };
 export type ISidebarDataProp = sidebar[];
 
-// export interface ISidebarDataSecondaryProp {
-//   sidebarSecondaryData: {
-//     name: string;
-//     level: number;
-//     link?: string;
-//     icon?: JSX.Element;
-//   }[];
-// }
+// Utility type for MongoDB ObjectId validation
+type ObjectId = string & { __objectId?: true }; // Enforces ObjectId format
+
+interface ProfileImage {
+  publicId: string | undefined;
+  url: string | ArrayBuffer;
+}
+
+export interface IUser {
+  _id: ObjectId; // Ensures it's a valid MongoDB ObjectId
+  name: string;
+  email: string;
+  role: "helper" | "helpee"; // Restrict to valid roles
+  profileImg: ProfileImage;
+  helpRequests: ObjectId[]; // Array of valid user IDs (ObjectIds)
+  helpsRendered: ObjectId[]; // Array of valid user IDs (ObjectIds)
+  createdAt: string | Date; // Can be Date if parsed before use
+  updatedAt: string | Date; // Can be Date if parsed before use
+  __v: number;
+}
