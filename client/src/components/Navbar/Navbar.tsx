@@ -13,8 +13,6 @@ export default function Navbar({ openNavbar }: INavbar) {
     queryKey: ["authUser"],
   });
 
-  console.log(authUser);
-
   // TODO
   // Create a user profile link on the Navbar
 
@@ -54,20 +52,22 @@ export default function Navbar({ openNavbar }: INavbar) {
 
           <div className="flex items-center space-x-10">
             {/* Nav-Links */}
-            <ul className="showLinks hidden items-center space-x-4">
-              {navLinks &&
-                navLinks.length > 0 &&
-                navLinks.map((navItem: INavLinks) => (
-                  <li key={navItem.id}>
-                    <Link
-                      className="nav__link lg:text-md text-sm font-medium capitalize text-white xl:text-lg"
-                      to={navItem.link}
-                    >
-                      {navItem.label}
-                    </Link>
-                  </li>
-                ))}
-            </ul>
+            {authUser && (
+              <ul className="showLinks hidden items-center space-x-4">
+                {navLinks &&
+                  navLinks.length > 0 &&
+                  navLinks.map((navItem: INavLinks) => (
+                    <li key={navItem.id}>
+                      <Link
+                        className="nav__link lg:text-md text-sm font-medium capitalize text-white xl:text-lg"
+                        to={navItem.link}
+                      >
+                        {navItem.label}
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+            )}
 
             {/* Profile */}
             <div className="flex items-center space-x-4">

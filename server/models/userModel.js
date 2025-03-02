@@ -65,16 +65,15 @@ const userSchema = new Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Request',
-        default: [],
       },
     ],
     helpsRendered: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'render',
-        default: [],
+        ref: 'Render',
       },
     ],
+    giveaways: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Giveaways' }],
     changedPasswordAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
@@ -163,11 +162,20 @@ userSchema.pre('aggregate', function (next) {
 userSchema.pre('validate', async function () {
   if (!this.isNew) return;
 
-  const emailExists = await User.findOne({ email: this.email });
+  const emailExists = await models.User.findOne({ email: this.email });
 
   if (emailExists) {
     this.invalidate('email', 'Email already in use');
   }
+});
+
+// Add giveaway array if the user is a helper
+userSchema.pre('save', function (next) {
+  if (this.isNew && this.role !== 'helper') {
+    this.giveaways = undefined;
+  }
+
+  next();
 });
 
 // Set the time at every instance the password is changed or a new user doc is created

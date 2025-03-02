@@ -293,7 +293,7 @@ export const registerFormElements = [
   {
     name: "passwordConfirm",
     type: "password",
-    id: "password",
+    id: "passwordConfirm",
     placeholder: "Confirm your password",
     componentType: "input",
   },

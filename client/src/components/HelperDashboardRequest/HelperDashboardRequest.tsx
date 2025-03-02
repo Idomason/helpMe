@@ -262,7 +262,7 @@ export default function HelperDashboardRequest() {
                       All help rendered
                     </p>
                     <span className="text-2xl font-bold text-[#285de9]">
-                      329{" "}
+                      {user?.helpsRendered.length}
                     </span>
                   </div>
                 </div>

@@ -26,7 +26,7 @@ export default function Hero() {
                 to={
                   !authUser
                     ? "/register"
-                    : `/dashboard-${authUser?.role}-helper`
+                    : `/dashboard-${authUser?.role}-request`
                 }
               >
                 {!authUser ? "Join Our Community" : "Visit Dashboard"}

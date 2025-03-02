@@ -18,6 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import Spinner from "./components/Spinner/Spinner.tsx";
 import Account from "./pages/Account/Account.tsx";
+import * as AllGiveaways from "./pages/Giveaways/Giveaways.tsx";
 
 const toastOptions = {
   success: {
@@ -39,7 +40,7 @@ function App() {
     queryFn: async () => {
       try {
         const response = await fetch("/api/v1/requests");
-        if (!response.ok) throw new Error("An error occured please try again");
+        if (!response.ok) return null;
         const data = await response.json();
         return data;
       } catch (error: any) {
@@ -118,6 +119,7 @@ function App() {
               path="/dashboard-helper-giveaways"
               element={authUser ? <Giveaways /> : <Navigate to={"/login"} />}
             />
+            <Route path="/giveaways" element={<AllGiveaways />} />
             <Route
               path="/dashboard-helper-finance"
               element={
