@@ -9,10 +9,10 @@ import mongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
 import cors from 'cors';
 
-import authRoutes from './routes/authRoutes.js';
+import AppError from './utils/appError.js';
+import giveawayRoutes from './routes/giveawayRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import requestRoutes from './routes/requestRoutes.js';
-import AppError from './utils/appError.js';
 import { globalErrorHandler } from './controllers/errorController.js';
 
 const app = express();
@@ -67,6 +67,7 @@ app.use(cookieParser());
 
 // API ROUTES
 // app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/giveaways', giveawayRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/requests', requestRoutes);
 // app.use("/api/v1/notifications", notificationRoutes);

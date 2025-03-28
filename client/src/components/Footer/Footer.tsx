@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <div className="mt-24 overflow-hidden bg-black/90">
+    <div className="overflow-hidden bg-black/90">
       <div className="mx-auto grid h-full grid-cols-2 px-5 py-16 sm:grid-cols-3 md:w-11/12">
         {/* COLUMN 1 */}
         <div className="col-span-3 mb-6 sm:col-span-1 sm:mb-0">

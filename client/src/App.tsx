@@ -85,6 +85,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route path="/" element={<Home />} />
+              <Route path="/giveaways" element={<AllGiveaways.default />} />
               <Route
                 path="/request"
                 element={
@@ -119,7 +120,6 @@ function App() {
               path="/dashboard-helper-giveaways"
               element={authUser ? <Giveaways /> : <Navigate to={"/login"} />}
             />
-            <Route path="/giveaways" element={<AllGiveaways />} />
             <Route
               path="/dashboard-helper-finance"
               element={
