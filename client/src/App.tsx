@@ -19,6 +19,9 @@ import { Toaster } from "react-hot-toast";
 import Spinner from "./components/Spinner/Spinner.tsx";
 import Account from "./pages/Account/Account.tsx";
 import * as AllGiveaways from "./pages/Giveaways/Giveaways.tsx";
+import GiveawayGrid from "./components/CurrentGiveawaysCard/GiveawayGrid";
+import GiveawayDetails from "./components/GiveawayDetails/GiveawayDetails";
+import HelpRequestDetails from "./components/HelpRequestDetails/HelpRequestDetails";
 
 const toastOptions = {
   success: {
@@ -85,7 +88,19 @@ function App() {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route path="/" element={<Home />} />
-              <Route path="/giveaways" element={<AllGiveaways.default />} />
+              <Route path="/giveaways/gift-cards" element={<GiveawayGrid />} />
+              <Route path="/giveaways/:id" element={<GiveawayDetails />} />
+              <Route path="/requests/:id" element={<HelpRequestDetails />} />
+              <Route
+                path="/giveaways"
+                element={
+                  authUser ? (
+                    <AllGiveaways.default />
+                  ) : (
+                    <Navigate to={"/login"} />
+                  )
+                }
+              />
               <Route
                 path="/request"
                 element={

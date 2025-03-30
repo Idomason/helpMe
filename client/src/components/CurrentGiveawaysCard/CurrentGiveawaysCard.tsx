@@ -1,7 +1,6 @@
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import GiveawaysCard from "./GiveawaysCard";
-import { currentHelpData } from "../../constant/constant";
 
 const responsive = {
   superLargeDesktop: {
@@ -41,14 +40,7 @@ export default function CurrentGiveawaysCard() {
       showDots={true}
       infinite
     >
-      {currentHelpData.category.disaster.map((disaster) => (
-        <div
-          className="mx-auto flex w-11/12 flex-wrap items-center justify-center"
-          key={disaster.id}
-        >
-          <GiveawaysCard disaster={disaster} />
-        </div>
-      ))}
+      <GiveawaysCard />
     </Carousel>
   );
 }

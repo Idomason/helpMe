@@ -20,7 +20,7 @@ export default function GiveawayGrid() {
     );
 
   return (
-    <div className="mx-auto flex w-11/12 flex-wrap items-center justify-center">
+    <div className="container mx-auto grid grid-cols-1 gap-6 p-6 py-24 pt-32 sm:grid-cols-2 lg:grid-cols-3">
       {giveaways.data?.map((giveaway: any) => (
         <GiftCard key={giveaway._id} giveaway={giveaway} />
       ))}

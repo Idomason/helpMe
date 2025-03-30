@@ -20,16 +20,39 @@ export const getAllGiveaways = catchAsync(async (req, res) => {
 });
 
 export const createGiveaway = catchAsync(async (req, res) => {
-  const giveaway = await Giveaway.create(req.body);
+  try {
+    const { image, ...giveawayData } = req.body;
 
-  if (!giveaway) {
-    return next(new AppError('Failed to create giveaway', 400));
+    if (!image) {
+      return next(new AppError('Image is required', 400));
+    }
+
+    const giveaway = await Giveaway.create({
+      title: giveawayData.title,
+      description: giveawayData.description,
+      image: image,
+      prizes: giveawayData.prizes,
+      rules: giveawayData.rules,
+      requirements: giveawayData.requirements,
+      category: giveawayData.category,
+      tags: giveawayData.tags,
+      location: giveawayData.location,
+      startDate: giveawayData.startDate,
+      endDate: giveawayData.endDate,
+    });
+
+    if (!giveaway) {
+      return next(new AppError('Failed to create giveaway', 400));
+    }
+
+    res.status(201).json({
+      status: 'success',
+      data: giveaway,
+    });
+  } catch (error) {
+    console.log(error);
+    return next(new AppError('Failed to create giveaway', 500));
   }
-
-  res.status(201).json({
-    status: 'success',
-    data: giveaway,
-  });
 });
 
 export const getGiveaway = catchAsync(async (req, res) => {
@@ -38,6 +61,8 @@ export const getGiveaway = catchAsync(async (req, res) => {
   if (!giveaway) {
     return next(new AppError('Giveaway not found', 404));
   }
+
+  console.log(giveaway);
 
   res.status(200).json({
     status: 'success',

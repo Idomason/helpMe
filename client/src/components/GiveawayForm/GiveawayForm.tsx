@@ -32,9 +32,46 @@ const initialData: GiveawayPropData = {
 
 export default function GiveawayForm() {
   const [giveawayData, setGiveawayData] = useState(initialData);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   // Cloudinary image upload hook
   const { handleImageUpload } = useGiveawayImage();
+
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    const { name, value } = e.target;
+    setGiveawayData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setGiveawayData((prev) => ({
+      ...prev,
+      image: file,
+    }));
+
+    // Create preview URL for the selected image
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
+  };
+
+  const resetForm = () => {
+    setGiveawayData(initialData);
+    setImagePreview(null);
+  };
 
   const { mutate: createGiveaway } = useMutation({
     mutationFn: async (newData: GiveawayPropData) => {
@@ -59,8 +96,7 @@ export default function GiveawayForm() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const image = formData.get("image") as File;
+    const image = giveawayData.image;
     const imageUrl = await handleImageUpload(image);
 
     const newGiveaway = {
@@ -68,7 +104,11 @@ export default function GiveawayForm() {
       image: imageUrl,
     };
 
-    createGiveaway(newGiveaway);
+    createGiveaway(newGiveaway, {
+      onSuccess: () => {
+        resetForm();
+      },
+    });
   }
 
   return (
@@ -96,6 +136,8 @@ export default function GiveawayForm() {
                 type="text"
                 id="title"
                 name="title"
+                value={giveawayData.title}
+                onChange={handleInputChange}
                 placeholder="Enter giveaway title"
               />
             </div>
@@ -113,6 +155,8 @@ export default function GiveawayForm() {
                 type="text"
                 id="location"
                 name="location"
+                value={giveawayData.location}
+                onChange={handleInputChange}
                 placeholder="City, Country"
               />
             </div>
@@ -130,6 +174,8 @@ export default function GiveawayForm() {
                 type="date"
                 id="startDate"
                 name="startDate"
+                value={giveawayData.startDate}
+                onChange={handleInputChange}
               />
             </div>
 
@@ -146,6 +192,8 @@ export default function GiveawayForm() {
                 type="date"
                 id="endDate"
                 name="endDate"
+                value={giveawayData.endDate}
+                onChange={handleInputChange}
               />
             </div>
 
@@ -161,6 +209,8 @@ export default function GiveawayForm() {
                 className="rounded-md border border-gray-300 p-2 shadow-sm focus:border-helpMe-500 focus:outline-none focus:ring-1 focus:ring-helpMe-500"
                 id="category"
                 name="category"
+                value={giveawayData.category}
+                onChange={handleInputChange}
               >
                 <option value="">Select a category</option>
                 <option value="education">Education</option>
@@ -184,6 +234,8 @@ export default function GiveawayForm() {
                 type="text"
                 id="tags"
                 name="tags"
+                value={giveawayData.tags}
+                onChange={handleInputChange}
                 placeholder="Separate tags with commas"
               />
             </div>
@@ -200,6 +252,8 @@ export default function GiveawayForm() {
                 className="min-h-[100px] rounded-md border border-gray-300 p-2 shadow-sm focus:border-helpMe-500 focus:outline-none focus:ring-1 focus:ring-helpMe-500"
                 id="description"
                 name="description"
+                value={giveawayData.description}
+                onChange={handleInputChange}
                 placeholder="Describe your giveaway"
               />
             </div>
@@ -216,6 +270,8 @@ export default function GiveawayForm() {
                 className="min-h-[80px] rounded-md border border-gray-300 p-2 shadow-sm focus:border-helpMe-500 focus:outline-none focus:ring-1 focus:ring-helpMe-500"
                 id="requirements"
                 name="requirements"
+                value={giveawayData.requirements}
+                onChange={handleInputChange}
                 placeholder="List any requirements for participants"
               />
             </div>
@@ -232,6 +288,8 @@ export default function GiveawayForm() {
                 className="min-h-[80px] rounded-md border border-gray-300 p-2 shadow-sm focus:border-helpMe-500 focus:outline-none focus:ring-1 focus:ring-helpMe-500"
                 id="prizes"
                 name="prizes"
+                value={giveawayData.prizes}
+                onChange={handleInputChange}
                 placeholder="Describe the prizes"
               />
             </div>
@@ -248,6 +306,8 @@ export default function GiveawayForm() {
                 className="min-h-[80px] rounded-md border border-gray-300 p-2 shadow-sm focus:border-helpMe-500 focus:outline-none focus:ring-1 focus:ring-helpMe-500"
                 id="rules"
                 name="rules"
+                value={giveawayData.rules}
+                onChange={handleInputChange}
                 placeholder="List the rules for your giveaway"
               />
             </div>
@@ -262,39 +322,60 @@ export default function GiveawayForm() {
               </label>
               <div className="flex w-full items-center justify-center">
                 <label className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100">
-                  <div className="flex flex-col items-center justify-center pb-6 pt-5">
-                    <svg
-                      className="mb-4 h-8 w-8 text-gray-500"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 16"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                  {imagePreview ? (
+                    <div className="relative h-full w-full">
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="h-full w-full rounded-lg object-cover"
                       />
-                    </svg>
-                    <p className="mb-2 text-sm text-gray-500">
-                      <span className="font-semibold">Click to upload</span> or
-                      drag and drop
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      PNG, JPG or JPEG (MAX. 2MB)
-                    </p>
-                  </div>
+                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 transition-opacity hover:opacity-100">
+                        <span className="text-sm text-white">
+                          Click to change image
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center pb-6 pt-5">
+                      <svg
+                        className="mb-4 h-8 w-8 text-gray-500"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 20 16"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                        />
+                      </svg>
+                      <p className="mb-2 text-sm text-gray-500">
+                        <span className="font-semibold">Click to upload</span>{" "}
+                        or drag and drop
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        PNG, JPG or JPEG (MAX. 2MB)
+                      </p>
+                    </div>
+                  )}
                   <input
                     type="file"
                     id="image"
                     name="image"
                     accept="image/*, image/jpeg, image/png, image/jpg"
+                    onChange={handleFileChange}
                     className="hidden"
                   />
                 </label>
               </div>
+              {imagePreview && (
+                <p className="text-sm text-green-600">
+                  ✓ Image selected successfully
+                </p>
+              )}
             </div>
           </div>
 

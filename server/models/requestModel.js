@@ -49,6 +49,12 @@ const requestSchema = new Schema(
       url: String,
       publicId: String,
     },
+    status: {
+      type: String,
+      required: true,
+      enum: ['active', 'pending', 'completed'],
+      default: 'active',
+    },
     votes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     comments: [
       {
