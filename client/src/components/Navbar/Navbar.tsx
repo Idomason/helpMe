@@ -30,7 +30,7 @@ export default function Navbar({ openNavbar }: INavbar) {
 
   return (
     <div
-      className={`mx-auto w-full ${navbarBg ? "bg-black bg-opacity-80 backdrop-blur-md" : "fixed"} fixed z-[10000] bg-helpMe-950 py-5`}
+      className={`mx-auto w-full ${navbarBg ? "bg-black bg-opacity-80 backdrop-blur-md" : "fixed"} fixed z-[10000] bg-helpMe-950 py-2`}
     >
       {toggleProfile && (
         <NavProfile

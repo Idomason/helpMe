@@ -1,5 +1,5 @@
 import ShortHeader from "../ShortHeader/ShortHeader";
-import Slider from "./Slider";
+import LatestRequests from "./LatestRequests";
 
 export default function FeaturedHelps() {
   return (
@@ -9,7 +9,7 @@ export default function FeaturedHelps() {
         <ShortHeader heading="Featured Helps" />
 
         {/* Sliders */}
-        <Slider />
+        <LatestRequests />
       </div>
     </div>
   );

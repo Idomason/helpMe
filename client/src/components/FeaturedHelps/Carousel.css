@@ -1,0 +1,41 @@
+.carousel-container {
+  padding: 20px 0;
+}
+
+.carousel-item-padding-40-px {
+  padding: 0 20px;
+}
+
+/* Custom arrow styles */
+.react-multi-carousel-list__arrow {
+  background-color: #4f46e5;
+  border-radius: 50%;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.react-multi-carousel-list__arrow:hover {
+  opacity: 1;
+  background-color: #4338ca;
+}
+
+.react-multi-carousel-list__arrow--left {
+  left: 0;
+}
+
+.react-multi-carousel-list__arrow--right {
+  right: 0;
+}
+
+/* Custom dot styles */
+.react-multi-carousel-dot-list {
+  bottom: -30px;
+}
+
+.react-multi-carousel-dot button {
+  border-color: #4f46e5;
+}
+
+.react-multi-carousel-dot--active button {
+  background: #4f46e5;
+}

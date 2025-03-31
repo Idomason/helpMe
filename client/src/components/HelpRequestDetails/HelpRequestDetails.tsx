@@ -200,8 +200,8 @@ export default function HelpRequestDetails() {
                   <p className="text-sm font-medium text-gray-500">
                     Amount Needed
                   </p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    ${requestData?.specificDetails?.amount}
+                  <p className="text-lg font-semibold text-pink-500">
+                    &#8358;{requestData?.specificDetails?.amount}
                   </p>
                 </div>
                 <div>

@@ -29,9 +29,22 @@ export interface IFeature {
 
 // SliderCard PropType
 export interface ISliderCard {
-  image: string;
-  title: string;
-  link: string;
+  _id: string;
+  name: string;
+  image: {
+    url: string;
+  };
+  city: string;
+  state: string;
+  country: string;
+  category: string;
+  status: string;
+  specificDetails: {
+    amount: number;
+    deadline: string;
+  };
+  requestDescription: string;
+  createdAt: string;
 }
 
 // RangeSLider PropTypes
