@@ -48,7 +48,7 @@ export default function GiftCard({ giveaway }: GiveawayCardProps) {
 
   return (
     <div
-      className="group relative overflow-hidden rounded-lg bg-white shadow-md transition-all duration-300 hover:shadow-xl"
+      className="group relative w-72 overflow-hidden rounded-lg bg-white shadow-md transition-all duration-300 hover:shadow-xl"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

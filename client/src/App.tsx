@@ -95,7 +95,8 @@ function App() {
                 path="/giveaways"
                 element={
                   authUser ? (
-                    <AllGiveaways.default />
+                    // <AllGiveaways.default />
+                    <GiveawayGrid />
                   ) : (
                     <Navigate to={"/login"} />
                   )

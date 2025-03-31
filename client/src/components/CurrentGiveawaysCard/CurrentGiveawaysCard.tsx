@@ -1,6 +1,9 @@
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import GiveawaysCard from "./GiveawaysCard";
+// import GiveawaysCard from "./GiveawaysCard";
+import GiftCard from "./GiftCard";
+import { useQuery } from "@tanstack/react-query";
+import Spinner from "../Spinner/Spinner";
 
 const responsive = {
   superLargeDesktop: {
@@ -27,6 +30,22 @@ const responsive = {
 };
 
 export default function CurrentGiveawaysCard() {
+  const { data: giveaways, isLoading } = useQuery({
+    queryKey: ["giveaways"],
+    queryFn: async () => {
+      const response = await fetch("/api/v1/giveaways");
+      if (!response.ok) throw new Error("Failed to fetch giveaways");
+      return response.json();
+    },
+  });
+
+  if (isLoading)
+    return (
+      <div className="flex h-full items-center justify-center gap-6">
+        <Spinner />
+      </div>
+    );
+
   return (
     <Carousel
       responsive={responsive}
@@ -40,7 +59,14 @@ export default function CurrentGiveawaysCard() {
       showDots={true}
       infinite
     >
-      <GiveawaysCard />
+      {giveaways.data?.map((giveaway: any) => (
+        <div
+          key={giveaway._id}
+          className="flex items-center justify-center py-10"
+        >
+          <GiftCard giveaway={giveaway} />
+        </div>
+      ))}
     </Carousel>
   );
 }

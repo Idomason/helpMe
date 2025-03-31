@@ -100,6 +100,7 @@ export default function HelpRequestDetails() {
     },
     onError: (error: any) =>
       toast.error(error.message || "Failed to vote, please try again"),
+    onCancel: (data: any) => toast.error(data.message || "Payment cancelled"),
   });
 
   if (isLoading)

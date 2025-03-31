@@ -3,6 +3,7 @@ import ShortHeader from "../ShortHeader/ShortHeader";
 import RangeSlider from "../CurrentHelpRequests/RangeSlider";
 import CurrentGiveawaysCard from "../CurrentGiveawaysCard/CurrentGiveawaysCard";
 import { ArrowLongRightIcon } from "@heroicons/react/24/solid";
+import { Link } from "react-router-dom";
 
 export default function CurrentGiveaways() {
   return (
@@ -37,10 +38,13 @@ export default function CurrentGiveaways() {
             <CurrentGiveawaysCard />
           </div>
           <div className="flex w-full justify-end pb-10">
-            <button className="mx-auto flex items-center space-x-4 bg-helpMe-200 px-5 py-1.5 capitalize text-helpMe-700 hover:bg-helpMe-700 hover:text-white md:mr-20 xl:mr-32 xl:px-6 xl:py-2">
+            <Link
+              href="/giveaways"
+              className="mx-auto flex items-center space-x-4 bg-helpMe-200 px-5 py-1.5 capitalize text-helpMe-700 hover:bg-helpMe-700 hover:text-white md:mr-20 xl:mr-32 xl:px-6 xl:py-2"
+            >
               View all giveaways
               <ArrowLongRightIcon className="ml-2 size-6 text-pink-400 xl:size-7" />
-            </button>
+            </Link>
           </div>
         </div>
       </div>
