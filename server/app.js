@@ -1,6 +1,5 @@
 import express from 'express';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
@@ -27,9 +26,6 @@ app.use(
 
 // Set security HTTP headers
 app.use(helmet());
-
-// Load all env variables into the app
-dotenv.config();
 
 // Development logging
 if (process.env.NODE_ENV === 'development') {
@@ -67,6 +63,7 @@ app.use(cookieParser());
 
 // API ROUTES
 // app.use('/api/v1/auth', authRoutes);
+
 app.use('/api/v1/giveaways', giveawayRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/requests', requestRoutes);
