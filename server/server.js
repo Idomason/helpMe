@@ -5,7 +5,6 @@ import express from 'express';
 import app from './app.js';
 import { cloudinaryConfig } from './config/cloudinary.js';
 import { connectDB } from './config/db.js';
-import userRoutes from './routes/userRoutes.js';
 
 // Load all env variables into the app
 dotenv.config();
