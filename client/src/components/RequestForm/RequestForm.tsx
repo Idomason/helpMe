@@ -82,6 +82,13 @@ export default function RequestForm() {
     }
   }, [requestData.state]);
 
+  // Add this after your existing useEffect
+  useEffect(() => {
+    if (user?.name) {
+      setRequestData((prev) => ({ ...prev, name: user.name }));
+    }
+  }, [user?.name]);
+
   async function handleRequest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsSubmitting(true);
@@ -90,7 +97,9 @@ export default function RequestForm() {
       try {
         console.log("Tyring to upload image to cloudinary now");
         console.log("BEFORE UPLOAD: ", requestData.image);
+
         const uploadedImage = await handleImageUpload(requestData.image);
+        console.log("AFTER UPLOAD: ", uploadedImage);
 
         if (!uploadedImage) {
           toast.error("Image upload failed, try again");
@@ -99,9 +108,7 @@ export default function RequestForm() {
         const requestDataToSave = { ...requestData, image: uploadedImage };
         setImageIsUploaded(uploadedImage);
 
-        console.log(uploadedImage);
-        console.log(imageIsUploaded);
-        console.log(requestDataToSave);
+        console.log("DATA TO SAVE AFTER IMAGE UPLOAD", requestDataToSave);
 
         createRequestMutation(requestDataToSave);
       } catch (error: any) {
@@ -160,9 +167,6 @@ export default function RequestForm() {
                 type="text"
                 id="user"
                 value={user?.name}
-                onChange={(e) =>
-                  setRequestData({ ...requestData, name: e.target.value })
-                }
                 className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 px-4 py-3 text-gray-900 shadow-sm outline-none transition-all duration-200 placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 sm:text-sm"
                 placeholder="Enter your full name"
                 required
