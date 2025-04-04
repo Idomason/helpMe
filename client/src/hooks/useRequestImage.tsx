@@ -6,29 +6,47 @@ export const useRequestImage = () => {
   const uploadPreset = import.meta.env.VITE_REQUEST_UPLOAD_PRESET;
 
   const handleImageUpload = async function (filePath: any): Promise<any> {
+    // Debug logging
+    console.log('Upload preset:', uploadPreset);
+    console.log('Cloud name:', import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
+    console.log('File to upload:', filePath);
+
     // Prepare cloudinary data for upload
     const formData = new FormData();
     formData.append("file", filePath);
     formData.append("upload_preset", uploadPreset);
-    formData.append("api_key", import.meta.env.VITE_CLOUDINARY_API_KEY);
 
     try {
-      // Perform the POST request to Cloudinary's upload API
+      // Log the URL we're posting to
+      console.log('Posting to:', cloudinaryUrl);
+      
       const response = await fetch(cloudinaryUrl, {
         method: "POST",
         body: formData,
       });
 
-      if (!response.ok) toast.error("Failed to upload image");
+      // Add better error handling
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Cloudinary Error Details:", {
+          status: response.status,
+          statusText: response.statusText,
+          errorData
+        });
+        toast.error("Failed to upload image");
+        return null;
+      }
 
       const data = await response.json();
 
       if (data) {
-        return { url: data.secure_url, publicId: data.public_id };
+        return { url: data.secure_url, public_id: data.public_id }; // Note: changed publicId to public_id
       }
+      return null;
     } catch (error) {
       console.error("Error uploading image:", error);
       toast.error("An error occurred, please try again");
+      return null;
     }
   };
 

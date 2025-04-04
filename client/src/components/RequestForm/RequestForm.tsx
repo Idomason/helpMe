@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { LoaderPinwheel, Upload } from "lucide-react";
+import { Loader, LoaderPinwheel, Upload, CheckCircle } from "lucide-react";
 import ShortHeader from "../ShortHeader/ShortHeader";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -45,6 +45,7 @@ export default function RequestForm() {
   const [fileName, setFileName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [availableCities, setAvailableCities] = useState<string[]>([]);
+  const [imageIsUploaded, setImageIsUploaded] = useState(null);
   const requestImgRef = useRef(null);
   const queryClient = useQueryClient();
   const { createRequest: createRequestStore } = useRequestStore();
@@ -87,8 +88,21 @@ export default function RequestForm() {
 
     if (requestData.image) {
       try {
+        console.log("Tyring to upload image to cloudinary now");
+        console.log("BEFORE UPLOAD: ", requestData.image);
         const uploadedImage = await handleImageUpload(requestData.image);
+
+        if (!uploadedImage) {
+          toast.error("Image upload failed, try again");
+          return;
+        }
         const requestDataToSave = { ...requestData, image: uploadedImage };
+        setImageIsUploaded(uploadedImage);
+
+        console.log(uploadedImage);
+        console.log(imageIsUploaded);
+        console.log(requestDataToSave);
+
         createRequestMutation(requestDataToSave);
       } catch (error: any) {
         toast.error(error.message || "Image upload failed");
@@ -104,10 +118,12 @@ export default function RequestForm() {
 
     if (file && file.type.startsWith("image/")) {
       setFileName(file.name);
+
       setRequestData({
         ...requestData,
         image: { url: URL.createObjectURL(file), public_id: "" },
       });
+
       file = null;
     } else {
       return toast.error("Please select a valid image file");
@@ -333,15 +349,18 @@ export default function RequestForm() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Upload Image
+                  {fileName ? "Uploading Image" : "Upload Image"}
                 </label>
                 <div className="mt-1">
                   <label
                     htmlFor="requestImage"
                     className="inline-flex cursor-pointer items-center rounded-lg bg-indigo-600 px-4 py-3 text-sm font-medium text-white shadow-sm transition-all duration-200 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                   >
-                    <Upload className="mr-2 h-4 w-4" />
-                    {fileName ? `Selected: ${fileName}` : "Choose File"}
+                    {!fileName && <Upload className="mr-2 h-4 w-4" />}
+                    {fileName && <CheckCircle className="mr-2 h-4 w-4" />}
+
+                    {fileName && `Selected: ${fileName}`}
+                    {!fileName && "Choose File"}
                   </label>
                   <input
                     ref={requestImgRef}
@@ -371,7 +390,7 @@ export default function RequestForm() {
             </button>
             <button
               type="submit"
-              disabled={isLoading || isSubmitting}
+              disabled={isLoading || isSubmitting || !fileName}
               className="inline-flex items-center rounded-lg bg-indigo-600 px-6 py-3 text-sm font-medium text-white shadow-sm transition-all duration-200 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoading || isSubmitting ? (
