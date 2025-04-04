@@ -34,7 +34,7 @@ export default function NavProfile({
   });
 
   return (
-    <div className="absolute bottom-0 top-[80px] min-h-screen w-screen bg-black/90 backdrop-blur">
+    <div className="absolute bottom-0 top-[60px] min-h-screen w-screen bg-black/90 backdrop-blur">
       <div className="absolute top-0 flex min-h-fit w-full items-center justify-end px-4">
         <ul className="flex h-full w-72 flex-col rounded-md bg-helpMe-300 py-4 shadow-lg">
           <li className="w-full cursor-pointer border-t px-4 py-1.5 font-semibold hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white">

@@ -6,7 +6,7 @@ const router = express.Router();
 
 router
   .route('/')
-  .get(authController.protect, giveawayController.getAllGiveaways)
+  .get(giveawayController.getAllGiveaways)
   .post(authController.protect, giveawayController.createGiveaway);
 router
   .route('/:id')

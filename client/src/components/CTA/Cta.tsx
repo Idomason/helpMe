@@ -1,58 +1,102 @@
 import { Link } from "react-router-dom";
 import Questions from "../Questions/Questions";
 import { questionsData } from "../../constant/constant";
+import { ArrowRight } from "lucide-react";
+import "../../styles/animations.css";
 
-export default function Cta() {
+const Cta = () => {
   return (
-    <div className="">
-      <div className="mx-auto px-4 md:w-4/5">
-        {/* CTA Buttons */}
-        <div className="mx-auto flex items-center space-x-4 py-12">
-          <Link
-            className="transform rounded-md bg-helpMe-950 px-5 py-2 text-helpMe-200 transition-all duration-200 ease-in hover:skew-x-6 hover:font-semibold hover:text-white xl:px-8 xl:py-3"
-            to={"/request"}
-          >
-            Need help ?
-          </Link>
-          <Link
-            className="transform rounded-md bg-pink-400 px-5 py-2 text-helpMe-50 transition-all duration-200 ease-in hover:skew-x-6 hover:font-semibold hover:text-white xl:px-8 xl:py-3"
-            to={"/renderHelp"}
-          >
-            Render help
-          </Link>
+    <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50 py-16 sm:py-24">
+      {/* Background Pattern */}
+      <div className="bg-grid-pattern absolute inset-0 opacity-5"></div>
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            Ready to Make a Difference?
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
+            Join our community of helpers and start making a positive impact
+            today.
+          </p>
         </div>
 
-        {/* Frequently Asked Questions (FAQs) */}
-        <div className="flex flex-wrap py-6">
-          <div className="w-full rounded-l-md bg-helpMe-950 p-8 xl:max-h-fit xl:flex-1">
-            <div className="flex min-h-fit flex-col justify-between">
-              <div className="mx-auto mt-3">
-                <h2 className="font-semibold capitalize text-white md:text-lg xl:text-xl">
-                  Frequently Asked Questions
-                </h2>
-
-                <p className="py-6 leading-relaxed text-helpMe-200 sm:w-4/5 lg:mt-3 lg:w-full lg:py-2.5">
-                  Check if your question have already been answered before
-                  contacting the support team{" "}
-                </p>
-                <div className="my-10">
-                  <Link
-                    className="rounded-sm bg-pink-400 px-6 py-2.5 text-lg font-semibold capitalize tracking-wider text-helpMe-50 hover:bg-pink-600 sm:px-8 sm:py-2.5 lg:-bottom-56 xl:font-bold"
-                    to={"/request"}
-                  >
-                    Get started
-                  </Link>
-                </div>
-              </div>
+        <div className="mt-12 grid gap-8 sm:grid-cols-2">
+          {/* Create Request Card */}
+          <div className="group relative overflow-hidden rounded-2xl bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div className="relative">
+              <h3 className="text-xl font-semibold text-gray-900">
+                Create a Request
+              </h3>
+              <p className="mt-2 text-gray-600">
+                Share your story and let others know how they can help you.
+              </p>
+              <Link
+                to="/request"
+                className="mt-6 inline-flex items-center text-blue-600 hover:text-blue-700"
+              >
+                Get Started
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
             </div>
           </div>
-          <div className="w-full rounded-r-md bg-helpMe-800 px-4 py-8 xl:w-[70%]">
-            {questionsData.map((question) => (
-              <Questions key={question.id} question={question} />
-            ))}
+
+          {/* Browse Requests Card */}
+          <div className="group relative overflow-hidden rounded-2xl bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div className="relative">
+              <h3 className="text-xl font-semibold text-gray-900">
+                Browse Requests
+              </h3>
+              <p className="mt-2 text-gray-600">
+                Find people in need and extend a helping hand.
+              </p>
+              <Link
+                to="/requests"
+                className="mt-6 inline-flex items-center text-green-600 hover:text-green-700"
+              >
+                View Requests
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+            </div>
+          </div>
+
+          {/* FAQ Card */}
+          <div className="group relative overflow-hidden rounded-2xl bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-xl sm:col-span-full">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div className="relative">
+              <h3 className="text-xl font-semibold text-gray-900">
+                Have Questions?
+              </h3>
+              <p className="mt-2 text-gray-600">
+                Check out our FAQ section for answers to common questions.
+              </p>
+              <Link
+                to="/faq"
+                className="mt-6 inline-flex items-center text-purple-600 hover:text-purple-700"
+              >
+                View FAQ
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="mt-16 text-center">
+          <div className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 shadow-lg">
+            <p className="text-lg font-medium text-gray-900">
+              Need help?{" "}
+              <Link to="/contact" className="text-blue-600 hover:text-blue-700">
+                Contact us
+              </Link>
+            </p>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default Cta;

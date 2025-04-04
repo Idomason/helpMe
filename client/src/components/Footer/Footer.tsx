@@ -4,152 +4,204 @@ import {
   SendHorizontal,
   Twitter,
   Youtube,
+  Mail,
+  Phone,
+  MapPin,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <div className="overflow-hidden bg-black/90">
-      <div className="mx-auto grid h-full grid-cols-2 px-5 py-16 sm:grid-cols-3 md:w-11/12">
-        {/* COLUMN 1 */}
-        <div className="col-span-3 mb-6 sm:col-span-1 sm:mb-0">
-          <h1 className="font-bold tracking-widest text-white md:text-lg xl:text-2xl">
-            HELP ME
-          </h1>
-          <div className="flex space-x-4 py-6">
-            <Link to={"/"}>
-              <Facebook className="cursor-pointer text-white/75 transition-colors duration-300 hover:text-pink-400" />
-            </Link>
-            <Link to={"/"}>
-              <Twitter className="cursor-pointer text-white/75 transition-colors duration-300 hover:text-pink-400" />
-            </Link>
-            <Link to={"/"}>
-              <Instagram className="cursor-pointer text-white/75 transition-colors duration-300 hover:text-pink-400" />
-            </Link>
-            <Link to={"/"}>
-              <Youtube className="cursor-pointer text-white/75 transition-colors duration-300 hover:text-pink-400" />
-            </Link>
-          </div>
-          <Link
-            className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
-            to={"/philanthropists"}
-          >
-            philanthropists
-          </Link>
-        </div>
-
-        {/* COLUMN 2 span 3 */}
-        <div className="col-span-2 grid gap-y-16">
-          {/* COL 2 SEC 1 */}
-          <div className="flex justify-between justify-items-center sm:justify-between">
-            <div>
-              <Link
-                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
-                to={"/helpers"}
+    <footer className="bg-gradient-to-b from-gray-900 to-black text-gray-300">
+      {/* Main Footer Content */}
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+          {/* Brand Section */}
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold tracking-wider text-white">
+              HELP ME
+            </h2>
+            <p className="text-sm text-gray-400">
+              Empowering communities through collective support and meaningful
+              connections.
+            </p>
+            <div className="flex space-x-4">
+              <a
+                href="#"
+                className="text-gray-400 transition-colors hover:text-pink-400"
               >
-                helpers
-              </Link>
-              <Link
-                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
-                to={"/helpees"}
+                <Facebook className="h-5 w-5" />
+              </a>
+              <a
+                href="#"
+                className="text-gray-400 transition-colors hover:text-pink-400"
               >
-                helpees
-              </Link>
-              <Link
-                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
-                to={"/giveaways"}
+                <Twitter className="h-5 w-5" />
+              </a>
+              <a
+                href="#"
+                className="text-gray-400 transition-colors hover:text-pink-400"
               >
-                giveaways
-              </Link>
-            </div>
-            <div>
-              <Link
-                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
-                to={"/givers"}
+                <Instagram className="h-5 w-5" />
+              </a>
+              <a
+                href="#"
+                className="text-gray-400 transition-colors hover:text-pink-400"
               >
-                givers
-              </Link>
-              <Link
-                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
-                to={"/company"}
-              >
-                company
-              </Link>
-              <Link
-                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
-                to={"/security"}
-              >
-                security
-              </Link>
-            </div>
-            <div>
-              <Link
-                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
-                to={"/policy"}
-              >
-                policy
-              </Link>
-              <Link
-                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
-                to={"/safety"}
-              >
-                safety
-              </Link>
-              <Link
-                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
-                to={"/jobs"}
-              >
-                jobs
-              </Link>
+                <Youtube className="h-5 w-5" />
+              </a>
             </div>
           </div>
 
-          {/* COL 2 SEC 2 */}
-          <div className="grid grid-cols-3 items-center justify-between md:gap-10">
-            <div className="">
-              <Link
-                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
-                to={"/requests"}
-              >
-                requests
-              </Link>
-              <Link
-                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
-                to={"/allRequests"}
-              >
-                all requests
-              </Link>
-              <Link
-                className="block py-1 text-sm capitalize text-gray-500 transition-colors duration-300 ease-in hover:text-white lg:text-lg"
-                to={"/contacts"}
-              >
-                Contacts
-              </Link>
-            </div>
-            <div className="col-span-2 place-items-start md:place-items-end">
-              <p className="lg:text-md py-2 text-sm text-white/80">
-                Subscribe to our newsletter for updates
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-lg font-semibold text-white">Quick Links</h3>
+            <ul className="mt-4 space-y-2">
+              <li>
+                <Link
+                  to="/requests"
+                  className="text-gray-400 transition-colors hover:text-white"
+                >
+                  Requests
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/giveaways"
+                  className="text-gray-400 transition-colors hover:text-white"
+                >
+                  Giveaways
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/helpers"
+                  className="text-gray-400 transition-colors hover:text-white"
+                >
+                  Helpers
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/helpees"
+                  className="text-gray-400 transition-colors hover:text-white"
+                >
+                  Helpees
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Support Links */}
+          <div>
+            <h3 className="text-lg font-semibold text-white">Support</h3>
+            <ul className="mt-4 space-y-2">
+              <li>
+                <Link
+                  to="/contact"
+                  className="text-gray-400 transition-colors hover:text-white"
+                >
+                  Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/faq"
+                  className="text-gray-400 transition-colors hover:text-white"
+                >
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/policy"
+                  className="text-gray-400 transition-colors hover:text-white"
+                >
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/safety"
+                  className="text-gray-400 transition-colors hover:text-white"
+                >
+                  Safety Guidelines
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Newsletter & Contact */}
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-semibold text-white">Newsletter</h3>
+              <p className="mt-2 text-sm text-gray-400">
+                Subscribe to our newsletter for updates and news
               </p>
-              <div className="inline-flex">
+              <form className="mt-4 flex">
                 <input
-                  className="lg:text-md w-[9rem] rounded-l-sm border-none p-1.5 text-center text-sm text-helpMe-950 outline-none focus:ring-1 focus:ring-inset focus:ring-pink-400 sm:w-full sm:p-2 xl:w-56"
                   type="email"
-                  name="subscribe"
-                  id="subscribe"
-                  placeholder="your_email@mail.com"
+                  placeholder="Enter your email"
+                  className="w-full rounded-l-lg border-0 bg-gray-800 px-4 py-2 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500"
                 />
-                <button className="lg:text-md rounded-r-sm bg-pink-400 from-pink-600 to-rose-900 px-2 py-1.5 text-sm text-white transition-colors duration-300 ease-in-out hover:bg-gradient-to-br sm:px-5 sm:py-2">
-                  <SendHorizontal />
+                <button
+                  type="submit"
+                  className="rounded-r-lg bg-pink-500 px-4 py-2 text-white transition-colors hover:bg-pink-600"
+                >
+                  <SendHorizontal className="h-5 w-5" />
                 </button>
-              </div>
+              </form>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold text-white">Contact Info</h3>
+              <ul className="mt-4 space-y-3">
+                <li className="flex items-center space-x-3">
+                  <Mail className="h-5 w-5 text-pink-500" />
+                  <span className="text-sm text-gray-400">
+                    support@helpme.com
+                  </span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <Phone className="h-5 w-5 text-pink-500" />
+                  <span className="text-sm text-gray-400">
+                    +234 (555) 123-4567
+                  </span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <MapPin className="h-5 w-5 text-pink-500" />
+                  <span className="text-sm text-gray-400">Lagos, Nigeria</span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
       </div>
-      <hr className="mx-auto w-[90%]" />
-      <p className="mx-auto w-[90%] py-4 text-center capitalize text-gray-600">
-        All rights reserved @ Help me 2024
-      </p>
-    </div>
+
+      {/* Bottom Bar */}
+      <div className="border-t border-gray-800">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center justify-between space-y-4 sm:flex-row sm:space-y-0">
+            <p className="text-sm text-gray-400">
+              © {new Date().getFullYear()} Help Me. All rights reserved.
+            </p>
+            <div className="flex space-x-6">
+              <Link
+                to="/terms"
+                className="text-sm text-gray-400 hover:text-white"
+              >
+                Terms of Service
+              </Link>
+              <Link
+                to="/privacy"
+                className="text-sm text-gray-400 hover:text-white"
+              >
+                Privacy Policy
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
   );
 }

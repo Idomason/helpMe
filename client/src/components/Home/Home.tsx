@@ -4,6 +4,7 @@ import Feature from "../Feature/Feature";
 import FeaturedHelps from "../FeaturedHelps/FeaturedHelps";
 import CurrentGiveaways from "../CurrentGiveaways/CurrentGiveaways";
 import CurrentHelpRequests from "../CurrentHelpRequests/CurrentHelpRequests";
+import FAQ from "../FAQ/FAQ";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <CurrentHelpRequests />
       <CurrentGiveaways />
       <Cta />
+      <FAQ />
     </>
   );
 }

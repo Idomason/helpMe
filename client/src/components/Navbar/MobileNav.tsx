@@ -19,7 +19,7 @@ export default function MobileNav({ closeNavbar, isOpen }: IMobileNavProp) {
           {navLinks &&
             navLinks.length > 0 &&
             navLinks.map((navItem) => (
-              <li key={navItem.id}>
+              <li key={navItem.id} onClick={closeNavbar}>
                 <Link
                   className="nav__link lg:text-md text-sm font-medium capitalize text-helpMe-200"
                   to={navItem.link}

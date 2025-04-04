@@ -7,6 +7,8 @@ import { ThumbsUpIcon, MessageCircle, CheckCircleIcon } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { AuthUser } from "../../types/auth";
+import NotFound from "../../pages/NotFound/NotFound";
+import { cn } from "../../utils/tailwindMerge";
 
 export default function HelpRequestDetails() {
   const { id } = useParams();
@@ -109,11 +111,24 @@ export default function HelpRequestDetails() {
         <Spinner />
       </div>
     );
-  if (!request?.data) return <div>Request not found</div>;
+  if (!request?.data)
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center bg-helpMe-950">
+        <NotFound />
+      </div>
+    );
+
+  const getStatusText = () => {
+    const endDate = new Date(requestData?.specificDetails?.deadline);
+    const today = new Date();
+    if (endDate < today) return "Completed";
+    else return "Active";
+  };
 
   const getStatusColor = () => {
-    if (requestData?.status === "active")
-      return "bg-green-100 text-green-800 shadow-sm";
+    const status = getStatusText();
+    if (status === "Active") return "bg-green-100 text-green-800 shadow-sm";
+    if (status === "Completed") return "bg-blue-100 text-blue-800 shadow-sm";
     if (requestData?.status === "pending")
       return "bg-yellow-100 text-yellow-800 shadow-sm";
     if (requestData.status === "completed")
@@ -127,15 +142,8 @@ export default function HelpRequestDetails() {
     const diffTime = endDate.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays < 0) return "Completed";
+    if (diffDays < 0) return "Expired";
     return `${diffDays} days left`;
-  };
-
-  const getStatusText = () => {
-    const endDate = new Date(requestData?.specificDetails?.deadline);
-    const today = new Date();
-    if (endDate < today) return "Completed";
-    else return "Active";
   };
 
   return (
@@ -154,16 +162,27 @@ export default function HelpRequestDetails() {
             </span>
           </div>
           <div className="mt-2 flex items-center space-x-4 text-gray-600">
-            <span>
+            <span className="text-sm font-semibold capitalize">
               {requestData?.city}, {requestData?.state}, {requestData?.country}
             </span>
             <span>•</span>
-            <span className="capitalize">{requestData?.category}</span>
+            <span className="text-sm font-semibold capitalize text-pink-500">
+              {requestData?.category}
+            </span>
+            <span className="hidden sm:inline-block">•</span>
+            <span
+              className={cn(
+                "hidden text-sm font-semibold sm:inline-block",
+                getDaysLeft() === "Expired"
+                  ? "text-red-500"
+                  : "text-yellow-500",
+              )}
+            >
+              {getDaysLeft()}
+            </span>
             <span>•</span>
-            <span className="flex items-center gap-2 rounded-full px-4 py-1 text-sm font-semibold">
-              <strong className="text-sm font-semibold text-green-500">
-                Verified
-              </strong>{" "}
+            <span className="flex items-center gap-2 rounded-full py-1 text-sm font-semibold text-green-500">
+              Verified
               <CheckCircleIcon className="size-4 text-green-500" />
             </span>
           </div>
@@ -201,7 +220,7 @@ export default function HelpRequestDetails() {
                     Amount Needed
                   </p>
                   <p className="text-lg font-semibold text-pink-500">
-                    &#8358;{requestData?.specificDetails?.amount}
+                    ₦{requestData?.specificDetails?.amount}
                   </p>
                 </div>
                 <div>
@@ -209,7 +228,7 @@ export default function HelpRequestDetails() {
                   <p className="text-lg font-semibold text-gray-900">
                     {requestData?.specificDetails?.deadline
                       ? format(
-                          new Date(requestData.specificDetails.deadline),
+                          new Date(requestData?.specificDetails?.deadline),
                           "MMMM d, yyyy",
                         )
                       : "No deadline set"}
@@ -278,15 +297,18 @@ export default function HelpRequestDetails() {
                     requestData.status === "completed" || isProcessingPayment
                   }
                   onClick={handlePayment}
-                  className={
-                    requestData.status === "completed" || isProcessingPayment
-                      ? "cursor-not-allowed bg-gray-200 opacity-50"
-                      : `rounded-full bg-pink-500 px-4 py-2 text-sm font-semibold text-white transition-colors duration-300 hover:bg-pink-600`
-                  }
+                  className={`rounded-full px-4 py-2 text-sm font-semibold text-white transition-colors duration-300 ${
+                    requestData.status === "completed" ||
+                    isProcessingPayment ||
+                    getStatusText() === "Completed"
+                      ? "cursor-not-allowed bg-gray-200 opacity-50 hover:bg-gray-600"
+                      : "bg-pink-500 hover:bg-pink-600"
+                  }`}
                 >
                   {isProcessingPayment
                     ? "Processing..."
-                    : requestData.status === "completed"
+                    : requestData.status === "completed" ||
+                        getStatusText() === "Completed"
                       ? "Completed"
                       : "Render Help"}
                 </button>

@@ -1,24 +1,24 @@
 export const navLinks = [
   {
     id: 1,
-    label: "new help requests",
-    link: "/newHelpRequests",
+    label: "create help request",
+    link: "/request",
   },
   {
     id: 2,
     label: "all help requests",
-    link: "/allHelpRequests",
+    link: "/all-help-requests",
   },
   {
     id: 3,
     label: "giveaways",
     link: "/giveaways",
   },
-  {
-    id: 4,
-    label: "givers",
-    link: "/givers",
-  },
+  // {
+  //   id: 4,
+  //   label: "givers",
+  //   link: "/givers",
+  // },
 ];
 
 export const featureData = [

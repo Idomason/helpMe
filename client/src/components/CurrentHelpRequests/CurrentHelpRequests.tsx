@@ -4,6 +4,7 @@ import { ShieldPlus } from "lucide-react";
 import ShortHeader from "../ShortHeader/ShortHeader";
 import { ArrowLongRightIcon } from "@heroicons/react/24/solid";
 import CurrentHelpRequestCards from "../CurrentHelpRequestCard/CurrentHelpRequestCards";
+import { Link } from "react-router-dom";
 
 export default function CurrentHelpRequests() {
   const [sliderValue, setSliderValue] = useState(60);
@@ -41,10 +42,13 @@ export default function CurrentHelpRequests() {
             <CurrentHelpRequestCards />
           </div>
           <div className="flex w-full justify-end pb-10">
-            <button className="mx-auto flex items-center space-x-4 bg-helpMe-200 px-5 py-1.5 capitalize text-helpMe-700 hover:bg-helpMe-700 hover:text-white md:mr-20 xl:mr-32 xl:px-6 xl:py-2">
+            <Link
+              to="/all-help-requests"
+              className="mx-auto flex items-center space-x-4 bg-helpMe-200 px-5 py-1.5 capitalize text-helpMe-700 hover:bg-helpMe-700 hover:text-white md:mr-20 xl:mr-32 xl:px-6 xl:py-2"
+            >
               View all helps
               <ArrowLongRightIcon className="ml-2 size-6 text-pink-400 xl:size-7" />
-            </button>
+            </Link>
           </div>
         </div>
       </div>

@@ -2,9 +2,11 @@ import toast from "react-hot-toast";
 import { LoaderPinwheel, Upload } from "lucide-react";
 import ShortHeader from "../ShortHeader/ShortHeader";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRequestImage } from "../../hooks/useRequestImage";
 import { nigeriaStates, nigeriaCities } from "../../data/nigeriaData";
+import { categories } from "../../data/helpRequestData";
+import { useRequestStore, HelpRequest } from "../../store";
 
 type SpecificDetailsProp = {
   amount: number;
@@ -19,7 +21,8 @@ type RequestPropData = {
   state: string;
   country: string;
   specificDetails: SpecificDetailsProp;
-  image: File | { url: string; publicId: string } | null;
+  image: { url: string; public_id: string } | null;
+  status?: string;
 };
 
 const initialData: RequestPropData = {
@@ -34,6 +37,7 @@ const initialData: RequestPropData = {
     deadline: "",
   },
   image: null,
+  status: "pending",
 };
 
 export default function RequestForm() {
@@ -41,49 +45,29 @@ export default function RequestForm() {
   const [fileName, setFileName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [availableCities, setAvailableCities] = useState<string[]>([]);
-  const nameRef = useRef<HTMLInputElement | null>(null);
   const requestImgRef = useRef(null);
   const queryClient = useQueryClient();
+  const { createRequest: createRequestStore } = useRequestStore();
+
+  const { data: user } = useQuery({ queryKey: ["authUser"] });
 
   // Cloudinary image upload hook
   const { handleImageUpload } = useRequestImage();
 
   // Save request to db
-  const { mutate: createRequest, isLoading } = useMutation({
-    mutationFn: async (newData: RequestPropData) => {
-      try {
-        const response = await fetch("/api/v1/requests", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newData),
-        });
-
-        if (!response.ok)
-          throw new Error(
-            `Server returned ${response.status}: ${response.statusText}`,
-          );
-        const data = await response.json();
-        if (!data) {
-          return toast.error(data.error.message || "Failed to create request");
-        }
-        return data;
-      } catch (error: any) {
-        console.error("Error creating request:", error);
-        throw new Error(error.message || "Failed to create request");
-      }
+  const { mutate: createRequestMutation, isLoading } = useMutation({
+    mutationFn: async (newRequest: RequestPropData) => {
+      const response = await createRequestStore(newRequest as HelpRequest);
+      return response;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      queryClient.invalidateQueries({ queryKey: ["requests"] });
       toast.success("Request created successfully");
       setRequestData(initialData);
       setFileName("");
     },
-    onError: (error: any) => {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        "An unknown error occurred";
-      toast.error(errorMessage);
+    onError: (error: { message: string }) => {
+      toast.error(error.message || "Failed to create request");
     },
   });
 
@@ -105,12 +89,12 @@ export default function RequestForm() {
       try {
         const uploadedImage = await handleImageUpload(requestData.image);
         const requestDataToSave = { ...requestData, image: uploadedImage };
-        createRequest(requestDataToSave);
+        createRequestMutation(requestDataToSave);
       } catch (error: any) {
         toast.error(error.message || "Image upload failed");
       }
     } else {
-      createRequest(requestData);
+      createRequestMutation(requestData);
     }
     setIsSubmitting(false);
   }
@@ -120,16 +104,15 @@ export default function RequestForm() {
 
     if (file && file.type.startsWith("image/")) {
       setFileName(file.name);
-      setRequestData({ ...requestData, image: file });
+      setRequestData({
+        ...requestData,
+        image: { url: URL.createObjectURL(file), public_id: "" },
+      });
       file = null;
     } else {
       return toast.error("Please select a valid image file");
     }
   }
-
-  useEffect(() => {
-    nameRef.current?.focus();
-  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12">
@@ -160,14 +143,14 @@ export default function RequestForm() {
               <input
                 type="text"
                 id="user"
-                ref={nameRef}
-                value={requestData.name}
+                value={user?.name}
                 onChange={(e) =>
                   setRequestData({ ...requestData, name: e.target.value })
                 }
-                className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 px-4 py-3 text-gray-900 shadow-sm transition-all duration-200 placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 sm:text-sm"
+                className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 px-4 py-3 text-gray-900 shadow-sm outline-none transition-all duration-200 placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 sm:text-sm"
                 placeholder="Enter your full name"
                 required
+                disabled
               />
             </div>
           </div>
@@ -195,11 +178,11 @@ export default function RequestForm() {
                 required
               >
                 <option value="">Select a category</option>
-                <option value="medical">Medical</option>
-                <option value="accident">Accident</option>
-                <option value="agriculture">Agriculture</option>
-                <option value="disaster">Disaster</option>
-                <option value="academics">Academics</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.name.toLowerCase()}>
+                    {category.name}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -220,7 +203,7 @@ export default function RequestForm() {
                   })
                 }
                 rows={4}
-                className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 px-4 py-3 text-gray-900 shadow-sm transition-all duration-200 placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 sm:text-sm"
+                className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 px-4 py-3 text-gray-900 shadow-sm outline-none transition-all duration-200 placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 sm:text-sm"
                 placeholder="Describe your situation in detail..."
                 required
               />
@@ -316,7 +299,7 @@ export default function RequestForm() {
                         },
                       })
                     }
-                    className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 pl-8 pr-4 text-gray-900 shadow-sm transition-all duration-200 placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 sm:text-sm"
+                    className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 pl-8 pr-4 text-gray-900 shadow-sm outline-none transition-all duration-200 placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 sm:text-sm"
                     placeholder="0.00"
                     required
                   />
@@ -343,7 +326,7 @@ export default function RequestForm() {
                       },
                     })
                   }
-                  className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 px-4 py-3 text-gray-900 shadow-sm transition-all duration-200 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 sm:text-sm"
+                  className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 px-4 py-3 text-gray-900 shadow-sm outline-none transition-all duration-200 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 sm:text-sm"
                   required
                 />
               </div>

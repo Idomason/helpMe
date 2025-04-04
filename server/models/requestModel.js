@@ -76,23 +76,6 @@ requestSchema.virtual('totalVotes').get(function () {
   return this.votes.length / 7;
 });
 
-// Save creator's ID to the userRequests array upon creating the request document
-// (this only works for creating new doc & not for updating them)
-// requestSchema.pre('save', function (next) {
-//   if (this.isNew) {
-//     this.userRequests.push(this.user);
-//   }
-//   next();
-// });
-
-// populate userRequests with user data when fetching the request
-// requestSchema.pre('findOne', function () {
-//   this.populate({
-//     path: 'userRequests',
-//     select: '-password -_id',
-//   });
-// });
-
 // Update the corresponding user helpRequests field with the request ID
 requestSchema.pre('save', async function () {
   if (this.isNew) {

@@ -51,7 +51,7 @@ export default function SliderCard(request: ISliderCard) {
         </div>
 
         <div className="text-sm font-semibold text-pink-500">
-          &#8358;{request.specificDetails.amount}
+          ₦{request.specificDetails.amount}
         </div>
 
         <hr />

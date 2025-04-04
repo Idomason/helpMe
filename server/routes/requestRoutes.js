@@ -18,7 +18,7 @@ router.post(
 
 router
   .route('/:id')
-  .get(authController.protect, requestController.getRequest)
+  .get(requestController.getRequest)
   .patch(authController.protect, requestController.updateOwnRequest)
   .delete(
     authController.protect,

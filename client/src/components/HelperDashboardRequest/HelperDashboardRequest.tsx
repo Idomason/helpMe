@@ -108,7 +108,7 @@ export default function HelperDashboardRequest() {
       toast.success("Logout successful");
       onOpenProfile(false);
     },
-    onError: (error) =>
+    onError: (error: any) =>
       toast.error(error.message || "Failed to log out! Please try again"),
   });
 
@@ -125,6 +125,16 @@ export default function HelperDashboardRequest() {
       </div>
     );
   if (error) return <h1>An error occurred! Please try again</h1>;
+
+  const totalActiveRequests =
+    user?.helpRequests?.filter((request: any) => request.status === "active")
+      .length || 0;
+
+  const totalMyTasks =
+    user?.helpRequests?.filter((request: any) => request.status === "pending")
+      .length || 0;
+
+  const totalHelpRendered = user?.helpsRendered?.length || 0;
 
   return (
     <div className="min-h-screen">
@@ -169,18 +179,29 @@ export default function HelperDashboardRequest() {
                       className={`my-2 w-fit rounded-md ${(mouseEnter || openSideBar) && "pl-6"} transition-all duration-300 ease-in-out hover:bg-[#F0F2F4] hover:font-semibold`}
                       key={data.name}
                     >
-                      <Link
-                        className="ml-3 inline-flex w-fit items-center space-x-3 rounded-md px-2 py-2 capitalize text-[#b1b5b3] transition-all duration-300 ease-in-out hover:font-semibold hover:text-[#1e1e1e] md:text-lg"
-                        to={data.link}
-                      >
-                        <span>{data.icon}</span>
-                        <span>{(mouseEnter || openSideBar) && data.name}</span>
-                      </Link>
+                      {data.link ? (
+                        <Link
+                          className="ml-3 inline-flex w-fit items-center space-x-3 rounded-md px-2 py-2 capitalize text-[#b1b5b3] transition-all duration-300 ease-in-out hover:font-semibold hover:text-[#1e1e1e] md:text-lg"
+                          to={data.link}
+                        >
+                          <span>{data.icon}</span>
+                          <span>
+                            {(mouseEnter || openSideBar) && data.name}
+                          </span>
+                        </Link>
+                      ) : (
+                        <div className="ml-3 inline-flex w-fit items-center space-x-3 rounded-md px-2 py-2 capitalize text-[#b1b5b3]">
+                          <span>{data.icon}</span>
+                          <span>
+                            {(mouseEnter || openSideBar) && data.name}
+                          </span>
+                        </div>
+                      )}
                     </li>
                   ))}
                 <li
                   className={`mt-2 flex w-fit cursor-pointer ${(mouseEnter || openSideBar) && "pl-12"} items-center space-x-2 rounded-r-md bg-red-500 px-2 py-2 pl-4 font-semibold text-white transition-all duration-300 ease-in-out hover:bg-red-700 hover:font-semibold`}
-                  onClick={() => authUserLogout()}
+                  onClick={() => authUserLogout({})}
                 >
                   <ArrowLeftStartOnRectangleIcon className="size-5" />
                   {(mouseEnter || openSideBar) && (
@@ -195,12 +216,16 @@ export default function HelperDashboardRequest() {
             <div className="sticky top-0 z-[9] flex items-center justify-between border-b border-gray-300 bg-white px-4 py-1">
               {/* Profile */}
               {openProfile && (
-                <Profile user={user} status={status} logout={authUserLogout} />
+                <Profile
+                  user={user}
+                  status={status}
+                  logout={() => authUserLogout({})}
+                />
               )}
 
               <header className="flex items-center justify-between">
                 <div
-                  onClick={() => onOpenProfile()}
+                  onClick={() => onOpenProfile(true)}
                   className="cursor-pointer rounded-full p-1 shadow ring-gray-500"
                 >
                   <div className="relative flex items-center space-x-3">
@@ -262,7 +287,7 @@ export default function HelperDashboardRequest() {
                       All help rendered
                     </p>
                     <span className="text-2xl font-bold text-[#285de9]">
-                      {user?.helpsRendered.length}
+                      {totalHelpRendered}
                     </span>
                   </div>
                 </div>
@@ -280,7 +305,7 @@ export default function HelperDashboardRequest() {
                       Active requests
                     </p>
                     <span className="text-2xl font-bold text-[#05a365]">
-                      200{" "}
+                      {totalActiveRequests}
                     </span>
                   </div>
                 </div>
@@ -296,7 +321,7 @@ export default function HelperDashboardRequest() {
                   <div className="text-center">
                     <p className="font-semibold text-[#b1b5b3]">My Tasks</p>
                     <span className="text-2xl font-bold text-[#f1d800]">
-                      200{" "}
+                      {totalMyTasks}
                     </span>
                   </div>
                 </div>
@@ -374,7 +399,7 @@ export default function HelperDashboardRequest() {
                 <div className="w-full px-6 py-3 md:px-8 md:py-4">
                   <div className="md:text-md mx-auto hidden items-center justify-around py-2 text-xs font-bold uppercase text-[#666666] sm:text-sm lg:flex">
                     <h4 className="flex items-center space-x-2">
-                      <span>request name</span>
+                      <span>request Detail</span>
                       <ArrowsUpDownIcon className="size-4 md:size-5" />{" "}
                     </h4>
                     <h4 className="flex items-center space-x-2">
@@ -394,13 +419,13 @@ export default function HelperDashboardRequest() {
 
                 {/* Dashboard Items */}
                 <div className="w-full">
-                  {requestData && requestData?.length > 0 ? (
-                    requestData.map((request) => (
-                      <RequestItem key={request.id} request={request} />
+                  {user?.helpRequests && user?.helpRequests?.length > 0 ? (
+                    user?.helpRequests.map((request: any) => (
+                      <RequestItem key={request._id} {...request} />
                     ))
                   ) : (
                     <h2 className="py-10 font-semibold capitalize text-orange-500">
-                      No request yet, please add some requests
+                      No request yet, please create some requests
                     </h2>
                   )}
                 </div>

@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useGiveawayImage } from "../../hooks/useGiveawayImage";
 import { useMutation } from "@tanstack/react-query";
+import { useGiveawayStore, Giveaway } from "../../store";
+import { toast } from "react-hot-toast";
 
 type GiveawayPropData = {
   title: string;
@@ -16,26 +18,55 @@ type GiveawayPropData = {
   endDate: string;
 };
 
-const initialData: GiveawayPropData = {
-  title: "",
-  description: "",
-  image: null,
-  prizes: "",
-  rules: "",
-  requirements: "",
-  category: "",
-  tags: "",
-  location: "",
-  startDate: "",
-  endDate: "",
-};
-
 export default function GiveawayForm() {
-  const [giveawayData, setGiveawayData] = useState(initialData);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [giveawayData, setGiveawayData] = useState<GiveawayPropData>({
+    title: "",
+    description: "",
+    image: null,
+    prizes: "",
+    rules: "",
+    requirements: "",
+    category: "",
+    tags: "",
+    location: "",
+    startDate: "",
+    endDate: "",
+  });
+  const [fileName, setFileName] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const giveawayImgRef = useRef(null);
+  const { createGiveaway } = useGiveawayStore();
 
   // Cloudinary image upload hook
   const { handleImageUpload } = useGiveawayImage();
+
+  // Save giveaway to db
+  const { mutate: createGiveawayMutation, isLoading } = useMutation({
+    mutationFn: async (newGiveaway: GiveawayPropData) => {
+      const response = await createGiveaway(newGiveaway as Giveaway);
+      return response;
+    },
+    onSuccess: () => {
+      toast.success("Giveaway created successfully");
+      setGiveawayData({
+        title: "",
+        description: "",
+        image: null,
+        prizes: "",
+        rules: "",
+        requirements: "",
+        category: "",
+        tags: "",
+        location: "",
+        startDate: "",
+        endDate: "",
+      });
+      setFileName("");
+    },
+    onError: (error: { message: string }) => {
+      toast.error(error.message || "Failed to create giveaway");
+    },
+  });
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -60,39 +91,30 @@ export default function GiveawayForm() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string);
+        setFileName(reader.result as string);
       };
       reader.readAsDataURL(file);
     } else {
-      setImagePreview(null);
+      setFileName("");
     }
   };
 
   const resetForm = () => {
-    setGiveawayData(initialData);
-    setImagePreview(null);
+    setGiveawayData({
+      title: "",
+      description: "",
+      image: null,
+      prizes: "",
+      rules: "",
+      requirements: "",
+      category: "",
+      tags: "",
+      location: "",
+      startDate: "",
+      endDate: "",
+    });
+    setFileName("");
   };
-
-  const { mutate: createGiveaway } = useMutation({
-    mutationFn: async (newData: GiveawayPropData) => {
-      try {
-        const response = await fetch("/api/v1/giveaways", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newData),
-        });
-
-        if (!response.ok)
-          throw new Error(
-            `Server returned ${response.status}: ${response.statusText}`,
-          );
-
-        return response.json();
-      } catch (error) {
-        throw error;
-      }
-    },
-  });
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -104,11 +126,7 @@ export default function GiveawayForm() {
       image: imageUrl,
     };
 
-    createGiveaway(newGiveaway, {
-      onSuccess: () => {
-        resetForm();
-      },
-    });
+    createGiveawayMutation(newGiveaway);
   }
 
   return (
@@ -322,10 +340,10 @@ export default function GiveawayForm() {
               </label>
               <div className="flex w-full items-center justify-center">
                 <label className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100">
-                  {imagePreview ? (
+                  {fileName ? (
                     <div className="relative h-full w-full">
                       <img
-                        src={imagePreview}
+                        src={fileName}
                         alt="Preview"
                         className="h-full w-full rounded-lg object-cover"
                       />
@@ -371,7 +389,7 @@ export default function GiveawayForm() {
                   />
                 </label>
               </div>
-              {imagePreview && (
+              {fileName && (
                 <p className="text-sm text-green-600">
                   ✓ Image selected successfully
                 </p>

@@ -4,7 +4,7 @@ type valueType = {
   openProfile: boolean;
   openSideBar: boolean;
   sidebarToggler: () => void;
-  onOpenProfile: () => void;
+  onOpenProfile: (value: boolean) => void;
 };
 
 type childrenPropType = {
@@ -29,7 +29,7 @@ export default function SidebarContextProvider({ children }: childrenPropType) {
   }
 
   function onOpenProfile() {
-    setOpenProfile((open) => !open);
+    setOpenProfile((prev) => !prev);
   }
   return (
     <SidebarContext.Provider

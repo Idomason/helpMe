@@ -167,15 +167,20 @@ export interface IElement {
 }
 
 export interface IRequest {
-  request: {
-    id: number;
-    item: {
-      heading: string;
-      detail: string;
-    };
-    status: string;
-    category: string;
-    timeline: string;
+  _id: string;
+  name: string;
+  requestDescription: string;
+  status: string;
+  category: string;
+  createdAt: string;
+  specificDetails: {
+    deadline: string;
+  };
+  city: string;
+  state: string;
+  country: string;
+  image: {
+    url: string;
   };
 }
 

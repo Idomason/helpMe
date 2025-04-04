@@ -87,75 +87,6 @@ const userSchema = new Schema(
   { toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );
 
-// =============================================================
-// VIRTUAL
-userSchema.virtual('durationWeek').get(function () {
-  return this.duration / 7;
-});
-
-// CUSTOM VALIDATION - Only works when creating NEW document
-// priceDistocunt: {
-//   type: Number,
-//   validate: {
-//     validator: function(val) {
-//       return val < this.price;
-//     },
-//     message: 'Discount price ({VALUE}) must always be lower than the actual price'
-//   }
-// }
-
-// validate: {
-//   // This only works on CREATE and SAVE
-//   validator: function (el) {
-//     return el === this.password;
-//   },
-//   message: 'Passwords are not the same!',
-// },
-
-// DOCUMENT MIDDLEWARES: Runs before .save() and .create() not for update
-userSchema.pre('save', function (next) {
-  // this.slug = slugify(this.name, {lower: true});
-
-  next();
-});
-
-userSchema.post('save', function (doc, next) {
-  console.log(doc);
-
-  next();
-});
-
-// QUERY MIDDLEWARE
-userSchema.pre(/^find/, function (next) {
-  // userSchema.pre('find', function (next) {
-  this.find({ secretTour: { $ne: true } });
-  this.start = Date.now();
-
-  next();
-});
-
-userSchema.pre(/^find/, function (next) {
-  this.find({ active: { $ne: false } });
-
-  next();
-});
-
-userSchema.post('/^find/', function (docs, next) {
-  console.log(`Query took ${Date.now() - this.start} milliseconds!`);
-  // console.log(docs);
-
-  next();
-});
-
-// AGGREGATION MIDDLEWARE
-userSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-  console.log(this.pipeline());
-  next();
-});
-
-// ======================= REAL ============================
-
 // DOCUMENT MIDDLEWARES
 
 // Check if email already exist
@@ -208,16 +139,6 @@ userSchema.pre('save', async function () {
   this.passwordConfirm = undefined;
 });
 
-// Post-save hook to send a welcome email
-// userSchema.post('save', async function (doc) {
-//   try {
-//     await sendWelcomeEmail(doc.email);
-//     console.log(`Welcome email sent to ${doc.email}`);
-//   } catch (error) {
-//     console.error(`Failed to send welcome email to ${doc.email}:`, error);
-//   }
-// });
-
 // QUERY MIDDLEWARES
 userSchema.pre(/^find/, function (next) {
   this.find({ active: { $ne: false } });
@@ -227,19 +148,19 @@ userSchema.pre(/^find/, function (next) {
 
 // Populate the helpRequests field upon query
 userSchema.pre('findOne', async function () {
-  this.populate({ path: 'helpRequests', select: '-password -_id' });
+  this.populate({ path: 'helpRequests', select: '-password -__v' });
 });
 
 // Remove all posts associated with a user before deleting the user
-userSchema.pre('remove', async function () {
-  await Request.deleteMany({ user: this._id });
-});
+// userSchema.pre('remove', async function () {
+//   await Request.deleteMany({ user: this._id });
+// });
 
 // Log a message after the user is deleted
-userSchema.post('remove', function (doc) {
-  console.log(`User ${doc.name} has been removed.`);
-  toast.success(`User ${doc.name} has been removed.`);
-});
+// userSchema.post('remove', function (doc) {
+//   console.log(`User ${doc.name} has been removed.`);
+//   toast.success(`User ${doc.name} has been removed.`);
+// });
 
 // DOCUMENT METHODS
 // Check for correct password

@@ -11,7 +11,6 @@ import HelpeeRequest from "./pages/dashboard/helpeeDashboard/HelpeeRequest";
 import Login from "./pages/Login/Login";
 import Home from "./components/Home/Home";
 import RequestForm from "./components/RequestForm/RequestForm";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { BrowserRouter } from "react-router-dom";
 import SidebarContextProvider from "./context/SidebarContext.tsx";
 import { useQuery } from "@tanstack/react-query";
@@ -23,6 +22,7 @@ import GiveawayGrid from "./components/CurrentGiveawaysCard/GiveawayGrid";
 import GiveawayDetails from "./components/GiveawayDetails/GiveawayDetails";
 import HelpRequestDetails from "./components/HelpRequestDetails/HelpRequestDetails";
 
+import HelpRequestGrid from "./components/HelpRequestGrid/HelpRequestGrid.tsx";
 const toastOptions = {
   success: {
     duration: 3000,
@@ -83,12 +83,11 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <ReactQueryDevtools initialIsOpen={false} />
         <SidebarContextProvider>
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route path="/" element={<Home />} />
-              <Route path="/giveaways/gift-cards" element={<GiveawayGrid />} />
+              <Route path="/all-help-requests" element={<HelpRequestGrid />} />
               <Route path="/giveaways/:id" element={<GiveawayDetails />} />
               <Route path="/requests/:id" element={<HelpRequestDetails />} />
               <Route
