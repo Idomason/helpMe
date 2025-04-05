@@ -18,7 +18,9 @@
 }
 
 .bgImage {
-  background-image: url("/images/pic1.png");
+  background-image: linear-gradient(to right, #360665, rgba(0, 0, 0, 0.75)),
+    url("/images/pic1.png");
+
   background-size: cover;
   background-position: center;
 }

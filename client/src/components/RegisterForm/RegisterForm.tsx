@@ -111,7 +111,7 @@ export default function RegisterForm() {
 
   return (
     <>
-      <div className="absolute left-0 top-0 min-h-screen w-full bg-gradient-to-tr from-helpMe-950 to-black/75"></div>
+      <div className="absolute left-0 top-0 min-h-screen w-full"></div>
       <div className="bgImage min-h-screen w-full bg-helpMe-200 px-4 sm:px-6">
         <div className="mx-auto grid min-h-screen w-11/12 justify-center py-2 lg:grid-cols-3 lg:py-1">
           <div className="flex items-center justify-center">
