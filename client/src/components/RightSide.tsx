@@ -12,27 +12,31 @@ import {
 import { ListCheckIcon, SearchIcon } from "lucide-react";
 
 import RequestItem from "./RequestItem/RequestItem";
-import { requestData } from "../constant/constant";
 import NotificationIcon from "./NotificationIcon/NotificationIcon";
 import { useContext } from "react";
 import { SidebarContext } from "../context/SidebarContext";
 import useWindowResize from "../hooks/useWindowSize";
 import Profile from "./profile/Profile";
+import { useQuery } from "@tanstack/react-query";
 
 export default function RightSide() {
   const { windowWidth, windowHeight } = useWindowResize();
   const { openProfile, onOpenProfile } = useContext(SidebarContext);
+
+  const { data: requestData } = useQuery<{ data: any[] }>({
+    queryKey: ["requests"],
+  });
 
   return (
     <>
       <div className="relative ml-16 h-full w-full flex-1 overflow-auto rounded-md bg-white shadow">
         <div className="sticky top-0 z-[9] flex items-center justify-between border-b border-gray-300 bg-white px-4 py-1">
           {/* Profile */}
-          {openProfile && <Profile />}
+          {openProfile && <Profile status="online" logout={() => {}} />}
 
           <header className="flex items-center justify-between">
             <div
-              onClick={() => onOpenProfile()}
+              onClick={() => onOpenProfile(false)}
               className="cursor-pointer rounded-full p-1 shadow ring-gray-500"
             >
               <div className="relative flex items-center space-x-3">
@@ -210,10 +214,33 @@ export default function RightSide() {
 
             {/* Dashboard Items */}
             <div className="w-full">
-              {requestData && requestData?.length > 0 ? (
-                requestData.map((request) => (
-                  <RequestItem key={request.id} request={request} />
-                ))
+              {requestData?.data && requestData.data.length > 0 ? (
+                requestData.data.map((request) => {
+                  const transformedRequest = {
+                    _id: request.id.toString(),
+                    name: request.item.heading,
+                    requestDescription: request.item.detail,
+                    status: request.status,
+                    category: request.category,
+                    createdAt: new Date().toISOString(),
+                    specificDetails: {
+                      deadline: new Date(),
+                      amount: 0,
+                    },
+                    city: "",
+                    state: "",
+                    country: "",
+                    image: {
+                      url: "",
+                      publicId: "",
+                    },
+                    votes: [],
+                    comments: [],
+                  };
+                  return (
+                    <RequestItem key={request.id} {...transformedRequest} />
+                  );
+                })
               ) : (
                 <h2 className="py-10 font-semibold capitalize text-orange-500">
                   No request yet, please add some requests

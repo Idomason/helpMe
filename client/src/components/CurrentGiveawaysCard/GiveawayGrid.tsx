@@ -1,9 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import GiftCard from "./GiftCard";
 import Spinner from "../Spinner/Spinner";
+import { Giveaway } from "../../store";
+
+interface GiveawaysResponse {
+  data: Giveaway[];
+  message: string;
+  success: boolean;
+}
 
 export default function GiveawayGrid() {
-  const { data: giveaways, isLoading } = useQuery({
+  const { data: giveaways, isLoading } = useQuery<GiveawaysResponse>({
     queryKey: ["giveaways"],
     queryFn: async () => {
       const response = await fetch("/api/v1/giveaways");
@@ -21,7 +28,7 @@ export default function GiveawayGrid() {
 
   return (
     <div className="container mx-auto grid grid-cols-1 gap-6 p-6 py-24 pt-32 sm:grid-cols-2 lg:grid-cols-3">
-      {giveaways.data?.map((giveaway: any) => (
+      {giveaways?.data?.map((giveaway) => (
         <GiftCard key={giveaway._id} giveaway={giveaway} />
       ))}
     </div>

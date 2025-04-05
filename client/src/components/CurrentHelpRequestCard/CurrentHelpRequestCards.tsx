@@ -3,6 +3,13 @@ import "react-multi-carousel/lib/styles.css";
 import CurrentHelpCard from "./CurrentHelpCard";
 import { useQuery } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
+import { IRequest } from "../../utils/types";
+
+interface RequestResponse {
+  data: {
+    requests: IRequest[];
+  };
+}
 
 const responsive = {
   superLargeDesktop: {
@@ -29,14 +36,43 @@ const responsive = {
 };
 
 export default function CurrentHelpRequestCards() {
-  const { data: requestData, isLoading } = useQuery({ queryKey: ["requests"] });
+  const {
+    data: requestData,
+    isLoading,
+    error,
+  } = useQuery<RequestResponse>({
+    queryKey: ["requests"],
+    queryFn: async () => {
+      const response = await fetch("/api/v1/requests");
+      if (!response.ok) throw new Error("Failed to fetch requests");
+      return response.json();
+    },
+  });
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <div className="flex h-full w-full items-center justify-center py-4">
         <LoaderCircle className="animate-spin" />
       </div>
     );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-full w-full items-center justify-center py-4">
+        <p className="text-red-500">Error loading requests</p>
+      </div>
+    );
+  }
+
+  if (!requestData?.data?.requests || requestData.data.requests.length === 0) {
+    return (
+      <div className="flex h-full w-full items-center justify-center py-4">
+        <p>No requests found</p>
+      </div>
+    );
+  }
+
   return (
     <Carousel
       additionalTransfrom={0}
@@ -56,7 +92,7 @@ export default function CurrentHelpRequestCards() {
           className="mx-auto flex w-11/12 flex-wrap items-center justify-center"
           key={request._id}
         >
-          <CurrentHelpCard request={request} />
+          <CurrentHelpCard {...request} />
         </div>
       ))}
     </Carousel>

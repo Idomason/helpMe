@@ -14,7 +14,8 @@ export default function ProfileSettings({ user }: UserDataProp) {
   const profileImgRef = useRef<HTMLInputElement | null>(null);
   const [editName, setEditName] = useState(true);
   const [editEmail, setEditEmail] = useState(true);
-  const [imageFile, setImageFile] = useState(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [flag, setFlag] = useState("");
   const queryClient = useQueryClient();
   const { isSubmitting, setIsSubmitting, handleImageUpload } =
@@ -42,7 +43,7 @@ export default function ProfileSettings({ user }: UserDataProp) {
       }
 
       return data;
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(
         error.message || "Something went wrong, please try again",
       );
@@ -56,7 +57,13 @@ export default function ProfileSettings({ user }: UserDataProp) {
         toast.success("Profile image updated successfully");
         queryClient.invalidateQueries({ queryKey: ["authUser"] });
       },
-      onError: (error) => toast.error(error.message || "Profile update failed"),
+      onError: (error: unknown) => {
+        if (error instanceof Error) {
+          toast.error(error.message || "Profile update failed");
+        } else {
+          toast.error("Profile update failed");
+        }
+      },
     });
 
   const { mutate: changeProfileName, isLoading: isChangingName } = useMutation({
@@ -76,7 +83,8 @@ export default function ProfileSettings({ user }: UserDataProp) {
         toast.success("Email updated successfully");
         queryClient.invalidateQueries({ queryKey: ["authUser"] });
       },
-      onError: (error) => toast.error(error.message || "Profile update failed"),
+      onError: (error: any) =>
+        toast.error(error.message || "Profile update failed"),
     });
 
   const handleProfileSubmit = async function (event: Event | undefined) {
@@ -84,10 +92,14 @@ export default function ProfileSettings({ user }: UserDataProp) {
       event?.preventDefault();
 
       if (imageFile && flag === "image") {
-        const { url, publicId } = await handleImageUpload(imageFile);
+        const result = await handleImageUpload(imageFile);
+        if (!result) {
+          toast.error("Failed to upload image");
+          return;
+        }
         const profileData = {
           ...userData,
-          profileImg: { url, publicId },
+          profileImg: { url: result.url, publicId: result.publicId },
         };
 
         changeProfileImage(profileData);
@@ -104,27 +116,22 @@ export default function ProfileSettings({ user }: UserDataProp) {
       }
     } catch (error) {
       console.log(error);
-      throw new Error("Something went wrong, please try again");
+      toast.error("Something went wrong, please try again");
     }
   };
 
-  const handleFileChange = function () {
-    let file = profileImgRef.current?.files?.[0];
-
-    setImageFile(file);
-    setFlag("image");
-
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
+      setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setUserData({
-          ...userData,
-          profileImg: { ...userData?.profileImg, url: reader.result },
-        });
+        if (typeof reader.result === "string") {
+          setImagePreview(reader.result);
+        }
       };
       reader.readAsDataURL(file);
     }
-    file = null;
   };
 
   const handleChange = function (event: {
@@ -162,7 +169,11 @@ export default function ProfileSettings({ user }: UserDataProp) {
                   <div className="h-24 w-24 overflow-hidden rounded-full shadow">
                     <img
                       className="h-full w-full object-cover"
-                      src={userData.profileImg?.url || "/images/profile.jpg"}
+                      src={
+                        imagePreview ||
+                        userData.profileImg?.url ||
+                        "/images/profile.jpg"
+                      }
                       alt="Profile Image"
                     />
                   </div>
@@ -185,7 +196,10 @@ export default function ProfileSettings({ user }: UserDataProp) {
                 <button
                   type="submit"
                   className="md:text-md inline-block rounded bg-helpMe-950 px-8 py-2 font-medium tracking-wide text-helpMe-50 transition-all duration-300 ease-in hover:bg-helpMe-800 sm:px-16"
-                  onClick={() => handleProfileSubmit(event)}
+                  onClick={() => {
+                    setFlag("image");
+                    handleProfileSubmit(event);
+                  }}
                 >
                   {isSubmitting || isChangingImage ? (
                     <LoaderCircle className="animate-spin" />

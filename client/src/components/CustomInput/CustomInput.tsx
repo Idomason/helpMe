@@ -10,7 +10,7 @@ export default function CustomInput({
   type,
 }: IElement) {
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex flex-col justify-center">
       <label htmlFor={name}>{label}</label>
       <input
         className="text-[#b6b6b6]/84 my-1.5 w-80 rounded bg-[#b6b6b6]/20 px-4 py-1.5 outline-none placeholder:text-sm focus:bg-[#b6b6b6] focus:text-[#242323] focus:ring-1 focus:ring-[#f5f5f6]"

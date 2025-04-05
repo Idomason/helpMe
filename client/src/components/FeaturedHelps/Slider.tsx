@@ -1,7 +1,7 @@
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import SliderCard from "./SliderCard";
-import { sliderCardData } from "../../constant/constant";
+import { useQuery } from "@tanstack/react-query";
 
 const responsive = {
   superLargeDesktop: {
@@ -27,7 +27,18 @@ const responsive = {
   },
 };
 
+interface SliderCardData {
+  id: number;
+  image: string;
+  title: string;
+  link: string;
+}
+
 export default function Slider() {
+  const { data: requests } = useQuery<{ data: SliderCardData[] }>({
+    queryKey: ["requests"],
+  });
+
   return (
     <Carousel
       additionalTransfrom={0}
@@ -38,19 +49,13 @@ export default function Slider() {
       infinite
       responsive={responsive}
     >
-      {sliderCardData && sliderCardData.length > 0
-        ? sliderCardData.map((cardData) => (
+      {requests?.data && requests.data.length > 0
+        ? requests.data.map((cardData: SliderCardData) => (
             <div
               className="mx-auto flex w-11/12 flex-wrap items-center justify-center"
-              // className="cardHeightEqual auto-cols-auto items-center justify-center"
               key={cardData.id}
             >
-              <SliderCard
-                key={cardData.id}
-                image={cardData.image}
-                title={cardData.title}
-                link={cardData.link}
-              />
+              <SliderCard key={cardData.id} {...cardData} />
             </div>
           ))
         : null}

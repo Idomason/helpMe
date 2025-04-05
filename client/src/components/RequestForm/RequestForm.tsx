@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { Loader, LoaderPinwheel, Upload, CheckCircle } from "lucide-react";
+import { LoaderPinwheel, Upload, CheckCircle } from "lucide-react";
 import ShortHeader from "../ShortHeader/ShortHeader";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -41,16 +41,15 @@ const initialData: RequestPropData = {
 };
 
 export default function RequestForm() {
-  const [requestData, setRequestData] = useState(initialData);
+  const [requestData, setRequestData] = useState<RequestPropData>(initialData);
   const [fileName, setFileName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [availableCities, setAvailableCities] = useState<string[]>([]);
-  const [imageIsUploaded, setImageIsUploaded] = useState(null);
   const requestImgRef = useRef(null);
   const queryClient = useQueryClient();
   const { createRequest: createRequestStore } = useRequestStore();
 
-  const { data: user } = useQuery({ queryKey: ["authUser"] });
+  const { data: user } = useQuery<{ name: string }>({ queryKey: ["authUser"] });
 
   // Cloudinary image upload hook
   const { handleImageUpload } = useRequestImage();
@@ -106,7 +105,6 @@ export default function RequestForm() {
           return;
         }
         const requestDataToSave = { ...requestData, image: uploadedImage };
-        setImageIsUploaded(uploadedImage);
 
         console.log("DATA TO SAVE AFTER IMAGE UPLOAD", requestDataToSave);
 
@@ -166,7 +164,7 @@ export default function RequestForm() {
               <input
                 type="text"
                 id="user"
-                value={user?.name}
+                value={user?.name || ""}
                 className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 px-4 py-3 text-gray-900 shadow-sm outline-none transition-all duration-200 placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 sm:text-sm"
                 placeholder="Enter your full name"
                 required

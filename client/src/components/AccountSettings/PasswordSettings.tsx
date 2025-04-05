@@ -1,24 +1,38 @@
 import { LoaderCircle } from "lucide-react";
 import ShortHeader from "../ShortHeader/ShortHeader";
-import { useState } from "react";
+import { useState, FormEvent, ChangeEvent } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-type PasswordDataprop = {
+interface PasswordData {
   currentPassword: string;
   password: string;
   passwordConfirm: string;
-};
+}
+
+interface ApiResponse {
+  status: string;
+  message?: string;
+  error?: {
+    errors: {
+      confirmPassword?: {
+        message: string;
+      };
+    };
+  };
+}
 
 export default function PasswordSettings() {
   const queryClient = useQueryClient();
-  const [updateMyPassword, setUpdateMyPassword] = useState({
+  const [updateMyPassword, setUpdateMyPassword] = useState<PasswordData>({
     currentPassword: "",
     password: "",
     passwordConfirm: "",
   });
 
-  const changePassword = async function (passwordData: PasswordDataprop) {
+  const changePassword = async function (
+    passwordData: PasswordData,
+  ): Promise<ApiResponse> {
     try {
       const response = await fetch("/api/v1/users/updateMyPassword", {
         method: "PATCH",
@@ -26,20 +40,23 @@ export default function PasswordSettings() {
         body: JSON.stringify(passwordData),
       });
 
-      const data = await response.json();
+      const data = (await response.json()) as ApiResponse;
 
       if (data.status === "fail" || data.status === "error") {
         throw new Error(
           data.message ||
-            data.error.errors.confirmPassword.message ||
+            data.error?.errors?.confirmPassword?.message ||
             "Failed to update password, please try again",
         );
       }
       return data;
     } catch (error) {
-      throw new Error(
-        error.message || "Something went wrong, please try again",
-      );
+      if (error instanceof Error) {
+        throw new Error(
+          error.message || "Something went wrong, please try again",
+        );
+      }
+      throw new Error("Something went wrong, please try again");
     }
   };
 
@@ -49,22 +66,23 @@ export default function PasswordSettings() {
       toast.success("Password updated successfully");
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
     },
-    onError: (error) => toast.error(error.message || "Profile update failed"),
+    onError: (error: unknown) => {
+      if (error instanceof Error) {
+        toast.error(error.message || "Something went wrong, please try again");
+      } else {
+        toast.error("Something went wrong, please try again");
+      }
+    },
   });
 
-  const handlePassword = function (event: {
-    target: { name: string; value: string };
-  }) {
+  const handlePassword = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setUpdateMyPassword({ ...updateMyPassword, [name]: value });
   };
 
-  const handlePasswordSubmit = function (event: {
-    preventDefault: () => void;
-  }) {
+  const handlePasswordSubmit = (event: FormEvent<HTMLFormElement>) => {
     try {
       event.preventDefault();
-
       userAcctUpdate(updateMyPassword);
       setUpdateMyPassword({
         currentPassword: "",
@@ -72,7 +90,11 @@ export default function PasswordSettings() {
         passwordConfirm: "",
       });
     } catch (error) {
-      console.log(error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Something went wrong, please try again");
+      }
     }
   };
 
@@ -88,7 +110,7 @@ export default function PasswordSettings() {
             Edit Auth Info
           </h6>
           <div className="bg-helpMe-50 p-6">
-            {/* Currebt Password */}
+            {/* Current Password */}
             <div className="flex flex-col py-6 md:flex-row md:justify-between">
               <div>
                 <label

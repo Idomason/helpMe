@@ -27,7 +27,7 @@ export default function CustomForm({
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
   ) {
-    onFormData(event);
+    onFormData(event.target.name, event.target.value);
   }
 
   function renderFormElement(element: IElement) {

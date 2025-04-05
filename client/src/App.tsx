@@ -17,12 +17,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import Spinner from "./components/Spinner/Spinner.tsx";
 import Account from "./pages/Account/Account.tsx";
-import * as AllGiveaways from "./pages/Giveaways/Giveaways.tsx";
 import GiveawayGrid from "./components/CurrentGiveawaysCard/GiveawayGrid";
 import GiveawayDetails from "./components/GiveawayDetails/GiveawayDetails";
 import HelpRequestDetails from "./components/HelpRequestDetails/HelpRequestDetails";
-
 import HelpRequestGrid from "./components/HelpRequestGrid/HelpRequestGrid.tsx";
+
 const toastOptions = {
   success: {
     duration: 3000,
@@ -38,21 +37,6 @@ const toastOptions = {
 };
 
 function App() {
-  const { data: requestData } = useQuery({
-    queryKey: ["requests"],
-    queryFn: async () => {
-      try {
-        const response = await fetch("/api/v1/requests");
-        if (!response.ok) return null;
-        const data = await response.json();
-        return data;
-      } catch (error: any) {
-        console.log(error);
-        throw new Error(error.message);
-      }
-    },
-  });
-
   const { data: authUser, isLoading } = useQuery({
     queryKey: ["authUser"],
     queryFn: async () => {
@@ -93,12 +77,7 @@ function App() {
               <Route
                 path="/giveaways"
                 element={
-                  authUser ? (
-                    // <AllGiveaways.default />
-                    <GiveawayGrid />
-                  ) : (
-                    <Navigate to={"/login"} />
-                  )
+                  authUser ? <GiveawayGrid /> : <Navigate to={"/login"} />
                 }
               />
               <Route

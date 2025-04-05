@@ -39,7 +39,7 @@ export default function CurrentGiveaways() {
           </div>
           <div className="flex w-full justify-end pb-10">
             <Link
-              href="/giveaways"
+              to="/giveaways"
               className="mx-auto flex items-center space-x-4 bg-helpMe-200 px-5 py-1.5 capitalize text-helpMe-700 hover:bg-helpMe-700 hover:text-white md:mr-20 xl:mr-32 xl:px-6 xl:py-2"
             >
               View all giveaways

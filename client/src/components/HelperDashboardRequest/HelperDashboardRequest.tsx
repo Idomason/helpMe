@@ -26,7 +26,6 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import RequestItem from "../RequestItem/RequestItem";
-import { requestData } from "../../constant/constant";
 import NotificationIcon from "../NotificationIcon/NotificationIcon";
 import { useContext, useState } from "react";
 import { SidebarContext } from "../../context/SidebarContext";

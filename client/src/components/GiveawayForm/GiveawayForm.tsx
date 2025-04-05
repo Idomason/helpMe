@@ -1,10 +1,10 @@
 import { useState, useRef } from "react";
 import { useGiveawayImage } from "../../hooks/useGiveawayImage";
-import { useMutation } from "@tanstack/react-query";
-import { useGiveawayStore, Giveaway } from "../../store";
+import { useGiveaway } from "../../hooks/useGiveaway";
+import { Giveaway } from "../../store";
 import { toast } from "react-hot-toast";
 
-type GiveawayPropData = {
+type GiveawayFormData = {
   title: string;
   description: string;
   image: File | null;
@@ -19,7 +19,7 @@ type GiveawayPropData = {
 };
 
 export default function GiveawayForm() {
-  const [giveawayData, setGiveawayData] = useState<GiveawayPropData>({
+  const [giveawayData, setGiveawayData] = useState<GiveawayFormData>({
     title: "",
     description: "",
     image: null,
@@ -33,40 +33,9 @@ export default function GiveawayForm() {
     endDate: "",
   });
   const [fileName, setFileName] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const giveawayImgRef = useRef(null);
-  const { createGiveaway } = useGiveawayStore();
-
-  // Cloudinary image upload hook
+  const giveawayImgRef = useRef<HTMLInputElement>(null);
   const { handleImageUpload } = useGiveawayImage();
-
-  // Save giveaway to db
-  const { mutate: createGiveawayMutation, isLoading } = useMutation({
-    mutationFn: async (newGiveaway: GiveawayPropData) => {
-      const response = await createGiveaway(newGiveaway as Giveaway);
-      return response;
-    },
-    onSuccess: () => {
-      toast.success("Giveaway created successfully");
-      setGiveawayData({
-        title: "",
-        description: "",
-        image: null,
-        prizes: "",
-        rules: "",
-        requirements: "",
-        category: "",
-        tags: "",
-        location: "",
-        startDate: "",
-        endDate: "",
-      });
-      setFileName("");
-    },
-    onError: (error: { message: string }) => {
-      toast.error(error.message || "Failed to create giveaway");
-    },
-  });
+  const { createGiveaway, isLoading } = useGiveaway();
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -114,19 +83,55 @@ export default function GiveawayForm() {
       endDate: "",
     });
     setFileName("");
+    if (giveawayImgRef.current) {
+      giveawayImgRef.current.value = "";
+    }
   };
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const image = giveawayData.image;
-    const imageUrl = await handleImageUpload(image);
+    if (isLoading) return;
 
-    const newGiveaway = {
-      ...giveawayData,
-      image: imageUrl,
-    };
+    try {
+      const imageResult = await handleImageUpload(giveawayData.image);
+      if (!imageResult) {
+        toast.error("Failed to upload image");
+        return;
+      }
 
-    createGiveawayMutation(newGiveaway);
+      const newGiveaway: Giveaway = {
+        _id: "", // Will be set by the server
+        title: giveawayData.title,
+        description: giveawayData.description,
+        image: {
+          url: imageResult.url,
+          publicId: imageResult.publicId,
+        },
+        numVotes: 0,
+        category: giveawayData.category,
+        startDate: giveawayData.startDate,
+        endDate: giveawayData.endDate,
+        location: giveawayData.location,
+        tags: giveawayData.tags.split(",").map((tag) => tag.trim()),
+        isActive: true,
+        isFeatured: false,
+        isEnded: false,
+        requirements: giveawayData.requirements,
+        prizes: giveawayData.prizes,
+        rules: giveawayData.rules,
+        giveawayDescription: giveawayData.description,
+        createdAt: new Date().toISOString(),
+      };
+
+      createGiveaway(newGiveaway);
+      resetForm();
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message || "Failed to create giveaway");
+      } else {
+        toast.error("Failed to create giveaway");
+      }
+    }
   }
 
   return (

@@ -23,8 +23,28 @@ export interface HelpRequest extends BaseEntity {
   requestDescription: string;
 }
 
-export interface Giveaway extends BaseEntity {
+export interface Giveaway {
+  _id: string;
+  title: string;
+  description: string;
+  image: {
+    url: string;
+    publicId: string;
+  };
+  numVotes: number;
+  category: string;
+  startDate: string;
+  endDate: string;
+  location: string;
+  tags: string[];
+  isActive: boolean;
+  isFeatured: boolean;
+  isEnded: boolean;
+  requirements: string;
+  prizes: string;
+  rules: string;
   giveawayDescription: string;
+  createdAt: string;
 }
 
 export interface User {

@@ -6,13 +6,25 @@ import {
 } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 
+interface DashboardSidebarProps {
+  openSideBar: boolean;
+  sidebarToggler: () => void;
+  setMouseEnter: (value: boolean) => void;
+  mouseEnter: boolean;
+  sideData: Array<{
+    name: string;
+    icon: React.ReactNode;
+    link: string;
+  }>;
+}
+
 export default function DashboardSidebar({
   openSideBar,
   sidebarToggler,
   setMouseEnter,
   mouseEnter,
   sideData,
-}) {
+}: DashboardSidebarProps) {
   return (
     <aside
       className={`absolute bottom-0 left-0 top-0 ${(mouseEnter || openSideBar) && "w-52"} z-10 min-h-screen bg-[#fefffe] bg-black/75 shadow`}
@@ -48,7 +60,7 @@ export default function DashboardSidebar({
           </div>
 
           {sideData.length > 0 &&
-            sideData.map((data) => (
+            sideData.map((data: DashboardSidebarProps["sideData"][0]) => (
               <li
                 className={`my-2 w-fit rounded-md ${(mouseEnter || openSideBar) && "pl-6"} transition-all duration-300 ease-in-out hover:bg-[#F0F2F4] hover:font-semibold`}
                 key={data.name}

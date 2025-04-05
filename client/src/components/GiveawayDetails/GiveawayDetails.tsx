@@ -3,12 +3,19 @@ import { useParams } from "react-router-dom";
 import { format } from "date-fns";
 import { useState } from "react";
 import Spinner from "../Spinner/Spinner";
+import { Giveaway } from "../../store";
+
+interface GiveawayResponse {
+  data: Giveaway;
+  message: string;
+  success: boolean;
+}
 
 export default function GiveawayDetails() {
   const { id } = useParams();
   const [isApplying, setIsApplying] = useState(false);
 
-  const { data: giveaway, isLoading } = useQuery({
+  const { data: giveaway, isLoading } = useQuery<GiveawayResponse>({
     queryKey: ["giveaway", id],
     queryFn: async () => {
       const response = await fetch(`/api/v1/giveaways/${id}`);
@@ -21,19 +28,19 @@ export default function GiveawayDetails() {
   if (!giveaway?.data) return <div>Giveaway not found</div>;
 
   const getStatusColor = () => {
-    if (giveaway?.data?.isEnded) return "bg-red-100 text-red-800";
-    if (giveaway?.data?.isFeatured) return "bg-purple-100 text-purple-800";
+    if (giveaway.data.isEnded) return "bg-red-100 text-red-800";
+    if (giveaway.data.isFeatured) return "bg-purple-100 text-purple-800";
     return "bg-green-100 text-green-800";
   };
 
   const getStatusText = () => {
-    if (giveaway?.data?.isEnded) return "Ended";
-    if (giveaway?.data?.isFeatured) return "Featured";
+    if (giveaway.data.isEnded) return "Ended";
+    if (giveaway.data.isFeatured) return "Featured";
     return "Active";
   };
 
   const getDaysLeft = () => {
-    const endDate = new Date(giveaway?.data?.endDate);
+    const endDate = new Date(giveaway.data.endDate);
     const today = new Date();
     const diffTime = endDate.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -47,7 +54,7 @@ export default function GiveawayDetails() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-bold text-gray-900">
-              {giveaway?.data?.title}
+              {giveaway.data.title}
             </h1>
             <span
               className={`rounded-full px-4 py-1 text-sm font-semibold ${getStatusColor()}`}
@@ -56,9 +63,9 @@ export default function GiveawayDetails() {
             </span>
           </div>
           <div className="mt-2 flex items-center space-x-4 text-gray-600">
-            <span>{giveaway?.data?.location}</span>
+            <span>{giveaway.data.location}</span>
             <span>•</span>
-            <span>{giveaway?.data?.category}</span>
+            <span>{giveaway.data.category}</span>
             <span>•</span>
             <span>{getDaysLeft()} days left</span>
           </div>

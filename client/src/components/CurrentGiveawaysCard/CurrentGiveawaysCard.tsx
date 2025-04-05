@@ -4,6 +4,13 @@ import "react-multi-carousel/lib/styles.css";
 import GiftCard from "./GiftCard";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "../Spinner/Spinner";
+import { Giveaway } from "../../store";
+
+interface GiveawaysResponse {
+  data: Giveaway[];
+  message: string;
+  success: boolean;
+}
 
 const responsive = {
   superLargeDesktop: {
@@ -30,7 +37,7 @@ const responsive = {
 };
 
 export default function CurrentGiveawaysCard() {
-  const { data: giveaways, isLoading } = useQuery({
+  const { data: giveaways, isLoading } = useQuery<GiveawaysResponse>({
     queryKey: ["giveaways"],
     queryFn: async () => {
       const response = await fetch("/api/v1/giveaways");
@@ -59,7 +66,7 @@ export default function CurrentGiveawaysCard() {
       showDots={true}
       infinite
     >
-      {giveaways.data?.map((giveaway: any) => (
+      {giveaways?.data?.map((giveaway) => (
         <div
           key={giveaway._id}
           className="flex items-center justify-center py-10"

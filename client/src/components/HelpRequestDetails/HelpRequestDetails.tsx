@@ -95,14 +95,13 @@ export default function HelpRequestDetails() {
         throw new Error(error.message);
       }
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ["request", id] });
       toast.success(data.message);
       setIsVoting(true);
     },
     onError: (error: any) =>
       toast.error(error.message || "Failed to vote, please try again"),
-    onCancel: (data: any) => toast.error(data.message || "Payment cancelled"),
   });
 
   if (isLoading)

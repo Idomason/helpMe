@@ -3,8 +3,10 @@ import { IRequest } from "../../utils/types";
 import { format } from "date-fns";
 
 export default function RequestItem({ ...request }: IRequest) {
-  const getDeadlineStatus = (deadline: string) => {
-    if (Date.now() > new Date(deadline).getTime()) {
+  const getDeadlineStatus = (deadline: string | Date) => {
+    const deadlineDate =
+      deadline instanceof Date ? deadline : new Date(deadline);
+    if (Date.now() > deadlineDate.getTime()) {
       return "Expired";
     }
     return request?.status;

@@ -5,30 +5,29 @@ import {
 import RangeSlider from "../CurrentHelpRequests/RangeSlider";
 import { Link } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
-import { formatDate } from "../../utils/formattedDate";
+import { formattedDate } from "../../utils/formattedDate";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-// import { IMedical } from "../../utils/types";
+import { IRequest } from "../../utils/types";
 
-export default function CurrentHelpCard({ request }) {
-  const {
-    _id,
-    image,
-    requestDescription,
-    votes,
-    specificDetails,
-    comments,
-    category,
-  } = request;
+export default function CurrentHelpCard({
+  _id,
+  specificDetails,
+  votes,
+  comments,
+  image,
+  requestDescription,
+  category,
+}: IRequest) {
   const totalVotes = votes.length;
   const totalComments = comments.length;
   const value = totalVotes
     ? ((specificDetails?.amount / totalVotes) * 100).toFixed()
-    : 0;
+    : "0";
   const queryClient = useQueryClient();
 
   // Date format Helper function
-  const formattedDate = formatDate(specificDetails?.deadline);
+  const formatDate = formattedDate(specificDetails?.deadline);
 
   const { mutate: vote } = useMutation({
     mutationFn: async () => {
@@ -88,7 +87,7 @@ export default function CurrentHelpCard({ request }) {
             </p>{" "}
             <p className="text-xs font-thin text-helpMe-700">
               Deadline:{" "}
-              <span className="font-bold text-helpMe-800">{formattedDate}</span>
+              <span className="font-bold text-helpMe-800">{formatDate}</span>
             </p>
           </div>
 
@@ -96,7 +95,7 @@ export default function CurrentHelpCard({ request }) {
           <div className="py-.5 w-full">
             <RangeSlider
               className="ml-[1px] w-full"
-              sliderValue={value}
+              sliderValue={Number(value)}
               onSliderValue={() => {}}
             />
           </div>

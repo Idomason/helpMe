@@ -1,8 +1,5 @@
 import { Link } from "react-router-dom";
-import Questions from "../Questions/Questions";
-import { questionsData } from "../../constant/constant";
 import { ArrowRight } from "lucide-react";
-import "../../styles/animations.css";
 
 const Cta = () => {
   return (

@@ -1,18 +1,17 @@
-type DateOptionProp = {
-  weekday: string;
-  year: string;
-  month: string;
-  day: string;
-};
+interface DateOptionProp {
+  weekday: "long" | "short" | "narrow";
+  year: "numeric" | "2-digit";
+  month: "long" | "short" | "narrow" | "numeric" | "2-digit";
+  day: "numeric" | "2-digit";
+}
 
-export const formatDate = function (newDate: string) {
-  const date = new Date(newDate);
+export function formattedDate(date: Date): string {
   const options: DateOptionProp = {
+    weekday: "long",
     year: "numeric",
-    month: "short",
+    month: "long",
     day: "numeric",
   };
-  const formattedDate = date.toLocaleDateString("en-US", options);
 
-  return formattedDate;
-};
+  return date.toLocaleString("en-US", options);
+}

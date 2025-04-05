@@ -155,7 +155,7 @@ export default function HelpeeDashboardRequest() {
                     >
                       <Link
                         className="ml-3 inline-flex w-fit items-center space-x-3 rounded-md px-2 py-2 capitalize text-[#b1b5b3] transition-all duration-300 ease-in-out hover:bg-[#F0F2F4] hover:font-semibold hover:text-[#1e1e1e] md:text-lg"
-                        to={data.link}
+                        to={data.link || "/"}
                       >
                         <span>{data.icon}</span>
                         <span>{(mouseEnter || openSideBar) && data.name}</span>
@@ -181,15 +181,13 @@ export default function HelpeeDashboardRequest() {
                 <Profile
                   user={user}
                   status={status}
-                  open={openProfile}
-                  onClose={onOpenProfile}
-                  logout={authUserLogout}
+                  logout={() => authUserLogout({})}
                 />
               )}
 
               <header className="flex items-center justify-between">
                 <div
-                  onClick={() => onOpenProfile()}
+                  onClick={() => onOpenProfile(!openProfile)}
                   className="cursor-pointer rounded-full p-1 shadow ring-gray-500"
                 >
                   <div className="relative flex items-center space-x-3">

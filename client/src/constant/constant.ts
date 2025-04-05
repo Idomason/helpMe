@@ -272,32 +272,32 @@ export const registerFormElements = [
     id: "name",
     placeholder: "Enter your name",
     componentType: "input",
+    label: "Full Name",
   },
-
   {
     name: "email",
     type: "email",
     id: "email",
     placeholder: "your_email@mail.com",
     componentType: "input",
+    label: "Email",
   },
-
   {
     name: "password",
     type: "password",
     id: "password",
     placeholder: "Enter your password",
     componentType: "input",
+    label: "Password",
   },
-
   {
     name: "passwordConfirm",
     type: "password",
     id: "passwordConfirm",
     placeholder: "Confirm your password",
     componentType: "input",
+    label: "Confirm Password",
   },
-
   {
     name: "termsConditions",
     type: "checkbox",
@@ -315,14 +315,15 @@ export const loginFormElements = [
     id: "email",
     placeholder: "Enter your email",
     componentType: "input",
+    label: "Email",
   },
-
   {
     name: "password",
     type: "password",
     id: "password",
     placeholder: "Enter your password",
     componentType: "input",
+    label: "Password",
   },
 ];
 

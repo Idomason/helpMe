@@ -29,22 +29,11 @@ export interface IFeature {
 
 // SliderCard PropType
 export interface ISliderCard {
-  _id: string;
-  name: string;
   image: {
     url: string;
   };
-  city: string;
-  state: string;
-  country: string;
-  category: string;
-  status: string;
-  specificDetails: {
-    amount: number;
-    deadline: string;
-  };
-  requestDescription: string;
-  createdAt: string;
+  title: string;
+  link: string;
 }
 
 // RangeSLider PropTypes
@@ -133,11 +122,7 @@ export interface IFormData {
 export type ICustomForm = {
   formControls: IElement[];
   formData: IFormData;
-  onFormData: (
-    event: ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) => void;
+  onFormData: (name: string, value: string) => void;
   onHandleSubmit: (event: FormEvent<HTMLFormElement>) => void;
   buttonText: string;
   className: string;
@@ -148,7 +133,7 @@ export interface IElement {
   name: string;
   type: string;
   id: string;
-  label?: string;
+  label: string;
   link?: string;
   value?: string;
   checked?: boolean;
@@ -174,14 +159,18 @@ export interface IRequest {
   category: string;
   createdAt: string;
   specificDetails: {
-    deadline: string;
+    deadline: Date;
+    amount: number;
   };
   city: string;
   state: string;
   country: string;
   image: {
     url: string;
+    publicId: string;
   };
+  votes: string[];
+  comments: string[];
 }
 
 export interface IGiveaway {
@@ -223,8 +212,8 @@ export type ISidebarDataProp = sidebar[];
 type ObjectId = string & { __objectId?: true }; // Enforces ObjectId format
 
 interface ProfileImage {
-  publicId: string | undefined;
-  url: string | ArrayBuffer;
+  publicId: string;
+  url: string;
 }
 
 export interface IUser {

@@ -31,20 +31,26 @@ export default function RegisterForm() {
     "inline-block w-full rounded bg-[#5d87f0] px-6 py-2 transition-all duration-300 ease-in hover:bg-opacity-70";
 
   function onFormChange(
-    event: ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    name:
+      | string
+      | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+    value?: string,
   ) {
-    const { name, type, value } = event.target;
-
-    // Narrow down the type to handle checkbox specifically
-    const isCheckbox = type === "checkbox";
-
-    // If it's a checkbox, we use `checked`, otherwise `value`
-    setFormData({
-      ...formData,
-      [name]: isCheckbox ? (event.target as HTMLInputElement).checked : value,
-    });
+    if (typeof name === "string") {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    } else {
+      const { name: fieldName, type, value: fieldValue } = name.target;
+      const isCheckbox = type === "checkbox";
+      setFormData({
+        ...formData,
+        [fieldName]: isCheckbox
+          ? (name.target as HTMLInputElement).checked
+          : fieldValue,
+      });
+    }
   }
 
   const { mutate } = useMutation({

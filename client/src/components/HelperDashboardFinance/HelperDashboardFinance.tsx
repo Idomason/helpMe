@@ -1,9 +1,6 @@
 import {
-  ArrowLeftCircleIcon,
-  ArrowLeftStartOnRectangleIcon,
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
-  ArrowRightCircleIcon,
   ArrowsUpDownIcon,
   BellIcon,
   ChartBarIcon,
@@ -11,18 +8,15 @@ import {
   FolderIcon,
   FunnelIcon,
   GiftIcon,
-  HomeIcon,
   MagnifyingGlassIcon,
   QuestionMarkCircleIcon,
   Squares2X2Icon,
   UserCircleIcon,
 } from "@heroicons/react/24/solid";
 import { SearchIcon, WalletIcon } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useContext, useState } from "react";
 import { SidebarContext } from "../../context/SidebarContext";
 import Profile from "../profile/Profile";
-import useWindowSize from "../../hooks/useWindowSize";
 import GiveawayItem from "../GiveawayItem/GiveawayItem";
 import { giveawayData } from "../../constant/constant";
 import DashboardSidebar from "../DashBoardSidebar/DashboardSidebar";
@@ -60,10 +54,12 @@ const sidebarSecondaryData = [
     name: "level",
     level: 0,
     icon: <ChartBarIcon className="size-5" />,
+    link: "/level",
   },
   {
     name: "profile",
     icon: <UserCircleIcon className="size-5" />,
+    link: "/profile",
   },
 ];
 
@@ -77,7 +73,6 @@ export default function HelperDashboardGiveaway() {
   const { openProfile, onOpenProfile } = useContext(SidebarContext);
 
   const sideData = [...sidebarData, ...sidebarSecondaryData];
-  const { windowWidth } = useWindowSize();
 
   return (
     <div className="min-h-screen">
@@ -93,11 +88,11 @@ export default function HelperDashboardGiveaway() {
           <div className="relative ml-16 h-full w-full flex-1 overflow-auto rounded-md bg-white shadow">
             <div className="sticky top-0 z-[9] flex items-center justify-between border-b border-gray-300 bg-white px-4 py-1">
               {/* Profile */}
-              {openProfile && <Profile />}
+              {openProfile && <Profile status={status} logout={() => {}} />}
 
               <header className="flex items-center justify-between">
                 <div
-                  onClick={() => onOpenProfile()}
+                  onClick={() => onOpenProfile(!openProfile)}
                   className="cursor-pointer rounded-full p-1 shadow ring-gray-500"
                 >
                   <div className="relative flex items-center space-x-3">

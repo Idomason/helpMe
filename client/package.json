@@ -18,6 +18,7 @@
     "@types/validator": "^13.12.2",
     "clsx": "^2.1.1",
     "framer-motion": "^12.6.2",
+    "helpme": "file:..",
     "lucide-react": "^0.446.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

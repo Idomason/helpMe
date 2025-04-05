@@ -51,15 +51,17 @@ const sidebarSecondaryData = [
     name: "level",
     level: 0,
     icon: <ChartBarIcon className="size-5" />,
+    link: "#",
   },
   {
     name: "profile",
     icon: <UserCircleIcon className="size-5" />,
+    link: "#",
   },
 ];
 
 // FIXME
-const status = "text-[#05a365] bg-[#06ec92]/10";
+// const status = "text-[#05a365] bg-[#06ec92]/10";
 
 export default function HelperHome() {
   const { openSideBar, sidebarToggler } = useContext(SidebarContext);
