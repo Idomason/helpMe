@@ -17,12 +17,7 @@ import { globalErrorHandler } from './controllers/errorController.js';
 const app = express();
 
 // Allow cross-origin requests from client (react app)
-app.use(
-  cors({
-    origin: 'http://localhost:3000', // Vite's default dev server
-    credentials: true, // Allows cookies to be included
-  }),
-);
+app.use(cors());
 
 // Set security HTTP headers
 app.use(helmet());
@@ -69,10 +64,6 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/requests', requestRoutes);
 // app.use("/api/v1/notifications", notificationRoutes);
 // app.use("/api/v1/messages", messageRoutes);
-
-app.all('*', (req, res, next) => {
-  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
-});
 
 app.use(globalErrorHandler);
 
