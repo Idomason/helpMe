@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 export default function CurrentGiveaways() {
   return (
     <div className="py-24">
-      <div className="mx-auto md:w-11/12">
+      <div className="mx-auto">
         {/* Heading */}
         <ShortHeader heading="current giveaways" />
         <div className="mx-auto bg-gradient-to-bl from-helpMe-200 to-helpMe-900 p-4">

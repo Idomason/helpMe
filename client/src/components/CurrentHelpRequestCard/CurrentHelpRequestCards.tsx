@@ -74,7 +74,7 @@ export default function CurrentHelpRequestCards() {
   }
 
   return (
-    <div className="w-full py-8 md:px-10 lg:px-28">
+    <div className="w-full py-16 md:px-10 lg:px-28">
       <Carousel
         additionalTransfrom={0}
         responsive={responsive}

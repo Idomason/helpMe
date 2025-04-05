@@ -54,26 +54,28 @@ export default function CurrentGiveawaysCard() {
     );
 
   return (
-    <Carousel
-      responsive={responsive}
-      autoPlay={true}
-      arrows={false}
-      swipeable={true}
-      autoPlaySpeed={2000}
-      centerMode={false}
-      removeArrowOnDeviceType={["tablet", "mobile"]}
-      ssr={true}
-      showDots={true}
-      infinite
-    >
-      {giveaways?.data?.map((giveaway) => (
-        <div
-          key={giveaway._id}
-          className="flex items-center justify-center py-10"
-        >
-          <GiftCard giveaway={giveaway} />
-        </div>
-      ))}
-    </Carousel>
+    <div className="w-full py-8 md:px-10 lg:px-36">
+      <Carousel
+        responsive={responsive}
+        autoPlay={true}
+        arrows={false}
+        swipeable={true}
+        autoPlaySpeed={2000}
+        centerMode={false}
+        removeArrowOnDeviceType={["tablet", "mobile"]}
+        ssr={true}
+        showDots={true}
+        infinite
+      >
+        {giveaways?.data?.map((giveaway) => (
+          <div
+            key={giveaway._id}
+            className="flex items-center justify-center py-10"
+          >
+            <GiftCard giveaway={giveaway} />
+          </div>
+        ))}
+      </Carousel>
+    </div>
   );
 }
