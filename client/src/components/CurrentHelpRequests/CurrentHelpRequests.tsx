@@ -10,8 +10,8 @@ export default function CurrentHelpRequests() {
   const [sliderValue, setSliderValue] = useState(60);
 
   return (
-    <div className="py-24 pb-0">
-      <div className="mx-auto md:w-11/12">
+    <div className="w-full py-24 pb-0">
+      <div className="mx-auto">
         {/* Heading */}
         <ShortHeader heading="current help requests" />
         <div className="mx-auto bg-helpMe-50/40 p-4">
@@ -38,7 +38,7 @@ export default function CurrentHelpRequests() {
           </div>
 
           {/* NOTE Sliding Category Cards */}
-          <div className="mx-auto">
+          <div className="">
             <CurrentHelpRequestCards />
           </div>
           <div className="flex w-full justify-end pb-10">

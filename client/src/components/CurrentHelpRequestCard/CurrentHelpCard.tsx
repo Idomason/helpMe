@@ -58,12 +58,12 @@ export default function CurrentHelpCard({
   });
 
   return (
-    <div className="relative p-14">
+    <div className="relative h-full w-full sm:w-80">
       <span className="lg:text-md absolute z-20 mx-2 my-2 flex items-center space-x-3 rounded-full bg-pink-400 px-5 py-1 text-sm text-white xl:px-6 xl:py-2">
         <HandThumbUpIcon className="size-5" />
         <span>{votes.length} Votes</span>
       </span>
-      <div className="w-72 overflow-hidden rounded-lg bg-helpMe-200 pb-4 shadow">
+      <div className="overflow-hidden rounded-lg bg-helpMe-200 pb-4 shadow">
         <div className="relative">
           <div className="absolute z-10 h-full w-full bg-black/75"></div>
           <img
@@ -74,9 +74,11 @@ export default function CurrentHelpCard({
         </div>
 
         <div className="px-3">
-          <p className="py-4 text-sm font-light leading-5 text-helpMe-950">
-            {requestDescription}
-          </p>
+          <div className="mb-3 min-h-[3.5rem] py-4">
+            <p className="text-md line-clamp-2 font-light leading-5 text-helpMe-950">
+              {requestDescription}
+            </p>
+          </div>
           <hr className="mb-2 h-[0.12rem] bg-white" />
           <div className="flex items-center justify-between">
             <p className="text-xs font-thin text-helpMe-700">

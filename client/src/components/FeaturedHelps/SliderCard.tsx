@@ -15,7 +15,7 @@ export default function SliderCard({ ...request }) {
   };
 
   return (
-    <div className="relative flex w-72 flex-col space-y-3 overflow-hidden rounded-lg border border-helpMe-200 shadow-lg">
+    <div className="relative flex w-full flex-col space-y-3 overflow-hidden rounded-lg border border-helpMe-200 shadow-lg sm:w-80">
       <div className="relative h-52">
         <div className="absolute z-10 h-full w-full bg-black/75"></div>
         <span
@@ -24,7 +24,7 @@ export default function SliderCard({ ...request }) {
           {request?.status}
         </span>
         <img
-          className="h-52 w-72 transform object-cover transition-all duration-300 ease-in-out"
+          className="h-52 w-full transform object-cover transition-all duration-300 ease-in-out sm:w-80"
           src={request.image.url}
           width={350}
           height={350}

@@ -46,7 +46,7 @@ export default function LatestRequests() {
     );
 
   return (
-    <div className="w-full py-4">
+    <div className="w-full px-4 py-4 md:px-10 lg:px-32">
       <Carousel
         responsive={responsive}
         autoPlay={true}
@@ -58,11 +58,9 @@ export default function LatestRequests() {
         ssr={true}
         showDots={true}
         infinite
-        containerClass="carousel-container"
-        itemClass="carousel-item-padding-40-px"
       >
         {requests.data.requests.map((request: any) => (
-          <div key={request._id} className="px-2">
+          <div key={request._id} className="flex items-center justify-center">
             <SliderCard {...request} />
           </div>
         ))}

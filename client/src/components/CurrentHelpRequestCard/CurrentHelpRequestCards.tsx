@@ -74,27 +74,26 @@ export default function CurrentHelpRequestCards() {
   }
 
   return (
-    <Carousel
-      additionalTransfrom={0}
-      responsive={responsive}
-      autoPlay={true}
-      arrows={false}
-      swipeable={true}
-      autoPlaySpeed={4000}
-      centerMode={false}
-      removeArrowOnDeviceType={["tablet", "mobile"]}
-      ssr={true}
-      showDots={true}
-      infinite
-    >
-      {requestData.data.requests.map((request) => (
-        <div
-          className="mx-auto flex w-11/12 flex-wrap items-center justify-center"
-          key={request._id}
-        >
-          <CurrentHelpCard {...request} />
-        </div>
-      ))}
-    </Carousel>
+    <div className="w-full py-8 md:px-10 lg:px-28">
+      <Carousel
+        additionalTransfrom={0}
+        responsive={responsive}
+        autoPlay={true}
+        arrows={false}
+        swipeable={true}
+        autoPlaySpeed={4000}
+        centerMode={false}
+        removeArrowOnDeviceType={["tablet", "mobile"]}
+        ssr={true}
+        showDots={true}
+        infinite
+      >
+        {requestData.data.requests.map((request) => (
+          <div className="flex items-center justify-center" key={request._id}>
+            <CurrentHelpCard {...request} />
+          </div>
+        ))}
+      </Carousel>
+    </div>
   );
 }
