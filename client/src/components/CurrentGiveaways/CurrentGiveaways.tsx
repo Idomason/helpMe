@@ -34,7 +34,7 @@ export default function CurrentGiveaways() {
               Completion {40}%
             </span>
           </div>
-          <div className="mx-auto">
+          <div className="mx-auto md:w-11/12 xl:w-full xl:px-5">
             <CurrentGiveawaysCard />
           </div>
           <div className="flex w-full justify-end pb-10">

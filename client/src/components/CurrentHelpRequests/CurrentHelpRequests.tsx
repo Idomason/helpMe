@@ -38,7 +38,7 @@ export default function CurrentHelpRequests() {
           </div>
 
           {/* NOTE Sliding Category Cards */}
-          <div className="">
+          <div className="md:w-11/12 xl:w-full xl:px-5">
             <CurrentHelpRequestCards />
           </div>
           <div className="flex w-full justify-end pb-10">
