@@ -109,3 +109,30 @@
 .animate-shimmer {
   animation: shimmer 8s linear infinite;
 }
+
+@keyframes dashboard-sheet-in {
+  from { transform: translateY(100%); opacity: 0.7; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.dashboard-more-sheet,
+.dashboard-mobile-sheet {
+  animation: dashboard-sheet-in 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-more-sheet,
+  .dashboard-mobile-sheet,
+  .dashboard-more-sheet *,
+  .dashboard-mobile-sheet * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (min-width: 900px) {
+  .giver-board-toolbar {
+    flex-direction: row;
+    align-items: center;
+  }
+}

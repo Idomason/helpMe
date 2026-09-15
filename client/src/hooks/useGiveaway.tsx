@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGiveawayStore, Giveaway } from "../store";
 import { toast } from "react-hot-toast";
 
@@ -26,6 +26,7 @@ interface FetchGiveawayResponse {
 }
 
 export const useGiveaway = () => {
+  const queryClient = useQueryClient();
   const { createGiveaway, updateGiveaway, deleteGiveaway, fetchGiveaway } =
     useGiveawayStore();
 
@@ -42,6 +43,8 @@ export const useGiveaway = () => {
     onSuccess: (response) => {
       if (response.success) {
         toast.success(response.message || "Giveaway created successfully");
+        queryClient.invalidateQueries({ queryKey: ["giveaways"] });
+        queryClient.invalidateQueries({ queryKey: ["stats"] });
       } else {
         toast.error(response.message || "Failed to create giveaway");
       }
@@ -107,6 +110,7 @@ export const useGiveaway = () => {
 
   return {
     createGiveaway: createGiveawayMutation.mutate,
+    createGiveawayAsync: createGiveawayMutation.mutateAsync,
     updateGiveaway: updateGiveawayMutation.mutate,
     deleteGiveaway: deleteGiveawayMutation.mutate,
     fetchGiveaway: fetchGiveawayQuery.data,

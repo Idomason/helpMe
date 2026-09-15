@@ -1,57 +1,30 @@
-import { useState } from "react";
-import RangeSlider from "./RangeSlider";
-import { ShieldPlus } from "lucide-react";
-import ShortHeader from "../ShortHeader/ShortHeader";
-import { ArrowLongRightIcon } from "@heroicons/react/24/solid";
-import CurrentHelpRequestCards from "../CurrentHelpRequestCard/CurrentHelpRequestCards";
 import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+import CurrentHelpRequestCards from "../CurrentHelpRequestCard/CurrentHelpRequestCards";
 
 export default function CurrentHelpRequests() {
-  const [sliderValue, setSliderValue] = useState(60);
-
   return (
-    <div className="w-full py-24 pb-0">
-      <div className="mx-auto">
-        {/* Heading */}
-        <ShortHeader heading="current help requests" />
-        <div className="mx-auto bg-helpMe-50/40 p-4">
-          <div className="flex items-center justify-between">
-            {/* NOTE Category */}
-            <span className="inline-flex items-center space-x-1 bg-helpMe-200 px-4 py-2">
-              <ShieldPlus className="text-helpMe-950" />
-              <p className="text-xs font-medium uppercase tracking-wider text-helpMe-950 sm:text-sm xl:text-lg xl:font-semibold">
-                Medical
-              </p>
+    <section className="bg-slate-50 px-5 py-12 sm:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-5 flex items-end justify-between">
+          <div>
+            <span className="text-sm font-semibold uppercase tracking-widest text-helpMe-600">
+              Active
             </span>
-
-            {/* NOTE Slider */}
-            <RangeSlider
-              className="hidden sm:block"
-              sliderValue={sliderValue}
-              onSliderValue={() => setSliderValue}
-            />
-
-            {/* NOTE Progress */}
-            <span className="my-2 inline-block rounded-full bg-pink-400 px-5 py-1 text-xs font-medium uppercase tracking-widest text-white sm:text-sm xl:text-lg xl:font-semibold">
-              Completion {sliderValue}%
-            </span>
+            <h2 className="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+              Current Help Requests
+            </h2>
           </div>
-
-          {/* NOTE Sliding Category Cards */}
-          <div className="">
-            <CurrentHelpRequestCards />
-          </div>
-          <div className="flex w-full justify-end pb-10">
-            <Link
-              to="/all-help-requests"
-              className="mx-auto flex items-center space-x-4 bg-helpMe-200 px-5 py-1.5 capitalize text-helpMe-700 hover:bg-helpMe-700 hover:text-white md:mr-20 xl:mr-32 xl:px-6 xl:py-2"
-            >
-              View all helps
-              <ArrowLongRightIcon className="ml-2 size-6 text-pink-400 xl:size-7" />
-            </Link>
-          </div>
+          <Link
+            to="/all-help-requests"
+            className="hidden items-center gap-2 text-sm font-semibold text-helpMe-600 transition hover:text-helpMe-800 sm:inline-flex"
+          >
+            View All
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
+        <CurrentHelpRequestCards />
       </div>
-    </div>
+    </section>
   );
 }

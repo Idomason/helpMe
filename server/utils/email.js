@@ -1,28 +1,21 @@
-import nodemailer from 'nodemailer';
+let _resend = null;
+
+const getResend = async () => {
+  if (!_resend) {
+    const { Resend } = await import('resend');
+    _resend = new Resend(process.env.RESEND_API_KEY);
+  }
+  return _resend;
+};
 
 const sendEmail = async (options) => {
-  // 1.) Create a transporter
-  const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-
-    // Activate in gmail "less secure app" option
-  });
-
-  // 2.) Define email options
-  const mailOptions = {
-    from: 'Idoma Ngbede <idomangbede@gmail.com>',
+  const resend = await getResend();
+  await resend.emails.send({
+    from: process.env.RESEND_FROM_EMAIL || 'HelpMe <noreply@helpme.com>',
     to: options.email,
     subject: options.subject,
     text: options.message,
-  };
-
-  // 3.) Send the email
-  await transporter.sendMail(mailOptions);
+  });
 };
 
 export default sendEmail;

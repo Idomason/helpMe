@@ -162,6 +162,7 @@ export interface IRequest {
     deadline: Date;
     amount: number;
   };
+  raised?: number;
   city: string;
   state: string;
   country: string;
@@ -220,7 +221,9 @@ export interface IUser {
   _id: ObjectId; // Ensures it's a valid MongoDB ObjectId
   name: string;
   email: string;
-  role: "helper" | "helpee"; // Restrict to valid roles
+  role: "member" | "admin"; // Restrict to valid roles
+  verificationStatus?: "unverified" | "pending" | "verified" | "rejected";
+  isVerified?: boolean;
   profileImg: ProfileImage;
   helpRequests: ObjectId[]; // Array of valid user IDs (ObjectIds)
   helpsRendered: ObjectId[]; // Array of valid user IDs (ObjectIds)

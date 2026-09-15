@@ -4,6 +4,9 @@ import { format } from "date-fns";
 import { useState } from "react";
 import Spinner from "../Spinner/Spinner";
 import { Giveaway } from "../../store";
+import { categoryLabel, imgOrPlaceholder } from "../../data/helpRequestData";
+import ChallengePanel from "../ChallengePanel/ChallengePanel";
+import ShareButtons from "../ShareButtons/ShareButtons";
 
 interface GiveawayResponse {
   data: Giveaway;
@@ -62,12 +65,15 @@ export default function GiveawayDetails() {
               {getStatusText()}
             </span>
           </div>
-          <div className="mt-2 flex items-center space-x-4 text-gray-600">
+          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-600">
             <span>{giveaway.data.location}</span>
             <span>•</span>
-            <span>{giveaway.data.category}</span>
+            <span>{categoryLabel(giveaway.data.category)}</span>
             <span>•</span>
             <span>{getDaysLeft()} days left</span>
+            {typeof window !== "undefined" && (
+              <ShareButtons url={window.location.href} title={giveaway.data.title} />
+            )}
           </div>
         </div>
 
@@ -78,7 +84,7 @@ export default function GiveawayDetails() {
             {/* Image */}
             <div className="mb-8 overflow-hidden rounded-lg">
               <img
-                src={giveaway?.data?.image?.url}
+                src={imgOrPlaceholder(giveaway?.data?.image?.url)}
                 alt={giveaway?.data?.title}
                 className="h-[400px] w-full object-cover"
               />
@@ -97,20 +103,31 @@ export default function GiveawayDetails() {
               <h2 className="mb-4 text-xl font-semibold text-gray-900">
                 Requirements
               </h2>
-              <p className="text-gray-600">{giveaway?.data?.requirements}</p>
-            </div>
-
-            {/* Rules */}
-            <div className="mb-8 rounded-lg bg-white p-6 shadow-sm">
-              <h2 className="mb-4 text-xl font-semibold text-gray-900">
-                Rules
-              </h2>
-              <p className="text-gray-600">{giveaway?.data?.rules}</p>
+              <ul className="space-y-2 text-gray-600">
+                {giveaway.data.requirements.map((requirement) => (
+                  <li key={requirement} className="flex gap-2">
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-helpMe-500" />
+                    <span>{requirement}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
 
           {/* Right Column - Sidebar */}
           <div className="lg:col-span-1">
+            {/* Challenge Card */}
+            {id && (
+              <div className="mb-6">
+                <ChallengePanel
+                  giveawayId={id}
+                  ownerId={giveaway?.data?.createdBy}
+                  prizeAmount={giveaway?.data?.prizeAmount}
+                  isFunded={giveaway?.data?.isFunded}
+                />
+              </div>
+            )}
+
             {/* Prizes Card */}
             <div className="mb-6 rounded-lg bg-white p-6 shadow-sm">
               <h2 className="mb-4 text-xl font-semibold text-gray-900">

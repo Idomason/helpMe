@@ -5,6 +5,7 @@ import FeaturedHelps from "../FeaturedHelps/FeaturedHelps";
 import CurrentGiveaways from "../CurrentGiveaways/CurrentGiveaways";
 import CurrentHelpRequests from "../CurrentHelpRequests/CurrentHelpRequests";
 import FAQ from "../FAQ/FAQ";
+import WeeklyLeaderboard from "../Leaderboard/WeeklyLeaderboard";
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
       <Hero />
       <Feature />
       <FeaturedHelps />
+      <WeeklyLeaderboard />
       <CurrentHelpRequests />
       <CurrentGiveaways />
       <Cta />

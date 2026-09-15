@@ -3,67 +3,108 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
-import hpp from 'hpp';
-import mongoSanitize from 'express-mongo-sanitize';
-import xss from 'xss-clean';
 import cors from 'cors';
 
-import AppError from './utils/appError.js';
+import { globalErrorHandler } from './controllers/errorController.js';
 import giveawayRoutes from './routes/giveawayRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import requestRoutes from './routes/requestRoutes.js';
-import { globalErrorHandler } from './controllers/errorController.js';
+import uploadRoutes from './routes/uploadRoutes.js';
+import statsRoutes from './routes/statsRoutes.js';
+import helperRoutes from './routes/helperRoutes.js';
+import verificationRoutes from './routes/verificationRoutes.js';
+import escrowRoutes from './routes/escrowRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
+import reportRoutes from './routes/reportRoutes.js';
+import portfolioRoutes from './routes/portfolioRoutes.js';
+import walletRoutes from './routes/walletRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
+import { handleWebhook } from './controllers/escrowController.js';
+import { handleMonnifyWebhook } from './controllers/walletController.js';
 
 const app = express();
 
-// Allow cross-origin requests from client (react app)
 app.use(cors());
-
-// Set security HTTP headers
 app.use(helmet());
 
-// Development logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// Limit request from same IP
-const limiter = rateLimit({
-  max: 100,
+// Paystack webhook needs the RAW body for signature verification.
+// Register it BEFORE the JSON body parser, using express.raw.
+app.post(
+  '/api/v1/escrow/webhook',
+  express.raw({ type: '*/*' }),
+  (req, res, next) => {
+    req.rawBody = req.body instanceof Buffer ? req.body.toString('utf8') : '';
+    try {
+      req.body = req.rawBody ? JSON.parse(req.rawBody) : {};
+    } catch {
+      req.body = {};
+    }
+    next();
+  },
+  handleWebhook,
+);
+
+// Monnify also signs the exact raw payload. Register before express.json.
+app.post(
+  '/api/v1/payments/monnify/webhook',
+  express.raw({ type: '*/*' }),
+  (req, res, next) => {
+    req.rawBody = req.body instanceof Buffer ? req.body.toString('utf8') : '';
+    try { req.body = req.rawBody ? JSON.parse(req.rawBody) : {}; } catch { req.body = {}; }
+    next();
+  },
+  handleMonnifyWebhook,
+);
+
+// General API rate limit
+const apiLimiter = rateLimit({
+  max: 300,
   windowMs: 60 * 60 * 1000,
-  message: 'Too many requests from this user, please try again in an hour',
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { status: 'fail', message: 'Too many requests, please try again later' },
 });
-// app.use('/api', limiter);
 
-// Data sanitization against NoSQL query injection
-app.use(mongoSanitize());
+// Stricter limit for auth endpoints (brute-force protection)
+const authLimiter = rateLimit({
+  max: 20,
+  windowMs: 15 * 60 * 1000,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { status: 'fail', message: 'Too many auth attempts, please try again in 15 minutes' },
+});
 
-// Data sanitization against XSS attacks
-app.use(xss());
-
-// Prevent parameter pollution
-app.use(hpp({ whitelist: ['duration', 'difficulty'] }));
-
-//Body Parser, Parse request data to req.body
 app.use(express.json({ limit: '50mb' }));
-
-// Serving static files
-// app.use(express.static(`${__dirname}/public`));
-
-// to parse form data
 app.use(express.urlencoded({ extended: true }));
-
-// to get cookie
 app.use(cookieParser());
 
-// API ROUTES
-// app.use('/api/v1/auth', authRoutes);
+// Apply rate limiting to auth-sensitive routes
+app.use('/api/v1/users/login', authLimiter);
+app.use('/api/v1/users/register', authLimiter);
+app.use('/api/v1/users/forgotPassword', authLimiter);
+app.use('/api/v1/users/resetPassword', authLimiter);
+// General limiter for the rest of the API
+app.use('/api', apiLimiter);
 
 app.use('/api/v1/giveaways', giveawayRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/requests', requestRoutes);
-// app.use("/api/v1/notifications", notificationRoutes);
-// app.use("/api/v1/messages", messageRoutes);
+app.use('/api/v1/upload', uploadRoutes);
+app.use('/api/v1/stats', statsRoutes);
+app.use('/api/v1/helpers', helperRoutes);
+app.use('/api/v1/verification', verificationRoutes);
+app.use('/api/v1/escrow', escrowRoutes);
+app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/reports', reportRoutes);
+app.use('/api/v1/portfolio', portfolioRoutes);
+app.use('/api/v1/wallet', walletRoutes);
+app.use('/api/v1/payments', paymentRoutes);
+app.use('/api/v1/notifications', notificationRoutes);
 
 app.use(globalErrorHandler);
 

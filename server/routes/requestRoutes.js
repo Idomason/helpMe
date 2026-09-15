@@ -16,6 +16,14 @@ router.post(
   paymentController.initializePayment,
 );
 
+// Static/collection routes (must come before '/:id')
+router.get('/leaderboard/weekly', requestController.weeklyLeaderboard);
+router
+  .route('/free-help')
+  .get(requestController.listFreeHelp)
+  .post(authController.protect, requestController.createFreeHelp);
+router.post('/meeting-consent', authController.protect, requestController.recordMeetingConsent);
+
 router
   .route('/:id')
   .get(requestController.getRequest)

@@ -1,0 +1,4 @@
+.brand-logo { display:inline-flex; align-items:center; gap:8px; flex-shrink:0; font-size:26px; font-weight:800; line-height:1.5; letter-spacing:-1.3px; color:#552b70; }
+.brand-logo span { margin-left:-7px; color:#bd7699; }
+.brand-logo:focus-visible { outline:2px solid #a980c4; outline-offset:5px; border-radius:4px; }
+@media(max-width:760px) { .brand-logo { font-size:24px; } }

@@ -1,107 +1,36 @@
-import { Menu } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { navLinks } from "../../constant/constant";
-import { INavbar, INavLinks, IUser } from "../../utils/types";
-import { useQuery } from "@tanstack/react-query";
+import { ArrowUpRight, Menu } from "lucide-react";
+import { Link, NavLink } from "react-router-dom";
+import { useState } from "react";
+import { INavbar } from "../../utils/types";
 import NavProfile from "../profile/NavProfile";
+import BrandLogo from "../BrandLogo/BrandLogo";
+import { useAuthUser } from "../../hooks/useAuthUser";
+import "./Navbar.css";
 
 export default function Navbar({ openNavbar }: INavbar) {
-  const [navbarBg, setNavbarBg] = useState(false);
   const [toggleProfile, setToggleProfile] = useState(false);
-  const { data: authUser } = useQuery<IUser>({
-    queryKey: ["authUser"],
-  });
-
-  // TODO
-  // Create a user profile link on the Navbar
-
-  useEffect(() => {
-    const handler = () => {
-      if (window.scrollY >= 90) setNavbarBg(true);
-
-      if (window.scrollY < 90) setNavbarBg(false);
-    };
-
-    window.addEventListener("scroll", handler);
-
-    return () => window.removeEventListener("scroll", handler);
-  }, []);
-
+  const { data: authUser } = useAuthUser();
   return (
-    <div
-      className={`mx-auto w-full ${navbarBg ? "bg-black bg-opacity-80 backdrop-blur-md" : "fixed"} fixed z-[10000] bg-helpMe-950 py-2`}
-    >
-      {toggleProfile && (
-        <NavProfile
-          user={authUser}
-          status={"text-[#05a365] bg-[#06ec92]/10"}
-          profileToggler={setToggleProfile}
-        />
-      )}
-      <div className="mx-auto flex items-center justify-center px-4 text-helpMe-50 sm:px-6 md:px-10">
-        <div className="flex w-full items-center justify-between">
-          {/* Logo */}
-          <Link
-            to={"/"}
-            className="cursor-pointer text-lg font-semibold text-white lg:text-xl xl:text-3xl"
-          >
-            HELP ME
-            {/* <img className="h-7" src="/images/logo.png" alt="Logo" /> */}
-          </Link>
-
-          <div className="flex items-center space-x-10">
-            {/* Nav-Links */}
-            {authUser && (
-              <ul className="showLinks hidden items-center space-x-4">
-                {navLinks &&
-                  navLinks.length > 0 &&
-                  navLinks.map((navItem: INavLinks) => (
-                    <li key={navItem.id}>
-                      <Link
-                        className="nav__link lg:text-md text-sm font-medium capitalize text-white xl:text-lg"
-                        to={navItem.link}
-                      >
-                        {navItem.label}
-                      </Link>
-                    </li>
-                  ))}
-              </ul>
-            )}
-
-            {/* Profile */}
-            <div className="flex items-center space-x-4">
-              {authUser && (
-                // If authenticated, show the profile image
-                <div className="rounded-full bg-pink-400 p-0.5 transition-all duration-300 ease-in-out hover:bg-pink-600">
-                  <div
-                    className="h-10 w-10 transform cursor-pointer overflow-hidden rounded-full"
-                    onClick={() => setToggleProfile((prev) => !prev)}
-                  >
-                    <img
-                      className="h-full w-full object-cover"
-                      src={authUser?.profileImg?.url || "/images/profile.jpg"}
-                      alt="Profile Image"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {!authUser && (
-                // If not authenticated, show CTA button
-                <button className="rounded bg-pink-400 px-6 py-3 font-medium tracking-wide text-white shadow transition-all duration-300 ease-in hover:bg-pink-600 hover:font-semibold md:px-8">
-                  <Link to={"/register"}>Sign up today</Link>
-                </button>
-              )}
-
-              <Menu
-                onClick={openNavbar}
-                className="showMenuBtn hidden cursor-pointer text-helpMe-200"
-              />
-            </div>
-          </div>
+    <header className="site-header">
+      <div className="site-header-inner">
+        <BrandLogo />
+        <nav className="site-desktop-nav" aria-label="Main navigation">
+          <NavLink to="/all-help-requests">Explore requests</NavLink>
+          <NavLink to="/giveaways">Giveaways</NavLink>
+          <NavLink to="/giver-board">Givers-board</NavLink>
+        </nav>
+        <div className="site-header-actions">
+          {authUser ? <>
+            <Link className="site-header-cta" to="/dashboard?tab=create-request">Request help <ArrowUpRight size={15} /></Link>
+            <button type="button" className="site-profile" aria-label="Open account menu" aria-expanded={toggleProfile} onClick={() => setToggleProfile(!toggleProfile)}><img src={authUser.profileImg?.url || "/images/profile.jpg"} alt="" /></button>
+          </> : <>
+            <Link className="site-login" to="/login">Log in</Link>
+            <Link className="site-header-cta" to="/register">Join the community <ArrowUpRight size={15} /></Link>
+          </>}
+          <button type="button" className="site-menu-toggle" onClick={openNavbar} aria-label="Open navigation menu"><Menu size={23} /></button>
         </div>
       </div>
-    </div>
+      {toggleProfile && <NavProfile user={authUser || undefined} status="text-[#05a365] bg-[#06ec92]/10" profileToggler={setToggleProfile} />}
+    </header>
   );
 }

@@ -13,31 +13,29 @@ interface GiveawaysResponse {
 }
 
 const responsive = {
-  superLargeDesktop: {
-    // the naming can be any, depends on you.
-    breakpoint: { max: 4000, min: 3000 },
-    items: 4,
-    slidesToSlide: 3,
-  },
   desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 3,
-    slidesToSlide: 2, // optional, default to 1.
+    breakpoint: { max: 4000, min: 1280 },
+    items: 4,
+    slidesToSlide: 1,
   },
   tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 2,
-    slidesToSlide: 1, // optional, default to 1.
+    breakpoint: { max: 1280, min: 640 },
+    items: 3,
+    slidesToSlide: 1,
   },
   mobile: {
     breakpoint: { max: 640, min: 0 },
     items: 1,
-    slidesToSlide: 1, // optional, default to 1.
+    slidesToSlide: 1,
   },
 };
 
 export default function CurrentGiveawaysCard() {
-  const { data: giveaways, isLoading } = useQuery<GiveawaysResponse>({
+  const {
+    data: giveaways,
+    isLoading,
+    error,
+  } = useQuery<GiveawaysResponse>({
     queryKey: ["giveaways"],
     queryFn: async () => {
       const response = await fetch("/api/v1/giveaways");
@@ -53,24 +51,45 @@ export default function CurrentGiveawaysCard() {
       </div>
     );
 
+  if (error) {
+    return (
+      <div className="flex min-h-40 w-full items-center justify-center py-8 text-center">
+        <p className="text-sm text-gray-500">
+          Giveaways are temporarily unavailable. Please try again shortly.
+        </p>
+      </div>
+    );
+  }
+
+  const items = Array.isArray(giveaways?.data) ? giveaways.data : [];
+
+  if (items.length === 0) {
+    return (
+      <div className="flex min-h-40 w-full items-center justify-center py-8 text-center">
+        <p className="text-sm text-gray-500">No giveaways are available yet.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full py-8 md:px-10 lg:px-36">
+    <div className="w-full py-2">
       <Carousel
         responsive={responsive}
-        autoPlay={true}
-        arrows={false}
+        autoPlay={false}
+        arrows={true}
         swipeable={true}
-        autoPlaySpeed={2000}
         centerMode={false}
-        removeArrowOnDeviceType={["tablet", "mobile"]}
+        removeArrowOnDeviceType={["mobile"]}
         ssr={true}
-        showDots={true}
-        infinite
+        showDots={false}
+        infinite={items.length > 3}
+        containerClass="home-carousel"
+        itemClass="home-carousel__item"
       >
-        {giveaways?.data?.map((giveaway) => (
+        {items.map((giveaway) => (
           <div
             key={giveaway._id}
-            className="flex items-center justify-center py-10"
+            className="h-full w-full px-2 py-3"
           >
             <GiftCard giveaway={giveaway} />
           </div>

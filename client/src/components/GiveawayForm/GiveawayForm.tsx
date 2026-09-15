@@ -1,418 +1,143 @@
-import { useState, useRef } from "react";
+import { Children, isValidElement, useMemo, useRef, useState } from "react";
+import { CalendarDays, ImagePlus, MapPin, Trophy, Users, X } from "lucide-react";
+import { toast } from "react-hot-toast";
+import { categories } from "../../data/helpRequestData";
 import { useGiveawayImage } from "../../hooks/useGiveawayImage";
 import { useGiveaway } from "../../hooks/useGiveaway";
 import { Giveaway } from "../../store";
-import { toast } from "react-hot-toast";
 
-type GiveawayFormData = {
-  title: string;
-  description: string;
-  image: File | null;
-  prizes: string;
-  rules: string;
-  requirements: string;
-  category: string;
-  tags: string;
-  location: string;
-  startDate: string;
-  endDate: string;
+type FormData = {
+  title: string; description: string; image: File | null;
+  prizeAmount: string; requirements: string; category: string; tags: string;
+  location: string; startDate: string; endDate: string;
+  winnerMode: "single" | "multiple"; maxWinners: string;
 };
 
-export default function GiveawayForm() {
-  const [giveawayData, setGiveawayData] = useState<GiveawayFormData>({
-    title: "",
-    description: "",
-    image: null,
-    prizes: "",
-    rules: "",
-    requirements: "",
-    category: "",
-    tags: "",
-    location: "",
-    startDate: "",
-    endDate: "",
-  });
-  const [fileName, setFileName] = useState("");
-  const giveawayImgRef = useRef<HTMLInputElement>(null);
+interface Props { onSuccess?: () => void; inModal?: boolean; isVerified?: boolean }
+
+const initialData: FormData = {
+  title: "", description: "", image: null, prizeAmount: "",
+  requirements: "", category: "", tags: "", location: "", startDate: "",
+  endDate: "", winnerMode: "single", maxWinners: "1",
+};
+const inputClass = "h-11 w-full rounded-lg border border-gray-200 bg-white px-3.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-helpMe-500 focus:ring-2 focus:ring-helpMe-500/15";
+const labelClass = "mb-1.5 block text-xs font-semibold text-gray-700";
+
+export default function GiveawayForm({ onSuccess, inModal, isVerified }: Props = {}) {
+  const [data, setData] = useState<FormData>(initialData);
+  const [previewUrl, setPreviewUrl] = useState("");
+  const imageInput = useRef<HTMLInputElement>(null);
   const { handleImageUpload } = useGiveawayImage();
-  const { createGiveaway, isLoading } = useGiveaway();
+  const { createGiveawayAsync, isLoading } = useGiveaway();
+  const requirements = useMemo(
+    () => data.requirements.split("\n").map((item) => item.trim()).filter(Boolean),
+    [data.requirements],
+  );
 
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) => {
-    const { name, value } = e.target;
-    setGiveawayData((prev) => ({
-      ...prev,
+  const change = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = event.target;
+    setData((current) => ({
+      ...current,
       [name]: value,
+      ...(name === "winnerMode"
+        ? { maxWinners: value === "multiple" ? "2" : "1" }
+        : {}),
     }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setGiveawayData((prev) => ({
-      ...prev,
-      image: file,
-    }));
-
-    // Create preview URL for the selected image
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFileName(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setFileName("");
+  const selectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    if (file && file.size > 2 * 1024 * 1024) {
+      event.target.value = "";
+      toast.error("Choose an image smaller than 2 MB");
+      return;
     }
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setData((current) => ({ ...current, image: file }));
+    setPreviewUrl(file ? URL.createObjectURL(file) : "");
   };
 
-  const resetForm = () => {
-    setGiveawayData({
-      title: "",
-      description: "",
-      image: null,
-      prizes: "",
-      rules: "",
-      requirements: "",
-      category: "",
-      tags: "",
-      location: "",
-      startDate: "",
-      endDate: "",
-    });
-    setFileName("");
-    if (giveawayImgRef.current) {
-      giveawayImgRef.current.value = "";
-    }
+  const clearImage = () => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setData((current) => ({ ...current, image: null }));
+    setPreviewUrl("");
+    if (imageInput.current) imageInput.current.value = "";
   };
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     if (isLoading) return;
+    if (!data.title.trim()) return toast.error("Add a giveaway title");
+    if (!data.description.trim()) return toast.error("Tell people what the giveaway is about");
+    if (!data.category) return toast.error("Choose a category");
+    if (!data.image) return toast.error("Add a cover image");
+    if (!data.startDate || !data.endDate) return toast.error("Set the giveaway dates");
+    if (new Date(data.endDate) < new Date(data.startDate)) return toast.error("End date must be after the start date");
+    if (!requirements.length) return toast.error("Add at least one entry requirement");
+    if (!isVerified) return toast.error("Complete verification before creating a financial giveaway");
+    if (Number(data.prizeAmount) <= 0) return toast.error("Enter the cash prize per winner");
 
     try {
-      const imageResult = await handleImageUpload(giveawayData.image);
-      if (!imageResult) {
-        toast.error("Failed to upload image");
-        return;
-      }
-
-      const newGiveaway: Giveaway = {
-        _id: "", // Will be set by the server
-        title: giveawayData.title,
-        description: giveawayData.description,
-        image: {
-          url: imageResult.url,
-          publicId: imageResult.publicId,
-        },
-        numVotes: 0,
-        category: giveawayData.category,
-        startDate: giveawayData.startDate,
-        endDate: giveawayData.endDate,
-        location: giveawayData.location,
-        tags: giveawayData.tags.split(",").map((tag) => tag.trim()),
-        isActive: true,
-        isFeatured: false,
-        isEnded: false,
-        requirements: giveawayData.requirements,
-        prizes: giveawayData.prizes,
-        rules: giveawayData.rules,
-        giveawayDescription: giveawayData.description,
-        createdAt: new Date().toISOString(),
+      const image = await handleImageUpload(data.image);
+      if (!image) return toast.error("The image could not be uploaded");
+      const giveaway: Giveaway = {
+        _id: "", title: data.title.trim(), description: data.description.trim(),
+        image: { url: image.url, publicId: image.publicId }, numVotes: 0,
+        category: data.category, startDate: data.startDate, endDate: data.endDate,
+        location: data.location.trim(), tags: data.tags.split(",").map((tag) => tag.trim()).filter(Boolean),
+        isActive: true, isFeatured: false, isEnded: false, requirements,
+        prizes: `₦${Number(data.prizeAmount).toLocaleString()} per winner`, giveawayDescription: data.description.trim(),
+        createdAt: new Date().toISOString(), prizeAmount: Number(data.prizeAmount) || 0,
+        prizePerWinner: Number(data.prizeAmount) || 0,
+        winnerMode: Number(data.maxWinners) > 1 ? "multiple" : "single",
+        maxWinners: Math.max(1, Number(data.maxWinners) || 1),
       };
-
-      createGiveaway(newGiveaway);
-      resetForm();
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message || "Failed to create giveaway");
-      } else {
-        toast.error("Failed to create giveaway");
+      const result = await createGiveawayAsync(giveaway);
+      if (result?.success) {
+        clearImage(); setData(initialData); onSuccess?.();
       }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Giveaway could not be created");
     }
   }
 
   return (
-    <div className="mt-16 flex items-center justify-center bg-helpMe-900 px-4 py-16">
-      <div className="w-full max-w-3xl">
-        <form
-          className="flex flex-col gap-6 rounded-lg bg-white p-8 shadow-md"
-          onSubmit={handleSubmit}
-        >
-          <h2 className="mb-2 text-center text-2xl font-bold text-helpMe-700">
-            Create a Giveaway
-          </h2>
+    <form className={inModal ? "flex h-[calc(100dvh-4.5rem-env(safe-area-inset-top))] flex-col sm:h-auto sm:max-h-[calc(90vh-84px)]" : "mx-auto max-w-3xl overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-200"} onSubmit={submit}>
+      <div className="grid flex-1 gap-x-5 gap-y-4 overflow-y-auto overscroll-contain bg-gray-50/70 p-4 sm:grid-cols-2 sm:p-6">
+        {!inModal && <div className="sm:col-span-2"><h2 className="text-xl font-bold text-gray-900">Create a giveaway</h2><p className="mt-1 text-sm text-gray-500">Set the entry details and reward in one place.</p></div>}
+        <Field wide label="Giveaway title" required><input className={inputClass} id="title" name="title" value={data.title} onChange={change} placeholder="e.g. Back-to-school laptop giveaway" maxLength={100} autoFocus={inModal} /></Field>
+        <Field wide label="About this giveaway" required><textarea className={`${inputClass} h-20 resize-none py-3`} id="description" name="description" value={data.description} onChange={change} placeholder="Explain who this is for and why you're creating it" maxLength={1000} /><p className="mt-1 text-right text-[10px] text-gray-400">{data.description.length}/1000</p></Field>
+        <Field label="Category" required><select className={inputClass} id="category" name="category" value={data.category} onChange={change}><option value="">Choose a category</option>{categories.map((category) => <option key={category.id} value={category.slug}>{category.name}</option>)}</select></Field>
+        <Field label={<><MapPin className="mr-1 inline h-3.5 w-3.5" />Location</>}><input className={inputClass} id="location" name="location" value={data.location} onChange={change} placeholder="City, State" /></Field>
+        <Field label={<><CalendarDays className="mr-1 inline h-3.5 w-3.5" />Starts</>} required><input className={inputClass} type="date" id="startDate" name="startDate" value={data.startDate} onChange={change} /></Field>
+        <Field label={<><CalendarDays className="mr-1 inline h-3.5 w-3.5" />Ends</>} required><input className={inputClass} type="date" id="endDate" name="endDate" min={data.startDate || undefined} value={data.endDate} onChange={change} /></Field>
+        <Field wide label="Entry requirements" required><textarea className={`${inputClass} h-20 resize-none py-3`} id="requirements" name="requirements" value={data.requirements} onChange={change} placeholder={"Write one requirement per line\nExample: Must be enrolled in a Nigerian school"} /><p className="mt-1 text-[10px] text-gray-500">Each line becomes a checklist item. This replaces the separate Rules field.</p></Field>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {/* Title Field */}
-            <div className="flex flex-col gap-2">
-              <label
-                className="text-sm font-medium text-gray-700"
-                htmlFor="title"
-              >
-                Title
-              </label>
-              <input
-                className="rounded-md border border-gray-300 p-2 shadow-sm focus:border-helpMe-500 focus:outline-none focus:ring-1 focus:ring-helpMe-500"
-                type="text"
-                id="title"
-                name="title"
-                value={giveawayData.title}
-                onChange={handleInputChange}
-                placeholder="Enter giveaway title"
-              />
-            </div>
-
-            {/* Location Field */}
-            <div className="flex flex-col gap-2">
-              <label
-                className="text-sm font-medium text-gray-700"
-                htmlFor="location"
-              >
-                Location
-              </label>
-              <input
-                className="rounded-md border border-gray-300 p-2 shadow-sm focus:border-helpMe-500 focus:outline-none focus:ring-1 focus:ring-helpMe-500"
-                type="text"
-                id="location"
-                name="location"
-                value={giveawayData.location}
-                onChange={handleInputChange}
-                placeholder="City, Country"
-              />
-            </div>
-
-            {/* Start Date Field */}
-            <div className="flex flex-col gap-2">
-              <label
-                className="text-sm font-medium text-gray-700"
-                htmlFor="startDate"
-              >
-                Start Date
-              </label>
-              <input
-                className="rounded-md border border-gray-300 p-2 shadow-sm focus:border-helpMe-500 focus:outline-none focus:ring-1 focus:ring-helpMe-500"
-                type="date"
-                id="startDate"
-                name="startDate"
-                value={giveawayData.startDate}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            {/* End Date Field */}
-            <div className="flex flex-col gap-2">
-              <label
-                className="text-sm font-medium text-gray-700"
-                htmlFor="endDate"
-              >
-                End Date
-              </label>
-              <input
-                className="rounded-md border border-gray-300 p-2 shadow-sm focus:border-helpMe-500 focus:outline-none focus:ring-1 focus:ring-helpMe-500"
-                type="date"
-                id="endDate"
-                name="endDate"
-                value={giveawayData.endDate}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            {/* Category Field */}
-            <div className="flex flex-col gap-2">
-              <label
-                className="text-sm font-medium text-gray-700"
-                htmlFor="category"
-              >
-                Category
-              </label>
-              <select
-                className="rounded-md border border-gray-300 p-2 shadow-sm focus:border-helpMe-500 focus:outline-none focus:ring-1 focus:ring-helpMe-500"
-                id="category"
-                name="category"
-                value={giveawayData.category}
-                onChange={handleInputChange}
-              >
-                <option value="">Select a category</option>
-                <option value="education">Education</option>
-                <option value="health">Health</option>
-                <option value="technology">Technology</option>
-                <option value="food">Food</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-
-            {/* Tags Field */}
-            <div className="flex flex-col gap-2">
-              <label
-                className="text-sm font-medium text-gray-700"
-                htmlFor="tags"
-              >
-                Tags
-              </label>
-              <input
-                className="rounded-md border border-gray-300 p-2 shadow-sm focus:border-helpMe-500 focus:outline-none focus:ring-1 focus:ring-helpMe-500"
-                type="text"
-                id="tags"
-                name="tags"
-                value={giveawayData.tags}
-                onChange={handleInputChange}
-                placeholder="Separate tags with commas"
-              />
-            </div>
-
-            {/* Description Field - Full Width */}
-            <div className="flex flex-col gap-2 md:col-span-2">
-              <label
-                className="text-sm font-medium text-gray-700"
-                htmlFor="description"
-              >
-                Description
-              </label>
-              <textarea
-                className="min-h-[100px] rounded-md border border-gray-300 p-2 shadow-sm focus:border-helpMe-500 focus:outline-none focus:ring-1 focus:ring-helpMe-500"
-                id="description"
-                name="description"
-                value={giveawayData.description}
-                onChange={handleInputChange}
-                placeholder="Describe your giveaway"
-              />
-            </div>
-
-            {/* Requirements Field */}
-            <div className="flex flex-col gap-2 md:col-span-2">
-              <label
-                className="text-sm font-medium text-gray-700"
-                htmlFor="requirements"
-              >
-                Requirements
-              </label>
-              <textarea
-                className="min-h-[80px] rounded-md border border-gray-300 p-2 shadow-sm focus:border-helpMe-500 focus:outline-none focus:ring-1 focus:ring-helpMe-500"
-                id="requirements"
-                name="requirements"
-                value={giveawayData.requirements}
-                onChange={handleInputChange}
-                placeholder="List any requirements for participants"
-              />
-            </div>
-
-            {/* Prizes Field */}
-            <div className="flex flex-col gap-2 md:col-span-2">
-              <label
-                className="text-sm font-medium text-gray-700"
-                htmlFor="prizes"
-              >
-                Prizes
-              </label>
-              <textarea
-                className="min-h-[80px] rounded-md border border-gray-300 p-2 shadow-sm focus:border-helpMe-500 focus:outline-none focus:ring-1 focus:ring-helpMe-500"
-                id="prizes"
-                name="prizes"
-                value={giveawayData.prizes}
-                onChange={handleInputChange}
-                placeholder="Describe the prizes"
-              />
-            </div>
-
-            {/* Rules Field */}
-            <div className="flex flex-col gap-2 md:col-span-2">
-              <label
-                className="text-sm font-medium text-gray-700"
-                htmlFor="rules"
-              >
-                Rules
-              </label>
-              <textarea
-                className="min-h-[80px] rounded-md border border-gray-300 p-2 shadow-sm focus:border-helpMe-500 focus:outline-none focus:ring-1 focus:ring-helpMe-500"
-                id="rules"
-                name="rules"
-                value={giveawayData.rules}
-                onChange={handleInputChange}
-                placeholder="List the rules for your giveaway"
-              />
-            </div>
-
-            {/* Image Upload Field */}
-            <div className="flex flex-col gap-2 md:col-span-2">
-              <label
-                className="text-sm font-medium text-gray-700"
-                htmlFor="image"
-              >
-                Upload Image
-              </label>
-              <div className="flex w-full items-center justify-center">
-                <label className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100">
-                  {fileName ? (
-                    <div className="relative h-full w-full">
-                      <img
-                        src={fileName}
-                        alt="Preview"
-                        className="h-full w-full rounded-lg object-cover"
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 transition-opacity hover:opacity-100">
-                        <span className="text-sm text-white">
-                          Click to change image
-                        </span>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center pb-6 pt-5">
-                      <svg
-                        className="mb-4 h-8 w-8 text-gray-500"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 20 16"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                        />
-                      </svg>
-                      <p className="mb-2 text-sm text-gray-500">
-                        <span className="font-semibold">Click to upload</span>{" "}
-                        or drag and drop
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        PNG, JPG or JPEG (MAX. 2MB)
-                      </p>
-                    </div>
-                  )}
-                  <input
-                    type="file"
-                    id="image"
-                    name="image"
-                    accept="image/*, image/jpeg, image/png, image/jpg"
-                    onChange={handleFileChange}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-              {fileName && (
-                <p className="text-sm text-green-600">
-                  ✓ Image selected successfully
-                </p>
-              )}
-            </div>
+        <div className="rounded-xl border border-purple-100 bg-white p-4 sm:col-span-2">
+          <div className="mb-3 flex items-center gap-2"><Trophy className="h-4 w-4 text-helpMe-700" /><p className="text-xs font-bold text-gray-900">Financial reward</p></div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Prize per winner (₦)" required><input className={`${inputClass} disabled:cursor-not-allowed disabled:bg-gray-100`} type="number" min={100} id="prizeAmount" name="prizeAmount" disabled={!isVerified} value={data.prizeAmount} onChange={change} placeholder="10,000" /></Field>
+            <Field label={<><Users className="mr-1 inline h-3.5 w-3.5" />Number of winners</>} required><input className={inputClass} type="number" min={1} max={100} id="maxWinners" name="maxWinners" value={data.maxWinners} onChange={change} /></Field>
+            <div className="rounded-lg bg-purple-50 px-3 py-2 text-sm sm:col-span-2"><span className="text-gray-600">Total purse secured from wallet</span><strong className="float-right text-helpMe-900">₦{((Number(data.prizeAmount) || 0) * (Number(data.maxWinners) || 1)).toLocaleString()}</strong></div>
+            {!isVerified && <p className="text-[10px] font-medium text-amber-600 sm:col-span-2">Complete profile verification to create and fund a financial giveaway.</p>}
           </div>
+        </div>
 
-          {/* Submit Button */}
-          <div className="mt-4 flex justify-center">
-            <button
-              className="rounded-md bg-helpMe-500 px-6 py-3 font-semibold text-white shadow-md transition-colors duration-200 hover:bg-helpMe-600"
-              type="submit"
-            >
-              Create Giveaway
-            </button>
-          </div>
-        </form>
+        <Field wide label="Cover image" required>
+          <label className="group relative flex h-24 cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-dashed border-gray-300 bg-white transition hover:border-helpMe-400 hover:bg-purple-50/40">
+            {previewUrl ? <><img src={previewUrl} alt="Giveaway preview" className="h-full w-full object-cover" /><button type="button" onClick={(event) => { event.preventDefault(); clearImage(); }} className="absolute right-2 top-2 rounded-full bg-white p-1.5 text-gray-600 shadow" aria-label="Remove image"><X className="h-4 w-4" /></button></> : <div className="flex items-center gap-3 text-left"><span className="rounded-lg bg-purple-50 p-2.5 text-helpMe-700"><ImagePlus className="h-5 w-5" /></span><span><strong className="block text-xs text-gray-700">Choose a cover image</strong><small className="text-[10px] text-gray-400">JPG or PNG, up to 2 MB</small></span></div>}
+            <input ref={imageInput} type="file" id="image" name="image" accept="image/jpeg,image/png" onChange={selectImage} className="sr-only" />
+          </label>
+        </Field>
+        <Field wide label={<>Search tags <span className="font-normal text-gray-400">Optional</span></>}><input className={inputClass} id="tags" name="tags" value={data.tags} onChange={change} placeholder="education, students, technology" /></Field>
       </div>
-    </div>
+      <div className="flex items-center justify-between gap-3 border-t border-gray-100 bg-white px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 sm:px-6 sm:py-4"><p className="hidden text-[11px] text-gray-500 sm:block"><span className="text-pink-600">*</span> Required fields</p><button className="ml-auto inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-helpMe-950 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-helpMe-800 disabled:cursor-wait disabled:opacity-60 sm:w-auto sm:min-w-36" type="submit" disabled={isLoading}>{isLoading ? "Creating…" : "Create giveaway"}</button></div>
+    </form>
   );
+}
+
+function Field({ label, required, wide, children }: { label: React.ReactNode; required?: boolean; wide?: boolean; children: React.ReactNode }) {
+  const control = Children.toArray(children).find(isValidElement);
+  const htmlFor = isValidElement<{ id?: string }>(control) ? control.props.id : undefined;
+  return <div className={wide ? "sm:col-span-2" : ""}><label className={labelClass} htmlFor={htmlFor}>{label} {required && <span className="text-pink-600">*</span>}</label>{children}</div>;
 }

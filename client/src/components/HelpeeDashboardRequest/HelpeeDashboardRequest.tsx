@@ -21,6 +21,7 @@ import { useContext, useState } from "react";
 import { SidebarContext } from "../../context/SidebarContext";
 import Profile from "../profile/Profile";
 import useWindowSize from "../../hooks/useWindowSize";
+import { useStats } from "../../hooks/useStats";
 import {
   useMutation,
   UseMutationResult,
@@ -84,6 +85,7 @@ export default function HelpeeDashboardRequest() {
   const { openProfile, onOpenProfile } = useContext(SidebarContext);
   const sideData = [...sidebarData, ...sidebarSecondaryData];
   const { windowWidth } = useWindowSize();
+  const { data: stats } = useStats();
 
   const logout = async () => {
     const response = await fetch("/api/v1/users/logout", { method: "POST" });
@@ -250,7 +252,7 @@ export default function HelpeeDashboardRequest() {
                         Total help requests
                       </p>
                       <span className="text-2xl font-bold text-[#285de9]">
-                        {user.helpRequests.length}{" "}
+                        {stats?.myRequests ?? 0}{" "}
                       </span>
                     </div>
                   </div>
@@ -268,7 +270,7 @@ export default function HelpeeDashboardRequest() {
                         Active requests
                       </p>
                       <span className="text-2xl font-bold text-[#05a365]">
-                        100{" "}
+                        {stats?.myActiveRequests ?? 0}{" "}
                       </span>
                     </div>
                   </div>
@@ -286,7 +288,7 @@ export default function HelpeeDashboardRequest() {
                         Total Giveaways
                       </p>
                       <span className="text-2xl font-bold text-[#f1d800]">
-                        220{" "}
+                        {stats?.totalGiveaways ?? 0}{" "}
                       </span>
                     </div>
                   </div>
@@ -304,7 +306,7 @@ export default function HelpeeDashboardRequest() {
                         Active giveaways
                       </p>
                       <span className="text-2xl font-bold text-[#f18400]">
-                        10{" "}
+                        {stats?.activeGiveaways ?? 0}{" "}
                       </span>
                     </div>
                   </div>

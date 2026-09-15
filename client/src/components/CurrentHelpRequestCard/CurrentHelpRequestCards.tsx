@@ -12,26 +12,20 @@ interface RequestResponse {
 }
 
 const responsive = {
-  superLargeDesktop: {
-    // the naming can be any, depends on you.
-    breakpoint: { max: 4000, min: 3000 },
-    items: 4,
-    slidesToSlide: 3,
-  },
   desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 3,
-    slidesToSlide: 2, // optional, default to 1.
+    breakpoint: { max: 4000, min: 1280 },
+    items: 4,
+    slidesToSlide: 1,
   },
   tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 2,
-    slidesToSlide: 1, // optional, default to 1.
+    breakpoint: { max: 1280, min: 640 },
+    items: 3,
+    slidesToSlide: 1,
   },
   mobile: {
     breakpoint: { max: 640, min: 0 },
     items: 1,
-    slidesToSlide: 1, // optional, default to 1.
+    slidesToSlide: 1,
   },
 };
 
@@ -74,22 +68,23 @@ export default function CurrentHelpRequestCards() {
   }
 
   return (
-    <div className="w-full py-16 md:px-10 lg:px-28">
+    <div className="w-full py-2">
       <Carousel
         additionalTransfrom={0}
         responsive={responsive}
-        autoPlay={true}
-        arrows={false}
+        autoPlay={false}
+        arrows={true}
         swipeable={true}
-        autoPlaySpeed={4000}
         centerMode={false}
-        removeArrowOnDeviceType={["tablet", "mobile"]}
+        removeArrowOnDeviceType={["mobile"]}
         ssr={true}
-        showDots={true}
-        infinite
+        showDots={false}
+        infinite={requestData.data.requests.length > 4}
+        containerClass="home-carousel"
+        itemClass="home-carousel__item"
       >
         {requestData.data.requests.map((request) => (
-          <div className="flex items-center justify-center" key={request._id}>
+          <div className="h-full w-full px-2 py-3" key={request._id}>
             <CurrentHelpCard {...request} />
           </div>
         ))}

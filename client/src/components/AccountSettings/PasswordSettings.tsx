@@ -1,5 +1,4 @@
-import { LoaderCircle } from "lucide-react";
-import ShortHeader from "../ShortHeader/ShortHeader";
+import { LoaderCircle, Save, Lock, KeyRound, ShieldCheck } from "lucide-react";
 import { useState, FormEvent, ChangeEvent } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -10,183 +9,140 @@ interface PasswordData {
   passwordConfirm: string;
 }
 
-interface ApiResponse {
-  status: string;
-  message?: string;
-  error?: {
-    errors: {
-      confirmPassword?: {
-        message: string;
-      };
-    };
-  };
-}
-
 export default function PasswordSettings() {
   const queryClient = useQueryClient();
-  const [updateMyPassword, setUpdateMyPassword] = useState<PasswordData>({
+  const [formData, setFormData] = useState<PasswordData>({
     currentPassword: "",
     password: "",
     passwordConfirm: "",
   });
 
-  const changePassword = async function (
-    passwordData: PasswordData,
-  ): Promise<ApiResponse> {
-    try {
-      const response = await fetch("/api/v1/users/updateMyPassword", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(passwordData),
-      });
-
-      const data = (await response.json()) as ApiResponse;
-
-      if (data.status === "fail" || data.status === "error") {
-        throw new Error(
-          data.message ||
-            data.error?.errors?.confirmPassword?.message ||
-            "Failed to update password, please try again",
-        );
-      }
-      return data;
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(
-          error.message || "Something went wrong, please try again",
-        );
-      }
-      throw new Error("Something went wrong, please try again");
-    }
+  const changePassword = async (passwordData: PasswordData) => {
+    const response = await fetch("/api/v1/users/updateMyPassword", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(passwordData),
+    });
+    const data = await response.json();
+    if (!response.ok)
+      throw new Error(data.message || "Failed to update password");
+    return data;
   };
 
-  const { mutate: userAcctUpdate, isLoading } = useMutation({
+  const { mutate, isLoading } = useMutation({
     mutationFn: changePassword,
     onSuccess: () => {
       toast.success("Password updated successfully");
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      setFormData({ currentPassword: "", password: "", passwordConfirm: "" });
     },
     onError: (error: unknown) => {
-      if (error instanceof Error) {
-        toast.error(error.message || "Something went wrong, please try again");
-      } else {
-        toast.error("Something went wrong, please try again");
-      }
+      toast.error(error instanceof Error ? error.message : "Something went wrong");
     },
   });
 
-  const handlePassword = (event: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setUpdateMyPassword({ ...updateMyPassword, [name]: value });
+  const handleChange = (ev: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = ev.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handlePasswordSubmit = (event: FormEvent<HTMLFormElement>) => {
-    try {
-      event.preventDefault();
-      userAcctUpdate(updateMyPassword);
-      setUpdateMyPassword({
-        currentPassword: "",
-        password: "",
-        passwordConfirm: "",
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("Something went wrong, please try again");
-      }
-    }
+  const handleSubmit = (ev: FormEvent<HTMLFormElement>) => {
+    ev.preventDefault();
+    mutate(formData);
   };
 
   return (
-    <form onSubmit={handlePasswordSubmit}>
-      <div className="mx-auto my-5 px-4 pt-10 md:w-11/12">
-        <ShortHeader heading="Security and Logins" />
-        {/* Change password Two-factor authentication (2FA) Login activity (see
-        active sessions and logged-in devices) Manage trusted devices Logout
-        from all devices */}
-        <div>
-          <h6 className="text-md py-4 font-semibold tracking-wide text-helpMe-950">
-            Edit Auth Info
-          </h6>
-          <div className="bg-helpMe-50 p-6">
-            {/* Current Password */}
-            <div className="flex flex-col py-6 md:flex-row md:justify-between">
-              <div>
-                <label
-                  className="mb-1 block font-medium text-helpMe-950"
-                  htmlFor="currentPassword"
-                >
-                  Current Password
-                </label>
-                <input
-                  className="rounded px-4 py-1.5 shadow outline-none ring-1 ring-helpMe-200 focus:border-b-2 focus:border-b-helpMe-950"
-                  type="password"
-                  name="currentPassword"
-                  id="currentPassword"
-                  value={updateMyPassword.currentPassword}
-                  onChange={handlePassword}
-                  placeholder="Current password"
-                />
-              </div>
-            </div>
-
-            {/* New password */}
-            <div className="flex flex-col py-6 md:flex-row md:justify-between">
-              <div>
-                <label
-                  className="mb-1 block font-medium text-helpMe-950"
-                  htmlFor="newPassword"
-                >
-                  New Password
-                </label>
-                <input
-                  className="rounded px-4 py-1.5 shadow outline-none ring-1 ring-helpMe-200 focus:border-b-2 focus:border-b-helpMe-950"
-                  type="password"
-                  name="password"
-                  id="password"
-                  value={updateMyPassword.password}
-                  onChange={handlePassword}
-                  placeholder="New Password"
-                />
-              </div>
-            </div>
-
-            {/* Confirm password */}
-            <div className="py-6">
-              <div>
-                <label
-                  className="mb-1 block font-medium text-helpMe-950"
-                  htmlFor="confirmPassword"
-                >
-                  Confirm Password
-                </label>
-                <input
-                  className="rounded px-4 py-1.5 shadow outline-none ring-1 ring-helpMe-200 focus:border-b-2 focus:border-b-helpMe-950"
-                  type="password"
-                  name="passwordConfirm"
-                  id="passwordConfirm"
-                  value={updateMyPassword.passwordConfirm}
-                  onChange={handlePassword}
-                  placeholder="Confirm Password"
-                />
-              </div>
-              <div className="mt-4 py-4">
-                <button
-                  type="submit"
-                  className="md:text-md inline-block rounded bg-helpMe-950 px-8 py-2 font-medium tracking-wide text-helpMe-50 transition-all duration-300 ease-in hover:bg-helpMe-800 sm:px-16"
-                >
-                  {isLoading ? (
-                    <LoaderCircle className="animate-spin" />
-                  ) : (
-                    "Save"
-                  )}
-                </button>
-              </div>
-            </div>
+    <div className="space-y-6">
+      {/* Security overview card */}
+      <div className="rounded-2xl bg-gradient-to-br from-helpMe-950 to-purple-900 p-6 text-white shadow-lg sm:p-8">
+        <div className="flex items-center gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20">
+            <ShieldCheck className="h-6 w-6 text-pink-300" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold">Password Security</h3>
+            <p className="text-sm text-gray-300">
+              Keep your account secure with a strong password.
+            </p>
           </div>
         </div>
       </div>
-    </form>
+
+      {/* Password form card */}
+      <form onSubmit={handleSubmit} className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200/60 sm:p-8">
+        <h3 className="mb-1 text-lg font-bold text-gray-900">Change Password</h3>
+        <p className="mb-6 text-sm text-gray-500">
+          Use at least 6 characters. Mix in numbers and symbols for extra security.
+        </p>
+
+        <div className="space-y-5">
+          <div>
+            <label htmlFor="currentPassword" className="mb-1.5 flex items-center gap-2 text-sm font-semibold text-gray-700">
+              <Lock className="h-4 w-4 text-gray-400" />
+              Current Password
+            </label>
+            <input
+              className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-gray-900 outline-none transition focus:border-helpMe-500 focus:bg-white focus:ring-2 focus:ring-helpMe-500/20"
+              type="password"
+              name="currentPassword"
+              id="currentPassword"
+              value={formData.currentPassword}
+              onChange={handleChange}
+              placeholder="Enter current password"
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div>
+              <label htmlFor="password" className="mb-1.5 flex items-center gap-2 text-sm font-semibold text-gray-700">
+                <KeyRound className="h-4 w-4 text-gray-400" />
+                New Password
+              </label>
+              <input
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-gray-900 outline-none transition focus:border-helpMe-500 focus:bg-white focus:ring-2 focus:ring-helpMe-500/20"
+                type="password"
+                name="password"
+                id="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter new password"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="passwordConfirm" className="mb-1.5 flex items-center gap-2 text-sm font-semibold text-gray-700">
+                <KeyRound className="h-4 w-4 text-gray-400" />
+                Confirm Password
+              </label>
+              <input
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-gray-900 outline-none transition focus:border-helpMe-500 focus:bg-white focus:ring-2 focus:ring-helpMe-500/20"
+                type="password"
+                name="passwordConfirm"
+                id="passwordConfirm"
+                value={formData.passwordConfirm}
+                onChange={handleChange}
+                placeholder="Confirm new password"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-helpMe-950 px-6 py-3 text-sm font-bold text-white shadow-lg transition hover:bg-helpMe-800 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {isLoading ? (
+            <LoaderCircle className="h-4 w-4 animate-spin" />
+          ) : (
+            <Save className="h-4 w-4" />
+          )}
+          Update Password
+        </button>
+      </form>
+    </div>
   );
 }

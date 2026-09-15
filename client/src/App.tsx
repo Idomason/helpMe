@@ -2,25 +2,22 @@ import Layout from "./components/Layout/Layout";
 import { Navigate, Route, Routes } from "react-router-dom";
 import NotFound from "./pages/NotFound/NotFound";
 import Register from "./pages/Register/Register";
-import Request from "./pages/dashboard/helperDashboard/Request";
-import HelperHome from "./pages/dashboard/helperDashboard/Home";
-import Giveaways from "./pages/dashboard/helperDashboard/Giveaways";
-import HelperFinance from "./pages/dashboard/helperDashboard/HelperFinance";
-import HelperPortfolio from "./pages/dashboard/helperDashboard/HelperPortfolio";
-import HelpeeRequest from "./pages/dashboard/helpeeDashboard/HelpeeRequest";
 import Login from "./pages/Login/Login";
 import Home from "./components/Home/Home";
-import RequestForm from "./components/RequestForm/RequestForm";
 import { BrowserRouter } from "react-router-dom";
 import SidebarContextProvider from "./context/SidebarContext.tsx";
-import { useQuery } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import Spinner from "./components/Spinner/Spinner.tsx";
-import Account from "./pages/Account/Account.tsx";
+import Admin from "./pages/Admin/Admin.tsx";
+import Dashboard from "./pages/dashboard/Dashboard.tsx";
+import Portfolio from "./pages/Portfolio/Portfolio.tsx";
+import FreeHelp from "./pages/FreeHelp/FreeHelp.tsx";
+import GiverBoard from "./pages/GiverBoard/GiverBoard.tsx";
 import GiveawayGrid from "./components/CurrentGiveawaysCard/GiveawayGrid";
 import GiveawayDetails from "./components/GiveawayDetails/GiveawayDetails";
 import HelpRequestDetails from "./components/HelpRequestDetails/HelpRequestDetails";
 import HelpRequestGrid from "./components/HelpRequestGrid/HelpRequestGrid.tsx";
+import { useAuthUser } from "./hooks/useAuthUser.ts";
 
 const toastOptions = {
   success: {
@@ -37,23 +34,7 @@ const toastOptions = {
 };
 
 function App() {
-  const { data: authUser, isLoading } = useQuery({
-    queryKey: ["authUser"],
-    queryFn: async () => {
-      try {
-        const response = await fetch("/api/v1/users/me");
-
-        if (!response.ok) return null;
-        const data = await response.json();
-
-        return data;
-      } catch (error: any) {
-        console.log(error);
-        throw new Error(error.message);
-      }
-    },
-    retry: false,
-  });
+  const { data: authUser, isLoading } = useAuthUser();
 
   if (isLoading)
     return (
@@ -74,6 +55,10 @@ function App() {
               <Route path="/all-help-requests" element={<HelpRequestGrid />} />
               <Route path="/giveaways/:id" element={<GiveawayDetails />} />
               <Route path="/requests/:id" element={<HelpRequestDetails />} />
+              <Route path="/giver-board" element={<GiverBoard />} />
+              <Route path="/free-help/offers" element={<FreeHelp />} />
+              <Route path="/free-help" element={<Navigate to="/giver-board" replace />} />
+              <Route path="/u/:name" element={<Portfolio />} />
               <Route
                 path="/giveaways"
                 element={
@@ -83,49 +68,51 @@ function App() {
               <Route
                 path="/request"
                 element={
-                  authUser ? <RequestForm /> : <Navigate to={"/login"} />
+                  !authUser ? (
+                    <Navigate to="/login" replace />
+                  ) : authUser.role === "admin" ? (
+                    <Navigate to="/admin" replace />
+                  ) : (
+                    <Navigate to="/dashboard?tab=requests&new=1" replace />
+                  )
                 }
               />
               <Route
                 path="/account"
-                element={authUser ? <Account /> : <Navigate to={"/login"} />}
+                element={
+                  !authUser ? (
+                    <Navigate to="/login" replace />
+                  ) : authUser.role === "admin" ? (
+                    <Navigate to="/admin?tab=account" replace />
+                  ) : (
+                    <Navigate to="/dashboard?tab=account" replace />
+                  )
+                }
               />
               <Route path="*" element={<NotFound />} />
             </Route>
-            {/* Helpee Dashboard Routes */}
-            <Route path="/dashboard-helpee" element={""} />
+
+            {/* Admin canvas (standalone, no site nav/footer) */}
             <Route
-              path="/dashboard-helpee-request"
+              path="/admin"
               element={
-                authUser ? <HelpeeRequest /> : <Navigate to={"/login"} />
+                authUser?.role === "admin" ? <Admin /> : <Navigate to={"/"} />
               }
             />
 
-            {/* Helper Dashboard Routes */}
+            {/* Unified Dashboard canvas (helper + helpee) */}
             <Route
-              path="/dashboard-helper"
-              element={authUser ? <HelperHome /> : <Navigate to={"/login"} />}
+              path="/dashboard"
+              element={authUser ? <Dashboard /> : <Navigate to="/login" />}
             />
-            <Route
-              path="/dashboard-helper-request"
-              element={authUser ? <Request /> : <Navigate to={"/login"} />}
-            />
-            <Route
-              path="/dashboard-helper-giveaways"
-              element={authUser ? <Giveaways /> : <Navigate to={"/login"} />}
-            />
-            <Route
-              path="/dashboard-helper-finance"
-              element={
-                authUser ? <HelperFinance /> : <Navigate to={"/login"} />
-              }
-            />
-            <Route
-              path="/dashboard-helper-portfolio"
-              element={
-                authUser ? <HelperPortfolio /> : <Navigate to={"/login"} />
-              }
-            />
+            {/* Redirect legacy dashboard routes to the unified canvas */}
+            <Route path="/dashboard-helpee" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard-helpee-request" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard-helper" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard-helper-request" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard-helper-giveaways" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard-helper-finance" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard-helper-portfolio" element={<Navigate to="/dashboard" replace />} />
             {/*  */}
             <Route
               path="/register"

@@ -1,12 +1,7 @@
 import toast from "react-hot-toast";
 
 export const useRequestImage = () => {
-  // Cloudinary URL & Upload preset
-  const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`;
-  const uploadPreset = import.meta.env.VITE_REQUEST_UPLOAD_PRESET;
-
   const handleImageUpload = async function (fileInput: any): Promise<any> {
-    // Handle both File objects and blob URLs
     let fileToUpload: File;
 
     if (fileInput instanceof File) {
@@ -27,53 +22,30 @@ export const useRequestImage = () => {
       return null;
     }
 
-    // Validate file
     if (!fileToUpload || !fileToUpload.type.startsWith("image/")) {
       toast.error("Please select an image file");
       return null;
     }
 
-    // Debug logging
-    console.log("Upload preset:", uploadPreset);
-    console.log("Cloud name:", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
-    console.log("File to upload:", fileToUpload);
-
-    // Prepare cloudinary data for upload
-    const formData = new FormData();
-    formData.append("file", fileToUpload);
-    formData.append("upload_preset", uploadPreset);
-
     try {
-      // Log the URL we're posting to
-      console.log("Posting to:", cloudinaryUrl);
+      const formData = new FormData();
+      formData.append("image", fileToUpload);
+      formData.append("type", "request");
 
-      const response = await fetch(cloudinaryUrl, {
+      const response = await fetch("/api/v1/upload", {
         method: "POST",
         body: formData,
+        credentials: "include",
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Cloudinary Error Details:", {
-          status: response.status,
-          statusText: response.statusText,
-          error: errorData.error,
-          file: fileToUpload.name,
-          fileType: fileToUpload.type,
-          fileSize: fileToUpload.size,
-        });
-        toast.error(
-          `Upload failed: ${errorData.error?.message || "Invalid image format"}`,
-        );
+        toast.error(errorData?.message || "Upload failed");
         return null;
       }
 
       const data = await response.json();
-
-      if (data) {
-        return { url: data.secure_url, public_id: data.public_id }; // Note: changed publicId to public_id
-      }
-      return null;
+      return { url: data.data.url, public_id: data.data.publicId };
     } catch (error) {
       console.error("Error uploading image:", error);
       toast.error("An error occurred, please try again");

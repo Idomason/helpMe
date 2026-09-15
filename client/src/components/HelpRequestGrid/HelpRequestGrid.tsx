@@ -1,8 +1,11 @@
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "../Spinner/Spinner";
 import { format } from "date-fns";
-import { MapPin, Calendar, Coins } from "lucide-react";
+import { MapPin, Calendar, Coins, Search } from "lucide-react";
 import { Link } from "react-router-dom";
+import { categories, categoryLabel, imgOrPlaceholder } from "../../data/helpRequestData";
+import ProgressBar from "../ProgressBar/ProgressBar";
 
 interface HelpRequest {
   _id: string;
@@ -17,6 +20,7 @@ interface HelpRequest {
     amount: number;
     deadline: string;
   };
+  raised?: number;
   requestDescription: string;
   createdAt: string;
 }
@@ -34,6 +38,27 @@ export default function HelpRequestGrid() {
       return response.json();
     },
   });
+
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("all");
+
+  const allRequests: HelpRequest[] = useMemo(
+    () => requests?.data?.requests || [],
+    [requests],
+  );
+
+  const filteredRequests = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return allRequests.filter((request) => {
+      const matchesCategory = category === "all" || request.category === category;
+      const matchesSearch =
+        !q ||
+        request.name.toLowerCase().includes(q) ||
+        request.requestDescription.toLowerCase().includes(q) ||
+        request.city?.toLowerCase().includes(q);
+      return matchesCategory && matchesSearch;
+    });
+  }, [allRequests, search, category]);
 
   const getCurrentStatus = (request: HelpRequest) => {
     const today = new Date();
@@ -57,32 +82,64 @@ export default function HelpRequestGrid() {
     );
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="mb-8 pt-12">
-        <h2 className="text-3xl font-bold text-gray-900">Help Requests</h2>
-        <p className="mt-2 text-gray-600">
-          Browse through all help requests and extend a helping hand
-        </p>
-      </div>
+    <section className="bg-gray-50 px-5 py-12 sm:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-8">
+          <span className="text-sm font-semibold uppercase tracking-widest text-helpMe-600">
+            Browse
+          </span>
+          <h2 className="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+            All Help Requests
+          </h2>
+          <p className="mt-1 text-sm text-gray-500">
+            Browse through all help requests and extend a helping hand
+          </p>
+        </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {requests?.data?.requests.map((request: HelpRequest) => (
-          <Link
-            key={request._id}
-            to={`/requests/${request._id}`}
-            className="group overflow-hidden rounded-lg bg-white shadow-md transition-all duration-300 hover:shadow-lg"
+        {/* Search + category filter */}
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row">
+          <div className="relative flex-1">
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <input
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by title, description, or city…"
+              className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-11 pr-4 text-sm text-gray-900 outline-none transition focus:border-helpMe-500 focus:ring-2 focus:ring-helpMe-500/20"
+            />
+          </div>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none transition focus:border-helpMe-500 focus:ring-2 focus:ring-helpMe-500/20 sm:w-64"
           >
+            <option value="all">All categories</option>
+            {categories.map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredRequests.map((request: HelpRequest) => (
+            <Link
+              key={request._id}
+              to={`/requests/${request._id}`}
+              className="group overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-200/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+            >
             {/* Image Container */}
             <div className="relative h-48 overflow-hidden">
               <img
-                src={request.image?.url}
+                src={imgOrPlaceholder(request.image?.url)}
                 alt={request.name}
                 className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               <div className="absolute bottom-4 left-4">
-                <span className="inline-flex items-center rounded-full bg-pink-500 px-3 py-1 text-sm font-medium capitalize text-white">
-                  {request.category}
+                <span className="inline-flex items-center rounded-full bg-pink-500 px-3 py-1 text-sm font-medium text-white">
+                  {categoryLabel(request.category)}
                 </span>
               </div>
             </div>
@@ -119,6 +176,16 @@ export default function HelpRequestGrid() {
                 </div>
               </div>
 
+              {/* Funding progress */}
+              {request.specificDetails.amount > 0 && (
+                <ProgressBar
+                  raised={request.raised || 0}
+                  target={request.specificDetails.amount}
+                  size="sm"
+                  className="mt-4"
+                />
+              )}
+
               {/* Status Badge */}
               <div className="mt-4">
                 <span
@@ -143,17 +210,19 @@ export default function HelpRequestGrid() {
       </div>
 
       {/* Empty State */}
-      {requests?.data?.length === 0 && (
-        <div className="flex h-96 flex-col items-center justify-center text-center">
-          <p className="text-xl font-medium text-gray-900">
-            No help requests found
+      {filteredRequests.length === 0 && (
+        <div className="flex flex-col items-center justify-center rounded-2xl bg-white py-20 text-center shadow-sm ring-1 ring-gray-200/60">
+          <p className="text-lg font-medium text-gray-900">
+            {allRequests.length === 0 ? "No help requests found" : "No requests match your search"}
           </p>
-          <p className="mt-2 text-gray-600">
-            Be the first to create a help request and get support from our
-            community
+          <p className="mt-1 text-sm text-gray-500">
+            {allRequests.length === 0
+              ? "Be the first to create a help request and get support from our community"
+              : "Try a different search term or category"}
           </p>
         </div>
       )}
-    </div>
+      </div>
+    </section>
   );
 }

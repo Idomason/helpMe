@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { format } from "date-fns";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Spinner from "../Spinner/Spinner";
 import { ThumbsUpIcon, MessageCircle, CheckCircleIcon } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -9,12 +9,39 @@ import toast from "react-hot-toast";
 import { AuthUser } from "../../types/auth";
 import NotFound from "../../pages/NotFound/NotFound";
 import { cn } from "../../utils/tailwindMerge";
+import { categoryLabel, imgOrPlaceholder } from "../../data/helpRequestData";
+import EscrowPanel from "../EscrowPanel/EscrowPanel";
+import MeetingSafetyModal from "../MeetingSafety/MeetingSafetyModal";
+import ProgressBar from "../ProgressBar/ProgressBar";
+import ShareButtons from "../ShareButtons/ShareButtons";
+import { useRequestFundingSummary } from "../../hooks/useEscrow";
 
 export default function HelpRequestDetails() {
   const { id } = useParams();
   const [isVoting, setIsVoting] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [showSafety, setShowSafety] = useState(false);
   const queryClient = useQueryClient();
+
+  // Verify escrow payment when returning from the Paystack checkout
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const reference = params.get("reference") || params.get("trxref");
+    if (!reference) return;
+    (async () => {
+      try {
+        await fetch(`/api/v1/escrow/verify/${reference}`, { credentials: "include" });
+        queryClient.invalidateQueries({ queryKey: ["requestEscrow", id] });
+        queryClient.invalidateQueries({ queryKey: ["requestFundingSummary", id] });
+        toast.success("Payment confirmed — funds are in escrow");
+      } catch {
+        /* webhook will reconcile */
+      } finally {
+        // Clean the query string
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+    })();
+  }, [id, queryClient]);
 
   const { data: request, isLoading } = useQuery({
     queryKey: ["request", id],
@@ -31,6 +58,8 @@ export default function HelpRequestDetails() {
 
   // Get the single request object
   const requestData = request?.data?.request;
+
+  const { data: fundingSummary } = useRequestFundingSummary(id);
 
   const handlePayment = useCallback(async () => {
     if (!requestData?.specificDetails?.amount) {
@@ -160,13 +189,13 @@ export default function HelpRequestDetails() {
               {getStatusText()}
             </span>
           </div>
-          <div className="mt-2 flex items-center space-x-4 text-gray-600">
+          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-600">
             <span className="text-sm font-semibold capitalize">
               {requestData?.city}, {requestData?.state}, {requestData?.country}
             </span>
             <span>•</span>
-            <span className="text-sm font-semibold capitalize text-pink-500">
-              {requestData?.category}
+            <span className="text-sm font-semibold text-pink-500">
+              {categoryLabel(requestData?.category)}
             </span>
             <span className="hidden sm:inline-block">•</span>
             <span
@@ -184,6 +213,9 @@ export default function HelpRequestDetails() {
               Verified
               <CheckCircleIcon className="size-4 text-green-500" />
             </span>
+            {typeof window !== "undefined" && (
+              <ShareButtons url={window.location.href} title={requestData?.name || "Help request"} />
+            )}
           </div>
         </div>
 
@@ -194,7 +226,7 @@ export default function HelpRequestDetails() {
             {/* Image */}
             <div className="mb-8 overflow-hidden rounded-lg">
               <img
-                src={requestData?.image?.url}
+                src={imgOrPlaceholder(requestData?.image?.url)}
                 alt={requestData?.name}
                 className="h-[400px] w-full object-cover"
               />
@@ -213,6 +245,15 @@ export default function HelpRequestDetails() {
               <h2 className="mb-4 text-xl font-semibold text-gray-900">
                 Specific Details
               </h2>
+              {requestData?.specificDetails?.amount > 0 && (
+                <div className="mb-5">
+                  <ProgressBar
+                    raised={fundingSummary?.raised ?? requestData?.raised ?? 0}
+                    target={requestData.specificDetails.amount}
+                    contributors={fundingSummary?.contributors}
+                  />
+                </div>
+              )}
               <div className="space-y-4">
                 <div>
                   <p className="text-sm font-medium text-gray-500">
@@ -235,6 +276,32 @@ export default function HelpRequestDetails() {
                 </div>
               </div>
             </div>
+
+            {/* Recent supporters */}
+            {!!fundingSummary?.donors?.length && (
+              <div className="mb-8 rounded-lg bg-white p-6 shadow-sm">
+                <h2 className="mb-4 text-xl font-semibold text-gray-900">
+                  Recent Supporters
+                </h2>
+                <ul className="divide-y divide-gray-100">
+                  {fundingSummary.donors.map((donor) => (
+                    <li key={donor._id} className="flex items-start justify-between gap-4 py-3 first:pt-0 last:pb-0">
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">
+                          {donor.isAnonymous ? "Anonymous" : donor.funder?.name || "A supporter"}
+                        </p>
+                        {donor.message && (
+                          <p className="mt-0.5 text-sm text-gray-600">"{donor.message}"</p>
+                        )}
+                      </div>
+                      <span className="shrink-0 text-sm font-semibold text-helpMe-600">
+                        ₦{donor.amount.toLocaleString()}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
 
           {/* Right Column - Sidebar */}
@@ -263,6 +330,17 @@ export default function HelpRequestDetails() {
                 </div>
               </div>
             </div>
+
+            {/* Escrow Card */}
+            {id && requestData?.user?._id && (
+              <div className="mb-6">
+                <EscrowPanel
+                  requestId={id}
+                  requestOwnerId={requestData.user._id}
+                  suggestedAmount={requestData?.specificDetails?.amount}
+                />
+              </div>
+            )}
 
             {/* Action Card */}
             <div className="rounded-lg bg-white p-6 shadow-sm">
@@ -295,7 +373,7 @@ export default function HelpRequestDetails() {
                   disabled={
                     requestData.status === "completed" || isProcessingPayment
                   }
-                  onClick={handlePayment}
+                  onClick={() => setShowSafety(true)}
                   className={`rounded-full px-4 py-2 text-sm font-semibold text-white transition-colors duration-300 ${
                     requestData.status === "completed" ||
                     isProcessingPayment ||
@@ -311,6 +389,14 @@ export default function HelpRequestDetails() {
                       ? "Completed"
                       : "Render Help"}
                 </button>
+                {showSafety && (
+                  <MeetingSafetyModal
+                    requestId={id}
+                    counterpartyId={requestData?.user?._id}
+                    onClose={() => setShowSafety(false)}
+                    onAccepted={() => handlePayment()}
+                  />
+                )}
               </div>
             </div>
           </div>

@@ -11,9 +11,20 @@ export const useGiveawayStore = create<GiveawayStoreState>((set) => ({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newGiveaway),
+        credentials: "include",
       });
 
       const data = await response.json();
+
+      if (response.status === 402) {
+        localStorage.setItem("helpmePendingWalletAction", JSON.stringify({
+          type: "giveaway",
+          shortfall: data.data?.shortfall || 0,
+          payload: newGiveaway,
+        }));
+        window.location.assign("/dashboard?tab=finance");
+        return { success: false, message: data.message };
+      }
 
       if (response.ok) {
         set((state) => ({

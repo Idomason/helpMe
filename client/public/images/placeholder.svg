@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f3f4f6"/>
+      <stop offset="1" stop-color="#e5e7eb"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <g opacity="0.5">
+    <rect x="320" y="200" width="160" height="120" rx="8" fill="#d4b3ff" fill-opacity="0.15"/>
+    <circle cx="360" cy="240" r="14" fill="#b983fd" fill-opacity="0.3"/>
+    <path d="M340 305 L380 265 L410 290 L440 250 L470 305 Z" fill="#b983fd" fill-opacity="0.2"/>
+    <circle cx="400" cy="370" r="28" fill="none" stroke="#b983fd" stroke-width="2" fill-opacity="0.2"/>
+    <path d="M386 374 L396 384 L414 364" stroke="#b983fd" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="400" y="430" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="22" font-weight="600" fill="#9ca3af">HelpMe</text>
+  <text x="400" y="455" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" fill="#d1d5db">No image available</text>
+</svg>

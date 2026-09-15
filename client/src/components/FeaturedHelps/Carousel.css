@@ -1,33 +1,39 @@
-/* Custom arrow styles */
-.react-multi-carousel-list__arrow {
-  background-color: #4f46e5;
-  border-radius: 50%;
-  opacity: 0.8;
-  transition: all 0.3s ease;
+.home-carousel .react-multi-carousel-track {
+  align-items: stretch;
 }
 
-.react-multi-carousel-list__arrow:hover {
-  opacity: 1;
-  background-color: #4338ca;
+.home-carousel__item {
+  display: flex;
+  height: auto;
 }
 
-.react-multi-carousel-list__arrow--left {
-  left: 0;
+.home-carousel .react-multiple-carousel__arrow {
+  min-width: 36px;
+  min-height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(54, 6, 101, 0.9);
+  box-shadow: 0 8px 24px rgba(54, 6, 101, 0.2);
+  transition: transform 180ms ease, background-color 180ms ease;
 }
 
-.react-multi-carousel-list__arrow--right {
-  right: 0;
+.home-carousel .react-multiple-carousel__arrow:hover {
+  background: #521b88;
+  transform: scale(1.06);
 }
 
-/* Custom dot styles */
-.react-multi-carousel-dot-list {
-  bottom: -30px;
+.home-carousel .react-multiple-carousel__arrow--left {
+  left: 4px;
 }
 
-.react-multi-carousel-dot button {
-  border-color: #4f46e5;
+.home-carousel .react-multiple-carousel__arrow--right {
+  right: 4px;
 }
 
-.react-multi-carousel-dot--active button {
-  background: #4f46e5;
+@media (prefers-reduced-motion: reduce) {
+  .home-carousel *,
+  .home-carousel *::before,
+  .home-carousel *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -1,0 +1,23 @@
+.site-header { position:fixed; top:0; left:0; width:100%; z-index:10000; background:#fffffff5; backdrop-filter:blur(16px); border-bottom:1px solid #eae5ee; color:#30233d; }
+.site-header-inner { max-width:1320px; height:76px; margin:auto; padding:0 36px; display:flex; align-items:center; justify-content:space-between; gap:36px; }
+.site-desktop-nav { display:flex; align-items:center; gap:30px; }
+.site-desktop-nav a { font-size:13px; font-weight:500; color:#706778; padding:27px 0; position:relative; transition:color .2s; }
+.site-desktop-nav a:hover, .site-desktop-nav a.active { color:#552b70; }
+.site-desktop-nav a.active:after { content:""; position:absolute; left:0; right:0; bottom:16px; height:2px; background:#bd7699; }
+.site-header-actions { display:flex; align-items:center; gap:22px; }
+.site-login { color:#552b70; font-size:13px; font-weight:600; white-space:nowrap; }
+.site-header-cta { display:inline-flex; align-items:center; justify-content:center; gap:9px; background:#552b70; color:white; padding:12px 18px; border-radius:8px; font-size:12px; font-weight:600; white-space:nowrap; transition:background .2s; }
+.site-header-cta:hover { background:#3d1d54; }
+.site-profile { width:38px; height:38px; border-radius:50%; padding:2px; border:1px solid #d5bdde; }
+.site-profile img { width:100%; height:100%; border-radius:50%; object-fit:cover; }
+.site-menu-toggle { display:none; padding:7px; border-radius:7px; color:#552b70; }
+.site-header a:focus-visible, .site-header button:focus-visible, .site-mobile-menu a:focus-visible, .site-mobile-menu button:focus-visible { outline:2px solid #a980c4; outline-offset:4px; }
+.site-mobile-menu { position:fixed; inset:0; z-index:10001; background:#22152d66; }
+.site-mobile-panel { position:absolute; inset:0 0 0 auto; width:min(360px,90vw); padding:24px; background:#fff; color:#30233d; box-shadow:-10px 0 40px #22152d20; }
+.site-mobile-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:35px; }
+.site-mobile-top button { padding:10px; }
+.site-mobile-panel nav { display:flex; flex-direction:column; }
+.site-mobile-panel nav a { padding:17px 0; border-bottom:1px solid #eee8f2; font-size:15px; }
+@media(max-width:980px) { .site-desktop-nav { display:none; } .site-menu-toggle { display:block; } .site-header-inner { gap:20px; padding:0 24px; } }
+@media(max-width:520px) { .site-header-inner { height:68px; padding:0 16px; gap:12px; } .site-header-actions { gap:10px; } .site-header-cta { display:none; } .site-login { font-size:12px; } }
+@media(prefers-reduced-motion:reduce) { .site-header * { transition:none; } }

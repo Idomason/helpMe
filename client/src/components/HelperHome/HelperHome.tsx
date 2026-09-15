@@ -17,6 +17,7 @@ import { useContext, useState } from "react";
 import { SidebarContext } from "../../context/SidebarContext";
 import DashboardSidebar from "../DashBoardSidebar/DashboardSidebar";
 import useWindowSize from "../../hooks/useWindowSize";
+import { useStats } from "../../hooks/useStats";
 
 const sidebarData = [
   {
@@ -68,6 +69,7 @@ export default function HelperHome() {
   const [mouseEnter, setMouseEnter] = useState(false);
   const sideData = [...sidebarData, ...sidebarSecondaryData];
   const { windowWidth } = useWindowSize();
+  const { data: stats } = useStats();
 
   return (
     <div className="min-h-screen">
@@ -157,7 +159,7 @@ export default function HelperHome() {
                         All help requests
                       </p>
                       <span className="text-2xl font-bold text-[#285de9]">
-                        329{" "}
+                        {stats?.totalRequests ?? 0}{" "}
                       </span>
                     </div>
                   </div>
@@ -175,7 +177,7 @@ export default function HelperHome() {
                         Active requests
                       </p>
                       <span className="text-2xl font-bold text-[#05a365]">
-                        200{" "}
+                        {stats?.activeRequests ?? 0}{" "}
                       </span>
                     </div>
                   </div>
@@ -193,7 +195,7 @@ export default function HelperHome() {
                         All Giveaways
                       </p>
                       <span className="text-2xl font-bold text-[#f1d800]">
-                        200{" "}
+                        {stats?.totalGiveaways ?? 0}{" "}
                       </span>
                     </div>
                   </div>
@@ -211,7 +213,7 @@ export default function HelperHome() {
                         Active Giveaways
                       </p>
                       <span className="text-2xl font-bold text-[#f18400]">
-                        50{" "}
+                        {stats?.activeGiveaways ?? 0}{" "}
                       </span>
                     </div>
                   </div>

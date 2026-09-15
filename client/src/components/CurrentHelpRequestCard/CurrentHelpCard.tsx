@@ -1,14 +1,10 @@
-import {
-  ChevronDoubleRightIcon,
-  HandThumbUpIcon,
-} from "@heroicons/react/24/solid";
-import RangeSlider from "../CurrentHelpRequests/RangeSlider";
 import { Link } from "react-router-dom";
-import { MessageCircle } from "lucide-react";
-import { formattedDate } from "../../utils/formattedDate";
+import { ThumbsUp, MessageCircle, ArrowRight, MapPin } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { IRequest } from "../../utils/types";
+import { categoryLabel, imgOrPlaceholder } from "../../data/helpRequestData";
+import { formattedDate } from "../../utils/formattedDate";
 
 export default function CurrentHelpCard({
   _id,
@@ -16,41 +12,33 @@ export default function CurrentHelpCard({
   votes,
   comments,
   image,
+  name,
   requestDescription,
   category,
+  city,
 }: IRequest) {
-  const totalVotes = votes.length;
-  const totalComments = comments.length;
-  const value = totalVotes
-    ? ((specificDetails?.amount / totalVotes) * 100).toFixed()
-    : "0";
-  const queryClient = useQueryClient();
-
-  // Date format Helper function
+  const totalVotes = votes?.length ?? 0;
+  const totalComments = comments?.length ?? 0;
   const formatDate = formattedDate(specificDetails?.deadline);
+  const plainDescription = requestDescription
+    ?.replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  const queryClient = useQueryClient();
 
   const { mutate: vote } = useMutation({
     mutationFn: async () => {
-      try {
-        const response = await fetch(`/api/v1/requests/${_id}/vote`, {
-          method: "POST",
-        });
-
-        const data = await response.json();
-
-        if (data.status === "fail") {
-          throw new Error(
-            data.message || "Failed to vote request, please try again",
-          );
-        }
-
-        return data;
-      } catch (error: any) {
-        throw new Error(error.message);
-      }
+      const response = await fetch(`/api/v1/requests/${_id}/vote`, {
+        method: "POST",
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to vote");
+      return data;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["requests"] });
+      queryClient.invalidateQueries({ queryKey: ["latest-requests"] });
       toast.success(data.message);
     },
     onError: (error: any) =>
@@ -58,74 +46,60 @@ export default function CurrentHelpCard({
   });
 
   return (
-    <div className="relative h-full w-full sm:w-80">
-      <span className="lg:text-md absolute z-20 mx-2 my-2 flex items-center space-x-3 rounded-full bg-pink-400 px-5 py-1 text-sm text-white xl:px-6 xl:py-2">
-        <HandThumbUpIcon className="size-5" />
-        <span>{votes.length} Votes</span>
-      </span>
-      <div className="overflow-hidden rounded-lg bg-helpMe-200 pb-4 shadow">
-        <div className="relative">
-          <div className="absolute z-10 h-full w-full bg-black/75"></div>
-          <img
-            className="h-48 w-full object-cover"
-            src={image.url}
-            alt={"Request Image"}
-          />
+    <article className="group flex h-full min-h-[374px] flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-helpMe-950/10">
+      <div className="relative h-36 overflow-hidden bg-slate-100">
+        <img
+          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          src={imgOrPlaceholder(image?.url)}
+          alt="Request"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+        <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-pink-500 px-2.5 py-1 text-[11px] font-bold text-white shadow-sm">
+          <ThumbsUp className="h-3 w-3" />
+          {totalVotes} Votes
+        </span>
+      </div>
+
+      <div className="flex flex-1 flex-col p-4">
+        <span className="line-clamp-1 text-[11px] font-bold uppercase tracking-[0.08em] text-helpMe-600">
+          {categoryLabel(category)}
+        </span>
+        <h3 className="mt-1.5 line-clamp-1 font-bold text-slate-900">{name}</h3>
+        <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-slate-600">
+          {plainDescription}
+        </p>
+
+        <div className="mt-auto flex items-center justify-between gap-2 border-t border-slate-100 pt-3 text-xs text-slate-500">
+          <span className="flex items-center gap-1">
+            <MapPin className="h-3.5 w-3.5" /> {city}
+          </span>
+          <span className="whitespace-nowrap">Due <span className="font-semibold text-slate-700">{formatDate}</span></span>
         </div>
 
-        <div className="px-3">
-          <div className="mb-3 min-h-[3.5rem] py-4">
-            <p className="text-md line-clamp-2 font-light leading-5 text-helpMe-950">
-              {requestDescription}
-            </p>
-          </div>
-          <hr className="mb-2 h-[0.12rem] bg-white" />
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-thin text-helpMe-700">
-              Category:{" "}
-              <span className="font-bold capitalize text-helpMe-800">
-                {category}
-              </span>
-            </p>{" "}
-            <p className="text-xs font-thin text-helpMe-700">
-              Deadline:{" "}
-              <span className="font-bold text-helpMe-800">{formatDate}</span>
-            </p>
-          </div>
-
-          {/* NOTE Range */}
-          <div className="py-.5 w-full">
-            <RangeSlider
-              className="ml-[1px] w-full"
-              sliderValue={Number(value)}
-              onSliderValue={() => {}}
-            />
-          </div>
-
-          <div className="flex items-center justify-between space-x-2 py-2">
-            <button className="flex transform items-center space-x-2 rounded-[5px] bg-helpMe-800 px-4 py-1.5 text-xs font-semibold tracking-wide text-helpMe-100 transition-all duration-200 ease-in hover:bg-helpMe-950">
-              <Link to={`/requests/${_id}`}>Learn More</Link>
-              <ChevronDoubleRightIcon className="size-6 text-pink-400" />
-            </button>
-            <div
-              className="flex cursor-pointer flex-col items-center justify-center"
+        <div className="mt-3 flex items-center justify-between">
+          <Link
+            to={`/requests/${_id}`}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-helpMe-950 px-3.5 py-2 text-xs font-bold text-white transition hover:bg-helpMe-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-helpMe-500 focus-visible:ring-offset-2"
+          >
+            Learn More
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+          <div className="flex items-center gap-4">
+            <button
               onClick={() => vote()}
+              className="flex cursor-pointer items-center gap-1 text-xs font-semibold text-slate-600 transition hover:text-pink-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-helpMe-500"
+              title="Vote"
             >
-              <HandThumbUpIcon className="size-5 text-pink-400 transition-colors duration-300 hover:text-pink-600" />
-              <span className="text-[10px] text-helpMe-950">
-                <strong className="font-semibold">{totalVotes} </strong>votes
-              </span>
-            </div>
-            <div className="flex cursor-pointer flex-col items-center justify-center">
-              <MessageCircle className="size-5 text-pink-400 transition-colors duration-300 hover:text-pink-600" />
-              <span className="text-[10px] font-light text-helpMe-950">
-                <strong className="font-semibold">{totalComments}</strong>{" "}
-                comments
-              </span>
-            </div>
+              <ThumbsUp className="h-5 w-5 text-pink-400" />
+              <span>{totalVotes}</span>
+            </button>
+            <Link to={`/requests/${_id}`} className="flex items-center gap-1 text-xs font-semibold text-slate-600 transition hover:text-pink-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-helpMe-500">
+              <MessageCircle className="h-5 w-5 text-pink-400" />
+              <span>{totalComments}</span>
+            </Link>
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 }

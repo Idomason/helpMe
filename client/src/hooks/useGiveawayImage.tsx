@@ -1,42 +1,13 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-interface CloudinaryResponse {
-  secure_url: string;
-  public_id: string;
-}
-
 interface ImageUploadResult {
   url: string;
   publicId: string;
 }
 
-interface CloudinaryError {
-  error: {
-    message: string;
-  };
-}
-
-interface UseGiveawayImageReturn {
-  isSubmitting: boolean;
-  setIsSubmitting: (value: boolean) => void;
-  handleImageUpload: (
-    file: File | null,
-  ) => Promise<ImageUploadResult | undefined>;
-}
-
-export const useGiveawayImage = (): UseGiveawayImageReturn => {
+export const useGiveawayImage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Cloudinary URL & Upload preset
-  const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`;
-  const uploadPreset = import.meta.env.VITE_GIVEAWAY_UPLOAD_PRESET;
-  const apiKey = import.meta.env.VITE_CLOUDINARY_API_KEY;
-
-  if (!import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || !uploadPreset || !apiKey) {
-    console.error("Missing required Cloudinary environment variables");
-    throw new Error("Missing required Cloudinary configuration");
-  }
 
   const handleImageUpload = async function (
     file: File | null,
@@ -46,30 +17,23 @@ export const useGiveawayImage = (): UseGiveawayImageReturn => {
     try {
       setIsSubmitting(true);
 
-      // Prepare cloudinary data for upload
       const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", uploadPreset);
-      formData.append("api_key", apiKey);
+      formData.append("image", file);
+      formData.append("type", "giveaway");
 
-      // Perform the POST request to Cloudinary's upload API
-      const response = await fetch(cloudinaryUrl, {
+      const response = await fetch("/api/v1/upload", {
         method: "POST",
         body: formData,
+        credentials: "include",
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        const errorData = data as CloudinaryError;
-        throw new Error(errorData.error.message || "Failed to upload image");
+        const errorData = await response.json();
+        throw new Error(errorData?.message || "Failed to upload image");
       }
 
-      const cloudinaryData = data as CloudinaryResponse;
-      return {
-        url: cloudinaryData.secure_url,
-        publicId: cloudinaryData.public_id,
-      };
+      const data = await response.json();
+      return { url: data.data.url, publicId: data.data.publicId };
     } catch (error) {
       console.error("Error uploading image:", error);
       if (error instanceof Error) {

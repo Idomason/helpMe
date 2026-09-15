@@ -34,27 +34,46 @@ export default function NavProfile({
   });
 
   return (
-    <div className="absolute bottom-0 top-[60px] min-h-screen w-screen bg-black/90 backdrop-blur">
-      <div className="absolute top-0 flex min-h-fit w-full items-center justify-end px-4">
-        <ul className="flex h-full w-72 flex-col rounded-md bg-helpMe-300 py-4 shadow-lg">
+    <div
+      className="fixed inset-0 top-[60px] z-[9999] bg-black/10"
+      onClick={() => profileToggler(false)}
+    >
+      <div
+        className="absolute top-0 flex min-h-fit w-full items-center justify-end px-4"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <ul className="flex h-full w-72 flex-col rounded-md bg-white py-4 shadow-2xl ring-1 ring-gray-200">
           <li className="w-full cursor-pointer border-t px-4 py-1.5 font-semibold hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white">
             {capitalizeFirstLetter(user?.name || "")}
           </li>
           <li className="w-full cursor-pointer border-t px-4 py-1.5 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white">
             {user?.email}
           </li>
-          <Link to={`/dashboard-${user?.role}-request`}>
-            <li className="w-full cursor-pointer border-t px-4 py-2 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white">
+          <Link to={user?.role === "admin" ? "/admin" : "/dashboard"}>
+            <li
+              className="w-full cursor-pointer border-t px-4 py-2 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white"
+              onClick={() => profileToggler(false)}
+            >
               Dashboard
             </li>
           </Link>
-          <li className="w-full cursor-pointer border-t px-4 py-2 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white">
-            Settings
-          </li>
-          <Link className="w-full" to="/account">
+          {user?.role === "admin" && (
+            <Link to="/admin">
+              <li
+                className="w-full cursor-pointer border-t px-4 py-2 font-semibold text-pink-700 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white"
+                onClick={() => profileToggler(false)}
+              >
+                Admin Control
+              </li>
+            </Link>
+          )}
+          <Link
+            className="w-full"
+            to={user?.role === "admin" ? "/admin?tab=account" : "/dashboard?tab=account"}
+          >
             <li
               className="w-full cursor-pointer border-t px-4 py-2 hover:border-b-helpMe-950 hover:border-t-helpMe-950 hover:bg-black/75 hover:text-white"
-              onClick={() => profileToggler((prev) => !prev)}
+              onClick={() => profileToggler(false)}
             >
               Account
             </li>

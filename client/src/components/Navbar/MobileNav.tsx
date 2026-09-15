@@ -1,41 +1,42 @@
 import { X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { navLinks } from "../../constant/constant";
+import { useEffect, useRef } from "react";
 import { IMobileNavProp } from "../../utils/types";
+import BrandLogo from "../BrandLogo/BrandLogo";
+import { useAuthUser } from "../../hooks/useAuthUser";
 
 export default function MobileNav({ closeNavbar, isOpen }: IMobileNavProp) {
-  const openNav = isOpen ? "translate-x-0" : "-translate-x-full";
-
-  return (
-    <div className="relative">
-      {/* Overlay */}
-      <div
-        className={`fixed ${openNav} bottom-0 left-0 top-0 z-[10000] h-[100vh] w-full transform bg-black/70 transition-all duration-500`}
-      >
-        {/* Navlinks */}
-        <ul
-          className={`${openNav} fixed z-[100006] flex h-full w-4/5 transform flex-col items-center space-y-6 bg-helpMe-900 pt-20 text-helpMe-100 transition-all delay-300 duration-300 sm:w-[60%]`}
-        >
-          {navLinks &&
-            navLinks.length > 0 &&
-            navLinks.map((navItem) => (
-              <li key={navItem.id} onClick={closeNavbar}>
-                <Link
-                  className="nav__link lg:text-md text-sm font-medium capitalize text-helpMe-200"
-                  to={navItem.link}
-                >
-                  {navItem.label}
-                </Link>
-              </li>
-            ))}
-
-          {/* Close Icon */}
-          <X
-            onClick={closeNavbar}
-            className="absolute right-[1.4rem] top-[0.7rem] h-6 w-6 cursor-pointer text-helpMe-100 sm:h-8 sm:w-8"
-          />
-        </ul>
-      </div>
+  const panel = useRef<HTMLDivElement>(null);
+  const close = useRef(closeNavbar);
+  close.current = closeNavbar;
+  const { data: authUser } = useAuthUser();
+  useEffect(() => {
+    if (!isOpen) return;
+    const previous = document.activeElement as HTMLElement | null;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    panel.current?.querySelector<HTMLButtonElement>("button")?.focus();
+    const handler = (event: KeyboardEvent) => {
+      if (event.key === "Escape") close.current();
+      if (event.key === "Tab") {
+        const items = panel.current?.querySelectorAll<HTMLElement>("a, button");
+        if (!items?.length) return;
+        const first = items[0], last = items[items.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => { document.body.style.overflow = overflow; document.removeEventListener("keydown", handler); previous?.focus(); };
+  }, [isOpen]);
+  if (!isOpen) return null;
+  return <div className="site-mobile-menu" onClick={closeNavbar}>
+    <div ref={panel} className="site-mobile-panel" role="dialog" aria-modal="true" aria-label="Navigation menu" onClick={e => e.stopPropagation()}>
+      <div className="site-mobile-top"><div onClick={closeNavbar}><BrandLogo /></div><button type="button" onClick={closeNavbar} aria-label="Close navigation menu"><X size={23} /></button></div>
+      <nav aria-label="Mobile navigation" onClick={closeNavbar}>
+        <Link to="/all-help-requests">Explore requests</Link><Link to="/giveaways">Giveaways</Link><Link to="/giver-board">Givers-board</Link>
+        {authUser ? <><Link to="/dashboard?tab=create-request">Request help</Link><Link to={authUser.role === "admin" ? "/admin" : "/dashboard"}>Dashboard</Link></> : <><Link to="/login">Log in</Link><Link to="/register">Join the community</Link></>}
+      </nav>
     </div>
-  );
+  </div>;
 }

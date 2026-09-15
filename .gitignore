@@ -27,3 +27,4 @@ dist-ssr
 *.sw?
 .env
 client/.env
+supabase/.temp/

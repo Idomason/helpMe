@@ -40,11 +40,20 @@ export interface Giveaway {
   isActive: boolean;
   isFeatured: boolean;
   isEnded: boolean;
-  requirements: string;
+  requirements: string[];
   prizes: string;
-  rules: string;
+  rules?: string;
+  winnerMode?: "single" | "multiple";
+  maxWinners?: number;
   giveawayDescription: string;
   createdAt: string;
+  createdBy?: string | null;
+  prizeAmount?: number;
+  prizePerWinner?: number;
+  totalPrize?: number;
+  isFunded?: boolean;
+  giveawayType?: string;
+  escrowId?: string | null;
 }
 
 export interface User {

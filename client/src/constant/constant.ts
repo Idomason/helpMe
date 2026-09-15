@@ -2,7 +2,7 @@ export const navLinks = [
   {
     id: 1,
     label: "create help request",
-    link: "/request",
+    link: "/dashboard?tab=create-request",
   },
   {
     id: 2,
@@ -13,6 +13,11 @@ export const navLinks = [
     id: 3,
     label: "giveaways",
     link: "/giveaways",
+  },
+  {
+    id: 5,
+    label: "givers-board",
+    link: "/giver-board",
   },
   // {
   //   id: 4,
@@ -259,13 +264,6 @@ export const questionsData = [
 ];
 
 export const registerFormElements = [
-  {
-    name: "role",
-    id: "role",
-    label: "What would you like to do?",
-    type: "select",
-    componentType: "select",
-  },
   {
     name: "name",
     type: "text",
